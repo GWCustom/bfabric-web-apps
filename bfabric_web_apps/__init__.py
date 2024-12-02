@@ -1,6 +1,6 @@
-from objects import (
+from .objects import (
     BfabricInterface,
     Logger
 )
 
-from layouts.layouts import *
+from .layouts.layouts import *
