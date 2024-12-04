@@ -1,5 +1,6 @@
 import os
 import pickle
+from typing import List
 from bfabric import Bfabric
 from datetime import datetime as dt
 import base64
@@ -14,18 +15,19 @@ class Logger:
     """
     A Logger class to manage and batch API call logs locally and flush them to the backend when needed.
     """
-    def __init__(self, jobid: int, username: str):
+    def __init__(self, jobid: int, username: str, environment: str):
         self.jobid = jobid
         self.username = username
-        self.power_user_wrapper = self._get_power_user_wrapper()
+        self.power_user_wrapper = self._get_power_user_wrapper(environment)
         self.logs = []
 
-    def _get_power_user_wrapper(self) -> Bfabric:
+    def _get_power_user_wrapper(self, environment) -> Bfabric:
         """
         Initializes a B-Fabric wrapper using the power user's credentials.
         """
         power_user_wrapper = Bfabric.from_config(
-            config_path=os.path.expanduser(CONFIG_FILE_PATH)
+            config_path = os.path.expanduser(CONFIG_FILE_PATH),
+            config_env = environment.upper()
         )
         return power_user_wrapper
 
