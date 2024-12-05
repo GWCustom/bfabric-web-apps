@@ -15,3 +15,8 @@ no_entity = [
 dev = [html.P("This page is under development. Please check back later."),html.Br(),html.A("email the developer for more details",href="mailto:"+DEVELOPER_EMAIL)]
 
 auth = [html.Div(id="auth-div")]
+
+no_auth = [
+    html.P("You are not currently logged into an active session. Please log into bfabric to continue:"),
+    html.A('Login to Bfabric', href='https://fgcz-bfabric.uzh.ch/bfabric/')
+]

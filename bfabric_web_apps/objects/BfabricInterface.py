@@ -116,29 +116,14 @@ class BfabricInterface( Bfabric ):
             ) 
             
             # Log the read operation directly using Logger L
-            L.logthis(
-                api_call=wrapper.save,
-                endpoint=endpoint,
-                obj={"id": entity_id},
-                params = None,
-                flush_logs = False
-            )
-
             entity_data_dict = L.logthis(
                 api_call=wrapper.read,
                 endpoint=endpoint,
                 obj={"id": entity_id},
                 max_results=None,
                 params = None,
-                flush_logs = False
+                flush_logs = True
             )[0]
-
-            L.log_operation(
-                operation="None",
-                message="Thist is a test log message where the operation is None",
-                params=None,
-                flush_logs=True
-            )
             
             if entity_data_dict:
                 json_data = json.dumps({

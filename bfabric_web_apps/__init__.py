@@ -18,6 +18,7 @@ from .utils.callbacks import display_page_generic
 __all__ = [
     "BfabricInterface",
     "Logger_object",
+    "components",
     "get_layout_with_side_panel",
     "create_app",
     "load_config",
