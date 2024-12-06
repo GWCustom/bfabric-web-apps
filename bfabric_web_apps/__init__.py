@@ -12,7 +12,7 @@ from .utils.app_init import create_app
 from .utils.app_config import load_config
 
 # Export callbacks
-from .utils.callbacks import display_page_generic
+from .utils.callbacks import display_page_generic, update_tab_content, submit_bug_report
 
 # Define __all__ for controlled imports
 __all__ = [
@@ -23,4 +23,6 @@ __all__ = [
     "create_app",
     "load_config",
     "display_page_generic",
+    "update_tab_content",
+    "submit_bug_report"
 ]

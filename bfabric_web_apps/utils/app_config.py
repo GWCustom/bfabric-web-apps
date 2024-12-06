@@ -14,11 +14,14 @@ def load_config(params_path="./PARAMS.py"):
             PORT = getattr(params_module, "PORT", 8050)
             HOST = getattr(params_module, "HOST", "localhost")
             DEV = getattr(params_module, "DEV", True)
+            CONFIG_FILE_PATH = getattr(params_module, "CONFIG_FILE_PATH", "~/.bfabricpy.yml")
         except ImportError:
             # Fallback to default values in case of import errors
             PORT, HOST, DEV = 8050, 'localhost', True
+            CONFIG_FILE_PATH = "~/.bfabricpy.yml"
     else:
         # Fallback to default values if PARAMS.py is not found
         PORT, HOST, DEV = 8050, 'localhost', True
+        CONFIG_FILE_PATH = "~/.bfabricpy.yml"
 
-    return {"PORT": PORT, "HOST": HOST, "DEV": DEV}
+    return {"PORT": PORT, "HOST": HOST, "DEV": DEV, "CONFIG_FILE_PATH": CONFIG_FILE_PATH}

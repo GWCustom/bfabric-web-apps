@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 
 def get_layout_with_side_panel(base_title):
     """
-    Returns the generic layout for the app with a placeholder for page-content.
+    Returns the generic layout for the app with a placeholder for page-content and tabs.
     """
     return html.Div(
         children=[
@@ -52,19 +52,31 @@ def get_layout_with_side_panel(base_title):
                             )
                         )
                     ),
+                    # Add tabs for navigation
                     dbc.Row(
                         dbc.Col(
-                            html.Div(
-                                id="page-content",  # Add placeholder for page-content
-                                children=[],       # Empty children as placeholder
-                                style={            # Style to make it invisible when empty
-                                    "min-height": "40vh",
-                                    "margin-top": "20px",
-                                    "display": "none"  # Hide by default
-                                }
+                            dbc.Tabs(
+                                [
+                                    dbc.Tab(label="Main", tab_id="main"),
+                                    dbc.Tab(label="Documentation", tab_id="documentation"),
+                                    dbc.Tab(label="Report a Bug", tab_id="report-bug"),
+                                ],
+                                id="tabs",
+                                active_tab="main"
                             )
                         )
                     ),
+                    # Placeholder for tab content
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                id="tab-content",
+                                style={"margin": "20px"}
+                            )
+                        )
+                    ),
+                    # Persistent auth-div placeholder
+                    html.Div(id="auth-div", style={"display": "none"}),  # Invisible placeholder
                 ],
                 fluid=True,
                 style={"width": "100vw"}
@@ -72,3 +84,4 @@ def get_layout_with_side_panel(base_title):
         ],
         style={"width": "100vw", "overflow-x": "hidden", "overflow-y": "scroll"}
     )
+

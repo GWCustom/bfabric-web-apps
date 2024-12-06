@@ -8,6 +8,7 @@ from bfabric import BfabricClientConfig
 from dash import html
 import dash_bootstrap_components as dbc
 from bfabric_web_apps.objects.Logger_object import Logger
+import os
 
 
 VALIDATION_URL = "https://fgcz-bfabric.uzh.ch/bfabric/rest/token/validate?token="
@@ -62,6 +63,7 @@ class BfabricInterface( Bfabric ):
                 userWsPassword = userinfo['userWsPassword'],
                 jobId = userinfo['jobId']
             )
+            print("token to date", token_data)
 
             return json.dumps(token_data)
         
@@ -145,4 +147,30 @@ class BfabricInterface( Bfabric ):
         else:
             print("Invalid input or entity information")
             return None
+        
+    
+    def send_bug_report(self, token_data, entity_data, description):
+
+        mail_string = f"""
+        BUG REPORT FROM QC-UPLOADER
+            \n\n
+            token_data: {token_data} \n\n 
+            entity_data: {entity_data} \n\n
+            description: {description} \n\n
+            sent_at: {datetime.datetime.now()} \n\n
+        """
+
+        mail = f"""
+            echo "{mail_string}" | mail -s "Bug Report" gwtools@fgcz.system
+        """
+
+        print("MAIL STRING:")
+        print(mail_string)
+
+        print("MAIL:")
+        print(mail)
+
+        os.system(mail)
+
+        return True
 

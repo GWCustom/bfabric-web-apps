@@ -4,12 +4,9 @@ from typing import List
 from bfabric import Bfabric
 from datetime import datetime as dt
 import base64
+from ..utils.app_config import load_config
 
-try:
-    from PARAMS import CONFIG_FILE_PATH
-except ImportError:
-    CONFIG_FILE_PATH = "~/.bfabricpy.yml"
-
+CONFIG_FILE_PATH = load_config()["CONFIG_FILE_PATH"]
 
 class Logger:
     """
