@@ -39,41 +39,7 @@ def display_page_generic(url_params, base_title):
             return token, tdata, entity_data, components.auth, page_title
     else:
         return None, None, None, components.no_auth, base_title
-    
 
-def update_tab_content(active_tab, token, entity_data):
-    """
-    Updates the content displayed based on the active tab.
-    """
-    if active_tab == "documentation":
-        return html.Div(
-            children=[
-                html.H3("Documentation"),
-                html.P("Here you can find detailed information about how to use this app."),
-                html.Ul([
-                    html.Li("Step 1: Login using your Bfabric credentials."),
-                    html.Li("Step 2: Navigate through the features using the sidebar."),
-                    html.Li("Step 3: Access specific functionalities within the Main tab."),
-                ])
-            ]
-        )
-    elif active_tab == "report-bug":
-        return html.Div(
-            children=[
-                html.H3("Report a Bug"),
-                dbc.Textarea(id="bug-description", placeholder="Describe the bug here...", style={"width": "100%"}),
-                dbc.Button("Submit Bug Report", id="submit-bug-report", className="mt-3"),
-                dbc.Alert("Bug report submitted successfully!", id="alert-fade-bug", is_open=False, color="success", dismissable=True),
-                dbc.Alert("Failed to submit the bug report.", id="alert-fade-bug-fail", is_open=False, color="danger", dismissable=True),
-            ]
-        )
-    else:  # Default to "Main" tab
-        return html.Div(
-            children=[
-                html.H3("Main Content"),
-                html.P("This is the main interface for interacting with the Bfabric application.")
-            ]
-        )
 
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
 
@@ -111,6 +77,3 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
             return False, True
 
     return False, False
-
-
-
