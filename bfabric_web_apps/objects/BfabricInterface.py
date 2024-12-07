@@ -15,12 +15,31 @@ VALIDATION_URL = "https://fgcz-bfabric.uzh.ch/bfabric/rest/token/validate?token=
 HOST = "fgcz-bfabric.uzh.ch"
 
 
-class BfabricInterface( Bfabric ): 
+class BfabricInterface( Bfabric ):
+    """
+    A class to interface with the Bfabric API, providing methods to validate tokens,
+    retrieve data, and send bug reports.
+    """
 
-    def __init__(self): 
+    def __init__(self):
+        """
+        Initializes an instance of BfabricInterface.
+        """
         pass
 
-    def token_to_data(self, token): 
+    def token_to_data(self, token):
+        """
+        Validates the given token and retrieves its associated data.
+
+        Args:
+            token (str): The token to validate.
+
+        Returns:
+            str: A JSON string containing token data if valid.
+            str: "EXPIRED" if the token is expired.
+            None: If the token is invalid or validation fails.
+        """
+
         if not token:
             return None
 
@@ -69,7 +88,17 @@ class BfabricInterface( Bfabric ):
         
 
 
-    def token_response_to_bfabric(self, token_response): 
+    def token_response_to_bfabric(self, token_response):
+
+        """
+        Converts token response data into a Bfabric object for further interactions.
+
+        Args:
+            token_response (dict): The token response data.
+
+        Returns:
+            Bfabric: An authenticated Bfabric instance.
+        """
 
         bfabric_auth = BfabricAuth(login=token_response.get('user_data'), password=token_response.get('userWsPassword'))
         bfabric_client_config = BfabricClientConfig(base_url=token_response.get('webbase_data')) 
@@ -84,8 +113,14 @@ class BfabricInterface( Bfabric ):
     def entity_data(self, token_data: dict) -> str: 
 
         """
-        This function takes in a token from bfabric, and returns the entity data for the token.
-        Edit this function to change which data is stored in the browser for this entity.
+        Retrieves entity data associated with the provided token.
+
+        Args:
+            token_data (dict): The token data.
+
+        Returns:
+            str: A JSON string containing entity data.
+            None: If the retrieval fails.
         """
 
         entity_class_map = {
@@ -150,6 +185,17 @@ class BfabricInterface( Bfabric ):
         
     
     def send_bug_report(self, token_data, entity_data, description):
+        """
+        Sends a bug report via email.
+
+        Args:
+            token_data (dict): Token data to include in the report.
+            entity_data (dict): Entity data to include in the report.
+            description (str): A description of the bug.
+
+        Returns:
+            bool: True if the report is sent successfully, False otherwise.
+        """
 
         mail_string = f"""
         BUG REPORT FROM QC-UPLOADER

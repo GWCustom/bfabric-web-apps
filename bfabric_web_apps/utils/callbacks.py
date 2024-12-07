@@ -7,7 +7,15 @@ from bfabric_web_apps.objects.Logger_object import Logger
 
 def display_page_generic(url_params, base_title):
     """
-    Generic callback for processing URL parameters and managing authentication.
+    Processes URL parameters to extract the token, validates it, and retrieves the corresponding data.
+
+    Args:
+        url_params (str): The URL parameters containing the token.
+        base_title (str): The base title of the page.
+
+    Returns:
+        tuple: A tuple containing token data, entity data, and the page content.
+               (token, token_data, entity_data, page_content, page_title)
     """
     if not url_params:
         return None, None, None, components.no_auth, base_title
@@ -42,7 +50,19 @@ def display_page_generic(url_params, base_title):
 
 
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
+    """
+    Submits a bug report based on user input, token, and entity data.
 
+    Args:
+        n_clicks (int): The number of times the submit button has been clicked.
+        bug_description (str): The description of the bug provided by the user.
+        token (str): The authentication token.
+        entity_data (dict): The data related to the current entity.
+
+    Returns:
+        tuple: A tuple containing two boolean values indicating success and failure status of the submission.
+               (is_open_success, is_open_failure)
+    """
     bfabric_interface = BfabricInterface()
     print("submit bug report", token)
 
@@ -73,7 +93,7 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
                 L.log_operation("bug report", "Failed to submit bug report!", params=None, flush_logs=True)
                 return False, True
         except:
-            L.log_operation("bug report", "1Failed to submit bug report!", params=None, flush_logs=True)
+            L.log_operation("bug report", "Failed to submit bug report!", params=None, flush_logs=True)
             return False, True
 
     return False, False
