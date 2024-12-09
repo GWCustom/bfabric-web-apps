@@ -7,7 +7,7 @@ from bfabric import BfabricAuth
 from bfabric import BfabricClientConfig
 from dash import html
 import dash_bootstrap_components as dbc
-from bfabric_web_apps.objects.Logger_object import Logger
+from bfabric_web_apps.objects.Logger import Logger
 import os
 
 
@@ -164,6 +164,7 @@ class BfabricInterface( Bfabric ):
             
             if entity_data_dict:
                 json_data = json.dumps({
+                    "name": entity_data_dict.get("name", ""),
                     "createdby": entity_data_dict.get("createdby"),
                     "created": entity_data_dict.get("created"),
                     "modified": entity_data_dict.get("modified"),
@@ -184,7 +185,7 @@ class BfabricInterface( Bfabric ):
             return None
         
     
-    def send_bug_report(self, token_data, entity_data, description):
+    def send_bug_report(self, token_data = None, entity_data = None, description = None):
         """
         Sends a bug report via email.
 

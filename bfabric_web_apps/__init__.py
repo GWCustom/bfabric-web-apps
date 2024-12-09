@@ -1,5 +1,5 @@
 # Export objects and classes
-from bfabric_web_apps.objects import BfabricInterface, Logger_object
+from bfabric_web_apps.objects import BfabricInterface, Logger
 
 # Export components
 from .utils.components import *
@@ -17,7 +17,7 @@ from .utils.callbacks import display_page_generic, submit_bug_report
 # Define __all__ for controlled imports
 __all__ = [
     "BfabricInterface",
-    "Logger_object",
+    "Logger",
     "components",
     "get_static_layout",
     "create_app",
