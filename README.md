@@ -31,7 +31,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/GWCustom/bfabric-web-apps">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="logo.jpeg" alt="Logo" width="80" height="50.6">
   </a>
 
 <h3 align="center">Bfabric Web Apps</h3>
@@ -39,7 +39,7 @@
   <p align="center">
     A web-based platform for developing and integrating satellite applications around the Bfabric Laboratory Information Management System (LIMS).
     <br />
-    <a href="https://github.com/GWCustom/bfabric-web-apps"><strong>Explore the documentation »</strong></a>
+    <a href="https://pypi.org/project/bfabric-web-apps/"><strong>Explore the documentation »</strong></a>
     <br />
     <br />
     <a href="https://github.com/GWCustom/bfabric-web-apps">View Demo</a>
@@ -108,8 +108,15 @@ To get a local copy of the project up and running, follow these steps:
 
 ### Prerequisites
 
-- Python 3.9 or higher
-- Pip package manager
+Before getting started, ensure you have the following installed on your system:
+
+- **Python 3.9 or higher**: The project is compatible with Python 3.9+.
+- **Pip package manager**: For managing Python dependencies.
+- **Git**: Required to clone the repository and fetch the `bfabric` dependency.
+- **Environment Configuration**: Ensure you have access to the Bfabric API and can configure your `.env` file with the necessary API key.
+
+The project relies on several Python libraries (e.g., Dash, Plotly, Flask, and others), which will be installed automatically via the `requirements.txt` file.
+
 
 ### Installation
 
@@ -142,7 +149,7 @@ To get a local copy of the project up and running, follow these steps:
 
 6. Run the development server:
    ```sh
-   python app.py
+   python index.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -168,11 +175,6 @@ _For detailed examples and usage guides, refer to the [Documentation](https://gi
 
 
 ## Roadmap
-
-- [ ] Add support for additional data formats
-- [ ] Enhance API token-based authentication
-- [ ] Improve error handling and logging
-- [ ] Create a UI builder for custom dashboard components
 
 See the [open issues](https://github.com/GWCustom/bfabric-web-apps/issues) for a full list of planned features and known issues.
 
@@ -238,7 +240,7 @@ Project Repository: [https://github.com/GWCustom/bfabric-web-apps](https://githu
 [issues-shield]: https://img.shields.io/github/issues/GWCustom/bfabric-web-apps.svg?style=for-the-badge
 [issues-url]: https://github.com/GWCustom/bfabric-web-apps/issues
 [license-shield]: https://img.shields.io/github/license/GWCustom/bfabric-web-apps.svg?style=for-the-badge
-[license-url]: https://github.com/GWCustom/bfabric-web-apps/blob/master/LICENSE.txt
+[license-url]: https://github.com/GWCustom/bfabric-web-apps/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/gwc-gmbh/posts/?feedView=all
 [product-screenshot]: images/screenshot.png
