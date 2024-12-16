@@ -31,7 +31,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/GWCustom/bfabric-web-apps">
-    <img src="logo.jpeg" alt="Logo" width="80" height="50.6">
+    <img src="logo.png" alt="Logo" width="80" height="50.6">
   </a>
 
 <h3 align="center">Bfabric Web Apps</h3>
@@ -118,39 +118,12 @@ Before getting started, ensure you have the following installed on your system:
 The project relies on several Python libraries (e.g., Dash, Plotly, Flask, and others), which will be installed automatically via the `requirements.txt` file.
 
 
-### Installation
+### Example and Template Reference
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/GWCustom/bfabric-web-apps.git
-   ```
+The `bfabric-web-app` is a Python library published on PyPI, designed to simplify the development of web applications that interact with the Bfabric Laboratory Information Management System (LIMS). Instead of directly installing this repository, you can use the library in your Python projects.
 
-2. Navigate to the project directory:
-   ```sh
-   cd bfabric-web-apps
-   ```
+To get started with the `bfabric-web-app`, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template provides a fully functional example of how to build a web app using the library.
 
-3. Create and activate a virtual environment:
-   ```sh
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate     # Windows
-   ```
-
-4. Install the required dependencies:
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-5. Configure API access by setting up your environment variables in `.env`:
-   ```env
-   BFABRIC_API_KEY=your_api_key_here
-   ```
-
-6. Run the development server:
-   ```sh
-   python index.py
-   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
