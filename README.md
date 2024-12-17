@@ -130,8 +130,7 @@ BfabricPy is a Python library that provides a programmatic interface to interact
 
 BfabricPy is a dependency of this project and is fetched directly from its GitHub repository during installation.
 
-For more details, visit the [bfabricPy official documentation](https://github.com/fgcz/bfabricPy/tree/main).
-
+For more details, visit the [bfabricPy official Git repository](https://github.com/fgcz/bfabricPy/tree/main) or the library's [official documentation](https://fgcz.github.io/bfabricPy).
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
