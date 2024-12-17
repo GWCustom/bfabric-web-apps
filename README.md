@@ -105,7 +105,7 @@ Key Features:
 
 Bfabric is a Laboratory Information Management System (LIMS) used for managing scientific experiments and their associated data in laboratories. It provides a platform for tracking samples, analyzing results, and organizing workflows efficiently. 
 
-For more details, visit the [Bfabric official website](https://www.fgcz.ch/the-center/infrastructure-and-tools/bfabric).
+For more details, visit the [Bfabric official website](https://fgcz-bfabric.uzh.ch/bfabric/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,6 +116,8 @@ For more details, visit the [Bfabric official website](https://www.fgcz.ch/the-c
 BfabricPy is a Python library that provides a programmatic interface to interact with the Bfabric API. It allows developers to integrate Bfabric functionalities into custom Python applications. This library simplifies tasks like querying samples, uploading results, and interacting with the LIMS programmatically.
 
 BfabricPy is a dependency of this project and is fetched directly from its GitHub repository during installation.
+
+For more details, visit the [bfabricPy official documentation](https://github.com/fgcz/bfabricPy/tree/main).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -143,32 +145,6 @@ To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app
 - Interacting with the Bfabric LIMS using the Python library.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Getting Started
-
-To get a local copy of the project up and running, follow these steps:
-
-### Prerequisites
-
-Before getting started, ensure you have the following installed on your system:
-
-- **Python 3.9 or higher**: The project is compatible with Python 3.9+.
-- **Pip package manager**: For managing Python dependencies.
-- **Git**: Required to clone the repository and fetch the `bfabric` dependency.
-- **Environment Configuration**: Ensure you have access to the Bfabric API and can configure your `.env` file with the necessary API key.
-
-The project relies on several Python libraries (e.g., Dash, Plotly, Flask, and others), which will be installed automatically via the `requirements.txt` file.
-
-
-### Example and Template Reference
-
-The `bfabric-web-app` is a Python library published on PyPI, designed to simplify the development of web applications that interact with the Bfabric Laboratory Information Management System (LIMS). Instead of directly installing this repository, you can use the library in your Python projects.
-
-To get started with the `bfabric-web-app`, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template provides a fully functional example of how to build a web app using the library.
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ## Usage
 
