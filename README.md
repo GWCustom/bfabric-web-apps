@@ -66,7 +66,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#example-and-template-reference">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -101,6 +101,48 @@ Key Features:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## What Is Bfabric?
+
+Bfabric is a Laboratory Information Management System (LIMS) used for managing scientific experiments and their associated data in laboratories. It provides a platform for tracking samples, analyzing results, and organizing workflows efficiently. 
+
+For more details, visit the [Bfabric official website](https://www.fgcz.ch/the-center/infrastructure-and-tools/bfabric).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## What Is BfabricPy?
+
+BfabricPy is a Python library that provides a programmatic interface to interact with the Bfabric API. It allows developers to integrate Bfabric functionalities into custom Python applications. This library simplifies tasks like querying samples, uploading results, and interacting with the LIMS programmatically.
+
+BfabricPy is a dependency of this project and is fetched directly from its GitHub repository during installation.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## What Is Dash?
+
+Dash is a Python framework for building interactive web applications. It combines the power of Plotly for data visualization and Flask for backend support, making it ideal for scientific and analytical dashboards.
+
+For more details, visit the [Dash official documentation](https://dash.plotly.com/).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## What Is This Library?
+
+The `bfabric-web-app` is a Python library published on PyPI, designed to simplify the creation of web applications that interact with Bfabric. It abstracts much of the complexity involved in connecting with the Bfabric API, enabling developers to focus on building custom functionality.
+
+### Linking to the Template App
+
+To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template app demonstrates:
+- Setting up a project with `bfabric-web-app`.
+- Using Dash to create visual dashboards.
+- Interacting with the Bfabric LIMS using the Python library.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 
