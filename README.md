@@ -93,13 +93,18 @@ Key Features:
 
 ### How to get started
 
+You can install the `bfabric-web-app` module via pip:
+
+```sh
+pip install bfabric-web-apps
+```
+
 To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template app demonstrates:
 - Setting up a project with `bfabric-web-app`.
 - Using Dash to create visual dashboards.
 - Interacting with the Bfabric LIMS using the Python library.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ### Built With
 
