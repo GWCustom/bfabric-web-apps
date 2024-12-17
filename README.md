@@ -42,7 +42,7 @@
     <a href="https://pypi.org/project/bfabric-web-apps/"><strong>Explore the documentation »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/GWCustom/bfabric-web-apps">View Demo</a>
+    <a href="https://github.com/GWCustom/bfabric-web-app-template">View Demo</a>
     ·
     <a href="https://github.com/GWCustom/bfabric-web-apps/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
@@ -160,7 +160,7 @@ Bfabric Web Apps provide a user-friendly interface for managing and validating s
 3. **Error Alerts**:
    - Notify users of potential data inconsistencies during data import or export.
 
-_For detailed examples and usage guides, refer to the [Documentation](https://github.com/GWCustom/bfabric-web-apps/docs)._
+_For detailed examples and usage guides, refer to the [Documentation](https://pypi.org/project/bfabric-web-apps/)._
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
