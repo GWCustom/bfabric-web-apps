@@ -82,7 +82,6 @@ class BfabricInterface( Bfabric ):
                 userWsPassword = userinfo['userWsPassword'],
                 jobId = userinfo['jobId']
             )
-            print("token to date", token_data)
 
             return json.dumps(token_data)
         

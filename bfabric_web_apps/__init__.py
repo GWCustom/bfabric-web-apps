@@ -10,9 +10,11 @@ from .layouts.layouts import get_static_layout
 # Export app initialization utilities
 from .utils.app_init import create_app
 from .utils.app_config import load_config
+from .utils.get_logger import get_logger
+from .utils.get_power_user_wrapper import get_power_user_wrapper
 
 # Export callbacks
-from .utils.callbacks import display_page_generic, submit_bug_report
+from .utils.callbacks import process_url_and_token, submit_bug_report
 
 # Define __all__ for controlled imports
 __all__ = [
@@ -22,6 +24,8 @@ __all__ = [
     "get_static_layout",
     "create_app",
     "load_config",
-    "display_page_generic",
-    "submit_bug_report"
+    "process_url_and_token",
+    "submit_bug_report",
+    'get_logger',
+    'get_power_user_wrapper'
 ]

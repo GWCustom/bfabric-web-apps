@@ -1,12 +1,11 @@
 from dash import Input, Output, State, html, dcc
 from bfabric_web_apps.objects.BfabricInterface import BfabricInterface
-from . import components
 import json
 import dash_bootstrap_components as dbc
 from bfabric_web_apps.objects.Logger import Logger
 from datetime import datetime as dt
 
-def display_page_generic(url_params):
+def process_url_and_token(url_params):
     """
     Processes URL parameters to extract the token, validates it, and retrieves the corresponding data.
 
@@ -21,20 +20,19 @@ def display_page_generic(url_params):
     base_title = " "
 
     if not url_params:
-        return None, None, None, components.no_auth, base_title, None
+        return None, None, None, base_title, None
 
     token = "".join(url_params.split('token=')[1:])
-    print("display_page generic", token)
     bfabric_interface = BfabricInterface()
     tdata_raw = bfabric_interface.token_to_data(token)
 
     if tdata_raw:
         if tdata_raw == "EXPIRED":
-            return None, None, None, components.expired, base_title, None
+            return None, None, None, base_title, None
         else:
             tdata = json.loads(tdata_raw)
     else:
-        return None, None, None, components.no_auth, base_title, None
+        return None, None, None, base_title, None
 
     if tdata:
         entity_data_json = bfabric_interface.entity_data(tdata)
@@ -45,9 +43,8 @@ def display_page_generic(url_params):
         ) if tdata else "Bfabric App Interface"
 
         if not entity_data:
-            return token, tdata, None, components.no_entity, page_title, None
+            return token, tdata, None, page_title, None
         else:
-            print("entity_data", entity_data)
             session_details = [
             html.P([
                 html.B("Entity Name: "), entity_data['name'],
@@ -65,9 +62,9 @@ def display_page_generic(url_params):
                 html.B("Current Time: "), str(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
             ])
         ]
-            return token, tdata, entity_data, components.auth, page_title, session_details
+            return token, tdata, entity_data, page_title, session_details
     else:
-        return None, None, None, components.no_auth, base_title, None
+        return None, None, None, base_title, None
 
 
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
