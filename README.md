@@ -124,7 +124,7 @@ For more details, visit the [B-Fabric official website](https://fgcz-bfabric.uzh
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-## What Is B-FabricPy?
+## What Is BfabricPy?
 
 BfabricPy is a Python library that provides a programmatic interface to interact with the [Bfabric SOAP WebService](https://fgcz-bfabric.uzh.ch/wiki/tiki-index.php?page=Webservices). It allows developers to integrate B-Fabric functionalities into custom Python applications. This library simplifies tasks like querying samples, uploading results, and interacting with the LIMS programmatically.
 
