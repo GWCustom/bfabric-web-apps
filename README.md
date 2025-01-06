@@ -169,8 +169,6 @@ Distributed under the MIT License. See `LICENSE` for more details.
 
 GWC GmbH - [GitHub](https://github.com/GWCustom) - [LinkedIn](https://www.linkedin.com/company/gwc-gmbh/posts/?feedView=all)
 
-Project Repository: [https://github.com/GWCustom/bfabric-web-apps](https://github.com/GWCustom/bfabric-web-apps)
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
