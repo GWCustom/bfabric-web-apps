@@ -32,10 +32,10 @@
     <img src="logo.png" alt="Logo" width="80" height="50.6">
   </a>
 
-<h3 align="center">Bfabric Web Apps</h3>
+<h3 align="center">B-Fabric Web Apps</h3>
 
   <p align="center">
-    A web-based platform for developing and integrating satellite applications around the Bfabric Laboratory Information Management System (LIMS).
+    A web-based platform for developing and integrating satellite applications around the B-Fabric Laboratory Information Management System (LIMS).
     <br />
     <a href="https://pypi.org/project/bfabric-web-apps/"><strong>Explore the documentation »</strong></a>
     <br />
@@ -61,10 +61,10 @@
       </ul>
     </li>
     <li>
-      <a href="#what-is-bfabric">What Is Bfabric?</a>
+      <a href="#what-is-bfabric">What Is B-Fabric?</a>
     </li>
     <li>
-      <a href="#what-is-bfabricpy">What Is BfabricPy?</a>
+      <a href="#what-is-bfabricpy">What Is B-FabricPy?</a>
     </li>
     <li>
       <a href="#what-is-dash">What Is Dash?</a>
@@ -82,10 +82,10 @@
 
 ## About The Project
 
-The `bfabric-web-app` is a Python library published on PyPI, designed to simplify the creation of web applications that interact with Bfabric. It abstracts much of the complexity involved in connecting with the Bfabric API, enabling developers to focus on building custom functionality. Bfabric Web Apps are modular satellite applications designed to extend the functionality of the Bfabric Laboratory Information Management System (LIMS). These web apps facilitate seamless integration, data visualization, and advanced functionalities for managing scientific experiments and data.
+The `bfabric-web-app` is a Python library published on PyPI, designed to simplify the creation of web applications that interact with B-Fabric. It abstracts much of the complexity involved in connecting with the B-Fabric API, enabling developers to focus on building custom functionality. B-Fabric Web Apps are modular satellite applications designed to extend the functionality of the B-Fabric Laboratory Information Management System (LIMS). These web apps facilitate seamless integration, data visualization, and advanced functionalities for managing scientific experiments and data.
 
 Key Features:
-- **Dynamic Integration**: Build applications that integrate directly with Bfabric via its API.
+- **Dynamic Integration**: Build applications that integrate directly with B-Fabric via its API.
 - **Data Validation**: Ensure high data integrity through advanced error-checking mechanisms.
 - **Custom Dashboards**: Create custom dashboards for visualizing and managing data.
 - **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
@@ -102,7 +102,7 @@ pip install bfabric-web-apps
 To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template app demonstrates:
 - Setting up a project with `bfabric-web-app`.
 - Using Dash to create visual dashboards.
-- Interacting with the Bfabric LIMS using the Python library.
+- Interacting with the B-Fabric LIMS using the Python library.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -115,18 +115,18 @@ To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## What Is Bfabric?
+## What Is B-Fabric?
 
-Bfabric is a Laboratory Information Management System (LIMS) used for managing scientific experiments and their associated data in laboratories. It provides a platform for tracking samples, analyzing results, and organizing workflows efficiently. 
+B-Fabric is a Laboratory Information Management System (LIMS) used for managing scientific experiments and their associated data in laboratories. It provides a platform for tracking samples, analyzing results, and organizing workflows efficiently. 
 
-For more details, visit the [Bfabric official website](https://fgcz-bfabric.uzh.ch/bfabric/).
+For more details, visit the [B-Fabric official website](https://fgcz-bfabric.uzh.ch/bfabric/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-## What Is BfabricPy?
+## What Is B-FabricPy?
 
-BfabricPy is a Python library that provides a programmatic interface to interact with the [Bfabric SOAP WebService](https://fgcz-bfabric.uzh.ch/wiki/tiki-index.php?page=Webservices). It allows developers to integrate Bfabric functionalities into custom Python applications. This library simplifies tasks like querying samples, uploading results, and interacting with the LIMS programmatically.
+BfabricPy is a Python library that provides a programmatic interface to interact with the [Bfabric SOAP WebService](https://fgcz-bfabric.uzh.ch/wiki/tiki-index.php?page=Webservices). It allows developers to integrate B-Fabric functionalities into custom Python applications. This library simplifies tasks like querying samples, uploading results, and interacting with the LIMS programmatically.
 
 BfabricPy is a dependency of this project and is fetched directly from its GitHub repository during installation.
 
@@ -148,7 +148,7 @@ For more details, visit the [Dash official documentation](https://dash.plotly.co
 Bfabric Web Apps provide a user-friendly interface for managing and validating scientific data. Here are some key use cases:
 
 1. **Data Upload and Validation**:
-   - Ensure data integrity before uploading to Bfabric.
+   - Ensure data integrity before uploading to B-Fabric.
    - Flag missing or incorrect data fields with detailed user warnings.
 
 2. **Custom Dashboards**:
