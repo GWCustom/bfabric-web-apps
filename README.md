@@ -50,33 +50,21 @@
 
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#how-to-get-started">How to Get Started</a></li>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#what-is-bfabric">What Is B-Fabric?</a>
-    </li>
-    <li>
-      <a href="#what-is-bfabricpy">What Is B-FabricPy?</a>
-    </li>
-    <li>
-      <a href="#what-is-dash">What Is Dash?</a>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+## Table of Contents
+
+- [About The Project](#about-the-project)
+  - [How to Get Started](#how-to-get-started)
+  - [Built With](#built-with)
+- [What Is B-Fabric?](#what-is-bfabric)
+- [What Is B-FabricPy?](#what-is-bfabricpy)
+- [What Is Dash?](#what-is-dash)
+- [Usage](#usage)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgments](#acknowledgments)
+
 
 
 
