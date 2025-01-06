@@ -95,22 +95,32 @@ To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app
 After installation, you can create a simple Dash-based web application using `bfabric-web-app` like this:
 
 ```python
-from bfabric_web_app import BfabricApp
-import dash
+from bfabric_web_apps import load_config, get_static_layout
 from dash import html
+from bfabric_web_apps import BfabricApp
 
-# Initialize the B-Fabric app
+# Initialize the Dash application with bfabric-web-apps
 app = BfabricApp(__name__)
 
-# Define layout
-app.layout = html.Div([
-    html.H1("Welcome to B-Fabric Web App"),
-    html.P("This is a simple example demonstrating the usage of bfabric-web-app.")
-])
+# Load your configuration (if needed)
+config = load_config("./PARAMS.py")
 
-# Run the application
+# Define any layout you like
+app.layout = get_static_layout(
+    title="My B-Fabric App",  # Title shown in the browser tab
+    app_specific_layout=html.Div([
+        html.H1("Welcome to My B-Fabric App"),
+        html.P("This is a quickstart example.")
+    ]),
+    documentation_content=[  # Optionally define some documentation content
+        html.H2("Documentation"),
+        html.P("Describe your app's features here.")
+    ]
+)
+
+# Run your application
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=config["PORT"], host=config["HOST"])
 ```
 
 This example initializes a basic web application that integrates with B-Fabric, displaying a simple dashboard.
