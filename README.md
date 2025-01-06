@@ -86,7 +86,6 @@ The `bfabric-web-app` is a Python library published on PyPI, designed to simplif
 
 Key Features:
 - **Dynamic Integration**: Build applications that integrate directly with B-Fabric via its API.
-- **Data Validation**: Ensure high data integrity through advanced error-checking mechanisms.
 - **Custom Dashboards**: Create custom dashboards for visualizing and managing data.
 - **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
 
@@ -139,25 +138,6 @@ For more details, visit the [bfabricPy official Git repository](https://github.c
 Dash is a Python framework for building interactive web applications. It combines the power of Plotly for data visualization and Flask for backend support, making it ideal for scientific and analytical dashboards.
 
 For more details, visit the [Dash official documentation](https://dash.plotly.com/).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-## Usage
-
-Bfabric Web Apps provide a user-friendly interface for managing and validating scientific data. Here are some key use cases:
-
-1. **Data Upload and Validation**:
-   - Ensure data integrity before uploading to B-Fabric.
-   - Flag missing or incorrect data fields with detailed user warnings.
-
-2. **Custom Dashboards**:
-   - Generate dynamic dashboards for data visualization and analysis.
-
-3. **Error Alerts**:
-   - Notify users of potential data inconsistencies during data import or export.
-
-_For detailed examples and usage guides, refer to the [Documentation](https://pypi.org/project/bfabric-web-apps/)._
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
