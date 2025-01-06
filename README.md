@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
 ```
 
-This example initializes a basic web application that integrates with B-Fabric, displaying a simple dashboard.
+This example sets up a minimal web application using bfabric-web-apps, providing a structured layout with configurable content.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
