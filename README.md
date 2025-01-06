@@ -95,32 +95,41 @@ To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app
 After installation, you can create a simple Dash-based web application using `bfabric-web-app` like this:
 
 ```python
-from bfabric_web_apps import load_config, get_static_layout
+from bfabric_web_apps import create_app, load_config, get_static_layout
 from dash import html
-from bfabric_web_apps import BfabricApp
 
-# Initialize the Dash application with bfabric-web-apps
-app = BfabricApp(__name__)
+# Initialize the Dash application
+app = create_app()
 
-# Load your configuration (if needed)
+# Load configuration (if needed)
 config = load_config("./PARAMS.py")
 
-# Define any layout you like
+# Define application title
+app_title = "My B-Fabric App"
+
+# Define the main layout content
+app_specific_layout = html.Div([
+    html.H1("Welcome to My B-Fabric App"),
+    html.P("This is a quickstart example using bfabric-web-apps.")
+])
+
+# Optionally define documentation content
+documentation_content = [
+    html.H2("Documentation"),
+    html.P("Describe your app's features here.")
+]
+
+# Set up the application layout
 app.layout = get_static_layout(
-    title="My B-Fabric App",  # Title shown in the browser tab
-    app_specific_layout=html.Div([
-        html.H1("Welcome to My B-Fabric App"),
-        html.P("This is a quickstart example.")
-    ]),
-    documentation_content=[  # Optionally define some documentation content
-        html.H2("Documentation"),
-        html.P("Describe your app's features here.")
-    ]
+    app_title,  # Title shown in the browser tab
+    app_specific_layout,  # Main application content
+    documentation_content  # Documentation section
 )
 
-# Run your application
+# Run the application
 if __name__ == "__main__":
-    app.run_server(debug=True, port=config["PORT"], host=config["HOST"])
+    app.run_server(debug=False, port=config["PORT"], host=config["HOST"])
+
 ```
 
 This example initializes a basic web application that integrates with B-Fabric, displaying a simple dashboard.
