@@ -54,6 +54,7 @@
 
 - [About The Project](#about-the-project)
   - [Quickstart](#Quickstart)
+    - [Basic Usage Example](#Basic-Usage-Example)
   - [Built With](#built-with)
 - [What Is B-Fabric?](#what-is-bfabric)
 - [What Is B-FabricPy?](#what-is-bfabricpy)
@@ -76,8 +77,6 @@ Key Features:
 - **Custom Dashboards**: Create custom dashboards for visualizing and managing data.
 - **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
 
-
-### Quickstart
 
 ### Quickstart
 
