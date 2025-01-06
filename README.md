@@ -53,7 +53,7 @@
 ## Table of Contents
 
 - [About The Project](#about-the-project)
-  - [How to Get Started](#how-to-get-started)
+  - [Quickstart](#Quickstart)
   - [Built With](#built-with)
 - [What Is B-Fabric?](#what-is-bfabric)
 - [What Is B-FabricPy?](#what-is-bfabricpy)
@@ -77,7 +77,9 @@ Key Features:
 - **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
 
 
-### How to get started
+### Quickstart
+
+### Quickstart
 
 You can install the `bfabric-web-app` module via pip:
 
@@ -89,6 +91,31 @@ To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app
 - Setting up a project with `bfabric-web-app`.
 - Using Dash to create visual dashboards.
 - Interacting with the B-Fabric LIMS using the Python library.
+
+#### Basic Usage Example
+
+After installation, you can create a simple Dash-based web application using `bfabric-web-app` like this:
+
+```python
+from bfabric_web_app import BfabricApp
+import dash
+from dash import html
+
+# Initialize the B-Fabric app
+app = BfabricApp(__name__)
+
+# Define layout
+app.layout = html.Div([
+    html.H1("Welcome to B-Fabric Web App"),
+    html.P("This is a simple example demonstrating the usage of bfabric-web-app.")
+])
+
+# Run the application
+if __name__ == "__main__":
+    app.run_server(debug=True)
+```
+
+This example initializes a basic web application that integrates with B-Fabric, displaying a simple dashboard.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
