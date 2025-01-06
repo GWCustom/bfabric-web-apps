@@ -58,7 +58,6 @@
 - [What Is B-Fabric?](#what-is-bfabric)
 - [What Is B-FabricPy?](#what-is-bfabricpy)
 - [What Is Dash?](#what-is-dash)
-- [Usage](#usage)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
