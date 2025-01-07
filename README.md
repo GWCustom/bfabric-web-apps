@@ -148,67 +148,48 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 ### Project Authors
 Meet the developers behind `bfabric-web-app`:
 
-<div style="display: flex; justify-content: center; gap: 3rem; align-items: center;">
+<div style="display: flex; justify-content: center; gap: 3rem; margin-top: 1rem;">
   <!-- Griffin -->
   <div style="text-align: center;">
-    <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/" style="text-decoration: none;">
+    <a 
+      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
+      style="text-decoration: none; color: white;"
+    >
       <img
         src="assets/griffin.jpeg"
         alt="Griffin White"
         style="
           width: 120px; 
           height: 120px; 
-          border-radius: 50%; 
+          border-radius: 50%;
           object-fit: cover;
-          display: block;
-          margin: 0 auto;
         "
       />
-    </a>
-    <a 
-      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
-      style="
-        text-decoration: none; 
-        color: white; 
-        font-size: 1.2rem; 
-        display: block;
-        margin-top: 0.5rem;
-      "
-    >
-      <b>Griffin White</b>
+      <h3 style="margin-top: 0.5rem;">Griffin White</h3>
     </a>
   </div>
 
   <!-- Marc -->
   <div style="text-align: center;">
-    <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/" style="text-decoration: none;">
+    <a 
+      href="https://www.linkedin.com/in/marc-zuber-1161b3305/"
+      style="text-decoration: none; color: white;"
+    >
       <img
         src="assets/marc.jpeg"
         alt="Marc Zuber"
         style="
-          width: 120px; 
-          height: 120px; 
-          border-radius: 50%; 
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
           object-fit: cover;
-          display: block;
-          margin: 0 auto;
         "
       />
-    </a>
-    <a 
-      href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
-      style="
-        text-decoration: none; 
-        color: white; 
-        font-size: 1.2rem; 
-        display: block;
-        margin-top: 0.5rem;
-      "
-    >
-      <b>Marc Zuber</b>
+      <h3 style="margin-top: 0.5rem;">Marc Zuber</h3>
     </a>
   </div>
 </div>
+
 
 ## What Is B-Fabric?
 
