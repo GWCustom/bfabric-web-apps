@@ -165,7 +165,7 @@ Meet the developers behind `bfabric-web-app`:
     <h3 style="margin: 0.5rem 0 0 0;">
       <a 
         href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
-        style="text-decoration: none; color: #FFFFFF;"
+        style="text-decoration: none; color: #white;"
       >
         Griffin White
       </a>
@@ -188,7 +188,7 @@ Meet the developers behind `bfabric-web-app`:
     <h3 style="margin: 0.5rem 0 0 0;">
       <a 
         href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
-        style="text-decoration: none; color: #FFFFFF;"
+        style="text-decoration: none; color: #white;"
       >
         Marc Zuber
       </a>
