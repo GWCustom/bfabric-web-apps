@@ -200,12 +200,12 @@ Don't forget to give the project a star! Thanks again!
    ```sh
    git push origin feature/YourFeature
    ```
-5. Submit a pull request.
+5. Open a Pull Request.
 
 ### Top contributors:
 
-<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
+<a href="https://github.com/GWCustom/bfabric-web-app-template/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=GWCustom/bfabric-web-app-template" alt="Top contributors" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
