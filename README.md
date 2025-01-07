@@ -148,13 +148,10 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 ### Project Authors
 Meet the developers behind `bfabric-web-app`:
 
-<div style="display: flex; justify-content: center; gap: 3rem;">
+<div style="display: flex; justify-content: center; gap: 3rem; align-items: center;">
   <!-- Griffin -->
   <div style="text-align: center;">
-    <a 
-      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
-      style="text-decoration: none; color: white;"
-    >
+    <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/" style="text-decoration: none;">
       <img
         src="assets/griffin.jpeg"
         alt="Griffin White"
@@ -163,18 +160,28 @@ Meet the developers behind `bfabric-web-app`:
           height: 120px; 
           border-radius: 50%; 
           object-fit: cover;
+          display: block;
+          margin: 0 auto;
         "
       />
-      <h3 style="margin: 0.5rem 0 0 0;">Griffin White</h3>
+    </a>
+    <a 
+      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
+      style="
+        text-decoration: none; 
+        color: white; 
+        font-size: 1.2rem; 
+        display: block;
+        margin-top: 0.5rem;
+      "
+    >
+      <b>Griffin White</b>
     </a>
   </div>
 
   <!-- Marc -->
   <div style="text-align: center;">
-    <a 
-      href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
-      style="text-decoration: none; color: white;"
-    >
+    <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/" style="text-decoration: none;">
       <img
         src="assets/marc.jpeg"
         alt="Marc Zuber"
@@ -183,9 +190,22 @@ Meet the developers behind `bfabric-web-app`:
           height: 120px; 
           border-radius: 50%; 
           object-fit: cover;
+          display: block;
+          margin: 0 auto;
         "
       />
-      <h3 style="margin: 0.5rem 0 0 0;">Marc Zuber</h3>
+    </a>
+    <a 
+      href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
+      style="
+        text-decoration: none; 
+        color: white; 
+        font-size: 1.2rem; 
+        display: block;
+        margin-top: 0.5rem;
+      "
+    >
+      <b>Marc Zuber</b>
     </a>
   </div>
 </div>
