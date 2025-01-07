@@ -182,7 +182,10 @@ See the [open issues](https://github.com/GWCustom/bfabric-web-apps/issues) for a
 
 ## Contributing
 
-Contributions are welcome and encouraged! Here's how you can help:
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
 1. Fork the repository.
 2. Create a new branch:
@@ -198,6 +201,12 @@ Contributions are welcome and encouraged! Here's how you can help:
    git push origin feature/YourFeature
    ```
 5. Submit a pull request.
+
+### Top contributors:
+
+<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
+</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
