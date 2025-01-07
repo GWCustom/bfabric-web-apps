@@ -76,24 +76,6 @@ Key Features:
 - **Custom Dashboards**: Create custom dashboards for visualizing and managing data.
 - **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
 
-### Project Authors
-Meet the developers behind `bfabric-web-app`:
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="assets/griffin.jpg" width="100px;" alt="Griffin White"/><br />
-      <b>Griffin White</b><br />
-      <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/">LinkedIn</a>
-    </td>
-    <td align="center">
-      <img src="assets/marc.jpg" width="100px;" alt="Marc Zuber"/><br />
-      <b>Marc Zuber</b><br />
-      <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/">LinkedIn</a>
-    </td>
-  </tr>
-</table>
-
 ### Quickstart
 
 You can install the `bfabric-web-app` module via pip:
@@ -159,6 +141,26 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 * [![Dash][Dash.js]][Dash-url]
 * [![Plotly][Plotly.js]][Plotly-url]
 * [![Flask][Flask.js]][Flask-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Project Authors
+Meet the developers behind `bfabric-web-app`:
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/griffin.jpg" width="100px;" alt="Griffin White"/><br />
+      <b>Griffin White</b><br />
+      <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/">LinkedIn</a>
+    </td>
+    <td align="center">
+      <img src="assets/marc.jpg" width="100px;" alt="Marc Zuber"/><br />
+      <b>Marc Zuber</b><br />
+      <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/">LinkedIn</a>
+    </td>
+  </tr>
+</table>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
