@@ -151,12 +151,12 @@ Meet the developers behind `bfabric-web-app`:
 <table>
   <tr>
     <td align="center">
-      <img src="assets/griffin.jpg" width="100px;" alt="Griffin White"/><br />
+      <img src="assets/griffin.jpeg" width="100px;" alt="Griffin White"/><br />
       <b>Griffin White</b><br />
       <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/">LinkedIn</a>
     </td>
     <td align="center">
-      <img src="assets/marc.jpg" width="100px;" alt="Marc Zuber"/><br />
+      <img src="assets/marc.jpeg" width="100px;" alt="Marc Zuber"/><br />
       <b>Marc Zuber</b><br />
       <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/">LinkedIn</a>
     </td>
