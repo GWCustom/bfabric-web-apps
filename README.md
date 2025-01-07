@@ -196,7 +196,6 @@ Meet the developers behind `bfabric-web-app`:
   </div>
 </div>
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## What Is B-Fabric?
 
