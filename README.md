@@ -148,13 +148,7 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 ### Project Authors
 Meet the developers behind `bfabric-web-app`:
 
-<div style="
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: 2rem; 
-  margin-top: 1rem;
-">
+<div style="display: flex; justify-content: center; align-items: center; gap: 2rem; margin-top: 1rem;">
   <!-- Author 1 -->
   <div style="text-align: center;">
     <img 
@@ -164,14 +158,14 @@ Meet the developers behind `bfabric-web-app`:
         width: 120px; 
         height: 120px; 
         object-fit: cover; 
-        border-radius: 50%;
-        border: 3px solid white;
+        border-radius: 50%; 
+        border: none;
       " 
     />
     <h3 style="margin: 0.5rem 0 0 0;">
       <a 
         href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
-        style="text-decoration: none; color: white;"
+        style="text-decoration: none; color: #FFFFFF;"
       >
         Griffin White
       </a>
@@ -187,20 +181,21 @@ Meet the developers behind `bfabric-web-app`:
         width: 120px; 
         height: 120px; 
         object-fit: cover; 
-        border-radius: 50%;
-        border: 3px solid white;
+        border-radius: 50%; 
+        border: none;
       " 
     />
     <h3 style="margin: 0.5rem 0 0 0;">
       <a 
         href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
-        style="text-decoration: none; color: white;"
+        style="text-decoration: none; color: #FFFFFF;"
       >
         Marc Zuber
       </a>
     </h3>
   </div>
 </div>
+
 
 ## What Is B-Fabric?
 
