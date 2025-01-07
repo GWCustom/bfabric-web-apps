@@ -148,39 +148,51 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 ### Project Authors
 Meet the developers behind `bfabric-web-app`:
 
-<div align="center" style="display: flex; justify-content: center; gap: 5rem; align-items: center; margin-top: 1.5rem;">
+<div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1rem;">
   <!-- Author 1 -->
   <div style="text-align: center;">
     <img 
       src="assets/griffin.jpeg" 
-      width="120px" 
-      style="border-radius: 50%; object-fit: cover; aspect-ratio: 1/1; border: 3px solid #ddd;" 
-      alt="Griffin White"
+      alt="Griffin White" 
+      style="
+        width: 120px; 
+        height: 120px; 
+        object-fit: cover; 
+        border-radius: 50%; 
+        border: none;
+      " 
     />
-    <br />
-    <a 
-      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
-      style="text-decoration: none; color: black; font-size: 1.2rem; font-weight: bold; display: block; margin-top: 0.5rem;"
-    >
-      Griffin White
-    </a>
+    <h3 style="margin: 0.5rem 0 0 0;">
+      <a 
+        href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
+        style="text-decoration: none; color: #0077B5;"
+      >
+        Griffin White
+      </a>
+    </h3>
   </div>
 
   <!-- Author 2 -->
   <div style="text-align: center;">
     <img 
       src="assets/marc.jpeg" 
-      width="120px" 
-      style="border-radius: 50%; object-fit: cover; aspect-ratio: 1/1; border: 3px solid #ddd;" 
-      alt="Marc Zuber"
+      alt="Marc Zuber" 
+      style="
+        width: 120px; 
+        height: 120px; 
+        object-fit: cover; 
+        border-radius: 50%; 
+        border: none;
+      " 
     />
-    <br />
-    <a 
-      href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
-      style="text-decoration: none; color: black; font-size: 1.2rem; font-weight: bold; display: block; margin-top: 0.5rem;"
-    >
-      Marc Zuber
-    </a>
+    <h3 style="margin: 0.5rem 0 0 0;">
+      <a 
+        href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
+        style="text-decoration: none; color: #0077B5;"
+      >
+        Marc Zuber
+      </a>
+    </h3>
   </div>
 </div>
 
