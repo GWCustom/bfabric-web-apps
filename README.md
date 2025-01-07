@@ -83,7 +83,7 @@ Meet the developers behind `bfabric-web-app`:
   <tr>
     <td align="center">
       <img src="assets/griffin.jpg" width="100px;" alt="Griffin White"/><br />
-      <b>Your Name</b><br />
+      <b>Griffin White</b><br />
       <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/">LinkedIn</a>
     </td>
     <td align="center">
