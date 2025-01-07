@@ -151,22 +151,21 @@ Meet the developers behind `bfabric-web-app`:
 <div align="center">
   <table>
     <tr>
-      <td align="center">
-        <img src="assets/griffin.jpeg" width="100px" style="border-radius: 50%;" alt="Griffin White"/><br />
-        <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/" style="text-decoration: none;">
-          <b>Griffin White</b>
+      <td align="center" width="150px">
+        <img src="assets/griffin.jpeg" width="120" height="120" style="border-radius: 50%; object-fit: cover; border: 3px solid #ddd;" alt="Griffin White"/><br /><br />
+        <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/" style="text-decoration: none; font-size: 16px; font-weight: bold; color: #0077B5;">
+          Griffin White
         </a>
       </td>
-      <td align="center">
-        <img src="assets/marc.jpeg" width="100px" style="border-radius: 50%;" alt="Marc Zuber"/><br />
-        <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/" style="text-decoration: none;">
-          <b>Marc Zuber</b>
+      <td align="center" width="150px">
+        <img src="assets/marc.jpeg" width="120" height="120" style="border-radius: 50%; object-fit: cover; border: 3px solid #ddd;" alt="Marc Zuber"/><br /><br />
+        <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/" style="text-decoration: none; font-size: 16px; font-weight: bold; color: #0077B5;">
+          Marc Zuber
         </a>
       </td>
     </tr>
   </table>
 </div>
-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
