@@ -55,6 +55,7 @@
 - [About The Project](#about-the-project)
   - [Quickstart](#Quickstart)
   - [Built With](#built-with)
+  - [Project Authors](#project-authors)
 - [What Is B-Fabric?](#what-is-bfabric)
 - [What Is B-FabricPy?](#what-is-bfabricpy)
 - [What Is Dash?](#what-is-dash)
