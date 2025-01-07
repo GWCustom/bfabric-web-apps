@@ -148,20 +148,25 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 ### Project Authors
 Meet the developers behind `bfabric-web-app`:
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="assets/griffin.jpeg" width="100px;" alt="Griffin White"/><br />
-      <b>Griffin White</b><br />
-      <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/">LinkedIn</a>
-    </td>
-    <td align="center">
-      <img src="assets/marc.jpeg" width="100px;" alt="Marc Zuber"/><br />
-      <b>Marc Zuber</b><br />
-      <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/">LinkedIn</a>
-    </td>
-  </tr>
-</table>
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="assets/griffin.jpeg" width="100px" style="border-radius: 50%;" alt="Griffin White"/><br />
+        <a href="https://www.linkedin.com/in/griffin-white-3aa20918a/" style="text-decoration: none;">
+          <b>Griffin White</b>
+        </a>
+      </td>
+      <td align="center">
+        <img src="assets/marc.jpeg" width="100px" style="border-radius: 50%;" alt="Marc Zuber"/><br />
+        <a href="https://www.linkedin.com/in/marc-zuber-1161b3305/" style="text-decoration: none;">
+          <b>Marc Zuber</b>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
