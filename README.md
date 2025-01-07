@@ -148,6 +148,43 @@ This example sets up a minimal web application using bfabric-web-apps, providing
 ### Project Authors
 Meet the developers behind `bfabric-web-app`:
 
+<div align="center" style="display: flex; justify-content: center; gap: 3rem; margin-top: 1rem;">
+  <!-- Author 1 -->
+  <div style="text-align: center;">
+    <img 
+      src="assets/griffin.jpeg" 
+      width="120px" 
+      style="border-radius: 50%; border: none;" 
+      alt="Griffin White"
+    />
+    <br />
+    <a 
+      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
+      style="text-decoration: none; color: #0077B5;"
+    >
+      <h3 style="margin: 0.5rem 0 0 0;">Griffin White</h3>
+    </a>
+  </div>
+
+  <!-- Author 2 -->
+  <div style="text-align: center;">
+    <img 
+      src="assets/marc.jpeg" 
+      width="120px" 
+      style="border-radius: 50%; border: none;" 
+      alt="Marc Zuber"
+    />
+    <br />
+    <a 
+      href="https://www.linkedin.com/in/marc-zuber-1161b3305/" 
+      style="text-decoration: none; color: #0077B5;"
+    >
+      <h3 style="margin: 0.5rem 0 0 0;">Marc Zuber</h3>
+    </a>
+  </div>
+</div>
+
+
 
 
 ## What Is B-Fabric?
