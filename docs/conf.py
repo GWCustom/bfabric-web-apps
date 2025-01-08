@@ -6,8 +6,8 @@ sys.path.insert(0, os.path.abspath(r"C:\Users\marc_\Documents\Git\bfabric-web-ap
 
 # -- Project information -----------------------------------------------------
 project = 'bfabric-web-apps'
-copyright = '2024, Marc Zuber'
-author = 'Marc Zuber'
+copyright = '2024, GWC GmbH'
+author = 'Griffin White & Marc Zuber'
 release = '20.12.2024'
 
 # -- General configuration ---------------------------------------------------
@@ -16,6 +16,7 @@ extensions = [
     'sphinx.ext.autodoc',  # For API documentation
     'sphinx.ext.napoleon', # For Google-style and NumPy-style docstrings
     'sphinx.ext.viewcode', # Add links to highlighted source code
+    'sphinx_copybutton',
 ]
 
 templates_path = ['_templates']
@@ -40,6 +41,7 @@ html_theme_options = {
 
 # Add static path for logos and additional static files
 html_static_path = ['_static']
+html_css_files = ['sidebar-nav.css']
 
 # Custom sidebar definition with "Quick Links"
 html_sidebars = {

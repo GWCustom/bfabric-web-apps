@@ -1,24 +1,56 @@
-# bfabric-web-apps Documentation
+# Bfabric-Web-Apps Documentation
 
-Welcome to the official documentation for **Bfabric-Web-Apps** – a Python library designed to streamline the development of satellite web applications for the B-Fabric Laboratory Information Management System (LIMS).
-
-## Overview
-
-**bfabric-web-apps** provides developers with a powerful yet user-friendly interface for building web applications that interact seamlessly with B-Fabric. By abstracting the complexities of API interactions and integrating with modern web technologies like Dash and Flask, this library allows you to focus on delivering custom solutions for scientific data management.
-
-### Key Features:
-- **Simplified B-Fabric Integration**: Directly connect to B-Fabric via its API with minimal setup.
-- **Custom Dashboards**: Utilize Dash and Plotly to build interactive, dynamic dashboards for data visualization.
-- **Data Validation and Management**: Ensure data accuracy before uploading and handle errors efficiently.
-- **Modular and Extensible**: Start with a template and extend functionality to suit your use case.
-
-Whether you’re building tools for scientific workflows, dashboards for visualization, or applications for managing data, **bfabric-web-apps** equips you with the tools to deliver high-quality solutions quickly.
+**bfabric-web-apps** is a Python library that streamlines the creation of **satellite web applications** for the **B-Fabric Laboratory Information Management System (LIMS)**. Built around a **template-based approach**, it provides both a **ready-to-use project structure** and a set of **powerful utilities** for integrating with the B-Fabric API, handling authentication, logging, and more.
 
 ---
 
-## What Is Bfabric?
+## Overview
 
-Bfabric is a Laboratory Information Management System (LIMS) developed for managing scientific experiments and their associated data. It offers a robust platform to track samples, analyze results, and organize workflows efficiently for researchers, laboratories, and core facilities.
+Designed to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric-web-apps** abstracts away complex B-Fabric API calls, allowing you to focus on creating intuitive, data-driven user interfaces for scientific data management. By combining B-Fabric’s robust backend with Dash’s interactive capabilities, you can rapidly build **custom dashboards** and **management tools** without reinventing the wheel.
+
+### Key Features
+
+- **Simplified B-Fabric Integration**  
+  - **Token Data Management** – Securely handle **authentication tokens** for API access.  
+  - **Entity Data Handling** – Retrieve, modify, and update **B-Fabric entities** dynamically.  
+  - **Authentication** – Built-in **token-based authentication** for a seamless user experience.  
+  - **Logger** – Integrated logging for **API calls, application events**, and errors.  
+  - **Dash Resource Management** – Efficiently handle stored data to reduce unnecessary API calls.
+
+- **Custom Dashboards**  
+  Create **interactive and dynamic** dashboards using Dash and Plotly to visualize and manage your data.
+
+- **Layouts**  
+  Utilize **predefined Dash layouts** for structured, consistent UI design that’s easy to extend.
+
+---
+
+## What Is This Library?
+
+**bfabric-web-apps** is your **foundation** for building web applications that **interface directly** with B-Fabric. Its core objectives include:
+
+- **Automating repetitive tasks** like token handling and entity lookups.  
+- **Simplifying** the creation of dashboards with **Dash** and **Plotly** for data visualization.
+
+To see the **full source code** or to **contribute**, visit the main GitHub repository:  
+[**bfabric-web-apps**](https://github.com/GWCustom/bfabric-web-apps)
+
+
+### Get Started Quickly
+
+Developers can hit the ground running with the **[bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template)**, a **ready-made** project that demonstrates how to configure and deploy a `bfabric-web-apps` application end-to-end. It includes:
+
+- **Preconfigured layout** using Dash and Bootstrap.  
+- **Authentication flow** for B-Fabric.  
+- **Examples** of logging, API interaction, and entity handling.
+
+By combining the **template** with the **bfabric-web-apps** library, you’ll have a **flexible**, **scalable** starting point for **building custom web apps** that tap into B-Fabric’s powerful capabilities.
+
+---
+
+## What Is B-Fabric?
+
+B-Fabric is a Laboratory Information Management System (LIMS) developed for managing scientific experiments and their associated data. It offers a robust platform to track samples, analyze results, and organize workflows efficiently for researchers, laboratories, and core facilities.
 
 For more information, visit the [Bfabric official website](https://fgcz-bfabric.uzh.ch/bfabric/).
 
@@ -42,29 +74,13 @@ For more details, refer to the [Dash official documentation](https://dash.plotly
 
 ---
 
-## What Is This Library?
-
-**bfabric-web-apps** is a Python library that simplifies the development of web applications around the B-Fabric system. It provides pre-built tools and functions to:
-- Connect to B-Fabric via its API.
-- Validate and process scientific data.
-- Build custom dashboards using Dash and Plotly.
-
-Developers can quickly get started by using the provided **[bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template)** repository, which demonstrates a complete example of how to set up a web application using the `bfabric-web-apps` library.
-
----
-
 ### Useful Links:
-- **bfabric-web-apps**: [bfabric-web-apps](https://github.com/GWCustom/bfabric-web-apps)
-- **Template App**: [bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template)
-- **BfabricPy**: [BfabricPy GitHub](https://github.com/fgcz/bfabricPy/tree/main)
-
----
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   installation
-   usage
-   _source/modules
+- **bfabric-web-apps**: [bfabric-web-apps](https://github.com/GWCustom/bfabric-web-apps)  
+- **Template App**: [bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template)  
+- **BfabricPy**: [BfabricPy GitHub](https://github.com/fgcz/bfabricPy/tree/main)  
+- **Dash Docs**: [Dash Documentation](https://dash.plotly.com/)  
+- **Dash Bootstrap Components Docs**: [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/)  
+- **BfabricPy Docs Page**: [BfabricPy Documentation](https://fgcz.github.io/bfabricPy/)  
+- **B-Fabric Website**: [Bfabric Official Website](https://www.bfabric.org/)  
+- **B-Fabric User Manual**: [Bfabric User Manual](https://www.bfabric.org/usermanual)  
 
