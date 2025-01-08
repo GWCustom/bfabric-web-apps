@@ -91,7 +91,7 @@ Key Features:
 You can install the `bfabric-web-app` module via pip:
 
 ```sh
-pip install bfabric-web-apps
+pip install bfabric_web_apps
 ```
 
 To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template app demonstrates:
@@ -119,7 +119,7 @@ app_title = "My B-Fabric App"
 # Define the main layout content
 app_specific_layout = html.Div([
     html.H1("Welcome to My B-Fabric App"),
-    html.P("This is a quickstart example using bfabric-web-apps.")
+    html.P("This is a quickstart example using bfabric_web_apps.")
 ])
 
 # Optionally define documentation content
@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
 ```
 
-This example sets up a minimal web application using bfabric-web-apps, providing a structured layout with configurable content.
+This example sets up a minimal web application using bfabric_web_apps, providing a structured layout with configurable content.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
