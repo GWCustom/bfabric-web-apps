@@ -213,7 +213,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more details.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/GWCustom/bfabric-web-apps/blob/main/LICENSE) for more details.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
