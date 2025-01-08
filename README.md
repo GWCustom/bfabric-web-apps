@@ -53,9 +53,9 @@
 ## Table of Contents
 
 - [About The Project](#about-the-project)
-  - [Quickstart](#Quickstart)
   - [Built With](#built-with)
-  - [Project Authors](#project-authors)
+- [Quickstart](#Quickstart)
+  - [Basic Usage Example](#Basic-Usage-Example)
 - [What Is B-Fabric?](#what-is-bfabric)
 - [What Is B-FabricPy?](#what-is-bfabricpy)
 - [What Is Dash?](#what-is-dash)
@@ -77,7 +77,16 @@ Key Features:
 - **Custom Dashboards**: Create custom dashboards for visualizing and managing data.
 - **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
 
-### Quickstart
+### Built With
+
+* [![Python][Python.js]][Python-url]
+* [![Dash][Dash.js]][Dash-url]
+* [![Plotly][Plotly.js]][Plotly-url]
+* [![Flask][Flask.js]][Flask-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Quickstart
 
 You can install the `bfabric-web-app` module via pip:
 
@@ -135,61 +144,6 @@ if __name__ == "__main__":
 This example sets up a minimal web application using bfabric-web-apps, providing a structured layout with configurable content.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Built With
-
-* [![Python][Python.js]][Python-url]
-* [![Dash][Dash.js]][Dash-url]
-* [![Plotly][Plotly.js]][Plotly-url]
-* [![Flask][Flask.js]][Flask-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Project Authors
-Meet the developers behind `bfabric-web-app`:
-
-<div style="display: flex; justify-content: center; gap: 3rem; margin-top: 1rem;">
-  <!-- Griffin -->
-  <div style="text-align: center;">
-    <a 
-      href="https://www.linkedin.com/in/griffin-white-3aa20918a/" 
-      style="text-decoration: none; color: white;"
-    >
-      <img
-        src="assets/griffin.jpeg"
-        alt="Griffin White"
-        style="
-          width: 120px; 
-          height: 120px; 
-          border-radius: 50%;
-          object-fit: cover;
-        "
-      />
-      <h3 style="margin-top: 0.5rem;">Griffin White</h3>
-    </a>
-  </div>
-
-  <!-- Marc -->
-  <div style="text-align: center;">
-    <a 
-      href="https://www.linkedin.com/in/marc-zuber-1161b3305/"
-      style="text-decoration: none; color: white;"
-    >
-      <img
-        src="assets/marc.jpeg"
-        alt="Marc Zuber"
-        style="
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          object-fit: cover;
-        "
-      />
-      <h3 style="margin-top: 0.5rem;">Marc Zuber</h3>
-    </a>
-  </div>
-</div>
-
 
 ## What Is B-Fabric?
 
