@@ -70,7 +70,7 @@
 
 ## About The Project
 
-The `bfabric-web-app` is a Python library published on PyPI, designed to simplify the creation of web applications that interact with B-Fabric. It abstracts much of the complexity involved in connecting with the B-Fabric API, enabling developers to focus on building custom functionality. B-Fabric Web Apps are modular satellite applications designed to extend the functionality of the B-Fabric Laboratory Information Management System (LIMS). These web apps facilitate seamless integration, data visualization, and advanced functionalities for managing scientific experiments and data.
+The `bfabric_web_apps` is a Python library published on PyPI, designed to simplify the creation of web applications that interact with B-Fabric. It abstracts much of the complexity involved in connecting with the B-Fabric API, enabling developers to focus on building custom functionality. B-Fabric Web Apps are modular satellite applications designed to extend the functionality of the B-Fabric Laboratory Information Management System (LIMS). These web apps facilitate seamless integration, data visualization, and advanced functionalities for managing scientific experiments and data.
 
 Key Features:
 - **Dynamic Integration**: Build applications that integrate directly with B-Fabric via its API.
@@ -88,20 +88,20 @@ Key Features:
 
 ## Quickstart
 
-You can install the `bfabric-web-app` module via pip:
+You can install the `bfabric_web_apps` module via pip:
 
 ```sh
 pip install bfabric_web_apps
 ```
 
-To see how the `bfabric-web-app` library is used, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template app demonstrates:
-- Setting up a project with `bfabric-web-app`.
+To see how the `bfabric-web-apps` library is used, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template app demonstrates:
+- Setting up a project with `bfabric-web-apps`.
 - Using Dash to create visual dashboards.
 - Interacting with the B-Fabric LIMS using the Python library.
 
 #### Basic Usage Example
 
-After installation, you can create a simple Dash-based web application using `bfabric-web-app` like this:
+After installation, you can create a simple Dash-based web application using `bfabric-web-apps` like this:
 
 ```python
 from bfabric_web_apps import create_app, load_config, get_static_layout
