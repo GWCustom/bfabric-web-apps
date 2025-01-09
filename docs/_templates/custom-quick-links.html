@@ -1,9 +1,17 @@
-<div class="sidebar-item">
-  <h3>Navigation</h3>
-  <ul class="sidebar-nav">
+<div class="sidebar-item" style="overflow: visible; height: auto; max-height: none;">
+  <h3>Navigation Bar</h3>
+  <ul class="sidebar-nav" style="overflow: visible; height: auto; max-height: none;">
     <li><a href="{{ pathto('index') }}">Home</a></li>
     <li><a href="{{ pathto('installation') }}">Installation</a></li>
-    <li><a href="{{ pathto('usage') }}">Usage</a></li>
+    <li>
+      <a href="{{ pathto('usage') }}">Usage</a>
+      <ul style="overflow: visible; height: auto; max-height: none;">
+        <li><a href="{{ pathto('index_py') }}">Full-Featured Template</a></li>
+        <li><a href="{{ pathto('index_basic_py') }}">Minimal Template</a></li>
+        <li><a href="{{ pathto('bfabric_web_apps_functions') }}">bfabric_web_apps Functions</a></li>
+      </ul>
+    </li>
     <li><a href="{{ pathto('_source/modules') }}">API Documentation</a></li>
   </ul>
 </div>
+

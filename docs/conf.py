@@ -30,24 +30,28 @@ html_theme = 'pydata_sphinx_theme'
 # Theme options for PyData
 html_theme_options = {
     "logo": {
-        "image_light": "_static/logo.png",
-        "image_dark": "_static/logo.png",
+        "image_light": "_static/logo_light.png",
+        "image_dark": "_static/logo_dark.png",
     },
     "navbar_end": ["theme-switcher"],
     "use_edit_page_button": False,
-    "show_toc_level": 2,
+    "show_toc_level": 2,  # Reduce TOC depth to avoid long lists
     "secondary_sidebar_items": ["page-toc"],  # Custom sidebar items
+    "pygments_light_style": "xcode",
+    "pygments_dark_style": "github-dark",
+    "default_mode": "dark",
+    "show_nav_level": 0,
 }
+
 
 # Add static path for logos and additional static files
 html_static_path = ['_static']
-html_css_files = ['sidebar-nav.css']
+html_css_files = ['sidebar-nav.css', 'custom.css']
 
 # Custom sidebar definition with "Quick Links"
 html_sidebars = {
     "**": [
         "custom-quick-links.html",  # Custom quick links
-        "sidebar-nav-bs.html",  # Main sidebar navigation
     ]
 }
 

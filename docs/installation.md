@@ -1,9 +1,9 @@
 # Installation & Deployment
 
 ## Dependencies
-Before installing **bfabric-web-apps**, ensure you have the following installed on your system:
+Before installing **bfabric_web_app**, ensure you have the following dependencies installed on your system. These are the dependencies required to install **bfabric_web_app**; additional packages (such as Dash and Flask) will be installed later with a single command during deployment.
 
-- **Python** (>=3.8)  
+- **Python** (>= 3.8)  
 - **pip** (latest version recommended)  
 
 ---
@@ -11,14 +11,14 @@ Before installing **bfabric-web-apps**, ensure you have the following installed 
 ## Installation Steps
 
 ### 1. Install via pip
-You can install **bfabric-web-apps** directly from PyPI:
+You can install **bfabric_web_apps** directly from PyPI:
 
 ```sh
-pip install bfabric-web-apps
+pip install bfabric_web_apps
 ```
 
 ### 2. Clone the Template (Optional but Recommended)
-To get started quickly, clone the **bfabric-web-app-template**, which provides a ready-to-use project structure:
+To get started quickly, clone the **bfabric_web_app-template**, which provides a ready-to-use project structure:
 
 ```sh
 git clone https://github.com/GWCustom/bfabric-web-app-template.git
