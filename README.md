@@ -35,7 +35,7 @@
 <h3 align="center">B-Fabric Web Apps</h3>
 
   <p align="center">
-    A web-based platform for developing and integrating satellite applications around the B-Fabric Laboratory Information Management System (LIMS).
+    A Python-based library designed for the development and integration of satellite applications with the B-Fabric Laboratory Information Management System (LIMS).
     <br />
     <a href="https://pypi.org/project/bfabric-web-apps/"><strong>Explore the documentation »</strong></a>
     <br />
@@ -70,12 +70,23 @@
 
 ## About The Project
 
-The `bfabric_web_apps` is a Python library published on PyPI, designed to simplify the creation of web applications that interact with B-Fabric. It abstracts much of the complexity involved in connecting with the B-Fabric API, enabling developers to focus on building custom functionality. B-Fabric Web Apps are modular satellite applications designed to extend the functionality of the B-Fabric Laboratory Information Management System (LIMS). These web apps facilitate seamless integration, data visualization, and advanced functionalities for managing scientific experiments and data.
+The `bfabric_web_apps` is a Python library designed to simplify the creation of web applications that interact with B-Fabric. By providing built-in functions, it significantly reduces repetitive code and streamlines development. B-Fabric Web Apps are modular satellite applications that extend the functionality of the B-Fabric Laboratory Information Management System (LIMS).
 
-Key Features:
-- **Dynamic Integration**: Build applications that integrate directly with B-Fabric via its API.
-- **Custom Dashboards**: Create custom dashboards for visualizing and managing data.
-- **Streamlined Workflows**: Simplify and enhance workflows for researchers and lab managers.
+###Key Features:
+
+Simplified B-Fabric Integration
+- **Token Management** – Securely handle authentication tokens for API access.  
+- **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
+- **Authentication** – Built-in token-based authentication for seamless user access.  
+- **Logger** – Integrated logging for API calls, events, and errors.  
+- **Dash Resource Management** – Optimize data handling to minimize API calls.
+
+Boilerplate Dash Components & Callbacks
+- Predefined layouts, UI components, and callback structures to accelerate development.  
+- Reusable patterns for efficient and consistent app design.
+
+Custom Dashboards
+- Easily build interactive dashboards using Dash and Plotly to visualize and manage data.
 
 ### Built With
 
