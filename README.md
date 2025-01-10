@@ -74,18 +74,18 @@ The `bfabric_web_apps` is a Python library designed to simplify the creation of 
 
 ### Key Features:
 
-Simplified B-Fabric Integration
+#### Simplified B-Fabric Integration
 - **Token Management** – Securely handle authentication tokens for API access.  
 - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
 - **Authentication** – Built-in token-based authentication for seamless user access.  
 - **Logger** – Integrated logging for API calls, events, and errors.  
-- **Dash Resource Management** – Optimize data handling to minimize API calls.
+- **Resource Management** – Optimize data handling to minimize API calls.
 
-Boilerplate Dash Components & Callbacks
+#### Boilerplate Dash Components & Callbacks
 - Predefined layouts, UI components, and callback structures to accelerate development.  
 - Reusable patterns for efficient and consistent app design.
 
-Custom Dashboards
+#### Custom Dashboards
 - Easily build interactive dashboards using Dash and Plotly to visualize and manage data.
 
 ### Built With
