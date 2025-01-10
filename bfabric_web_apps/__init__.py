@@ -16,6 +16,11 @@ from .utils.get_power_user_wrapper import get_power_user_wrapper
 # Export callbacks
 from .utils.callbacks import process_url_and_token, submit_bug_report
 
+HOST = '0.0.0.0'
+PORT = 8050
+DEV = False 
+CONFIG_FILE_PATH = "~/.bfabricpy.yml"
+
 # Define __all__ for controlled imports
 __all__ = [
     "BfabricInterface",
