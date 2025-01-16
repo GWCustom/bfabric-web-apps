@@ -1,0 +1,21 @@
+/* Change color for inline code in both light and dark mode */
+:root {
+    --inline-code-bg: #2d2d2d; /* Background for inline code */
+    --inline-code-color: #ffcc66; /* Text color for inline code */
+}
+
+/* Apply changes in light mode */
+html[data-theme="light"] code {
+    background-color: #f5f5f5;
+    color: #2d2d2d; /* Change this to your preferred color */
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* Apply changes in dark mode */
+html[data-theme="dark"] code {
+    background-color: #2d2d2d;
+    color: #f5f5f5; /* Change this to your preferred color */
+    padding: 2px 4px;
+    border-radius: 4px;
+}

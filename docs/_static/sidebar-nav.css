@@ -1,0 +1,42 @@
+/* Default (Light Mode) */
+html[data-theme="light"] .sidebar-nav {
+  overflow: visible; /* Prevent scrolling */
+  height: auto;      /* Automatically adjust height */
+}
+
+html[data-theme="light"] .sidebar-nav a {
+  color: #333;  /* Dark text for light background */
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: normal;
+  display: block;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* Dark Mode */
+html[data-theme="dark"] .sidebar-nav {
+  overflow: visible; /* Prevent scrolling */
+  height: auto;      /* Automatically adjust height */
+}
+
+html[data-theme="dark"] .sidebar-nav a {
+  color: #ddd; /* Light text for dark background */
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: normal;
+  display: block;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* Hover Effect */
+html[data-theme="light"] .sidebar-nav a:hover {
+  background-color: #f0f0f0; /* Light gray in light mode */
+  text-decoration: underline;
+}
+
+html[data-theme="dark"] .sidebar-nav a:hover {
+  background-color: #444; /* Darker shade in dark mode */
+  text-decoration: underline;
+}
