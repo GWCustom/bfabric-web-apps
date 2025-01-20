@@ -5,9 +5,7 @@ import datetime
 import bfabric
 from bfabric import BfabricAuth
 from bfabric import BfabricClientConfig
-from dash import html
-import dash_bootstrap_components as dbc
-from bfabric_web_apps.objects.Logger import Logger
+from bfabric_web_apps.utils.get_logger import get_logger
 import os
 
 
@@ -145,11 +143,7 @@ class BfabricInterface( Bfabric ):
 
         if wrapper and entity_class and endpoint and entity_id and jobId:
 
-            L = Logger(
-                jobid = jobId,
-                username= username,
-                environment= environment
-            ) 
+            L = get_logger(token_data)
             
             # Log the read operation directly using Logger L
             entity_data_dict = L.logthis(

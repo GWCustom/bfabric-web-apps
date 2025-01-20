@@ -2,8 +2,8 @@ from dash import Input, Output, State, html, dcc
 from bfabric_web_apps.objects.BfabricInterface import BfabricInterface
 import json
 import dash_bootstrap_components as dbc
-from bfabric_web_apps.objects.Logger import Logger
 from datetime import datetime as dt
+from bfabric_web_apps.utils.get_logger import get_logger
 
 def process_url_and_token(url_params):
     """
@@ -100,11 +100,7 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
     # Initialize the logger only if token_data is available
     L = None
     if token_data:
-        L = Logger(
-            jobid=jobId,
-            username=username,
-            environment=environment
-        )
+        L = get_logger(token_data)
 
     if n_clicks:
         # Log the operation only if the logger is initialized
