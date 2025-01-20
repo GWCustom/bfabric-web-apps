@@ -78,8 +78,7 @@ The `bfabric_web_apps` is a Python library designed to simplify the creation of 
 - **Token Management** – Securely handle authentication tokens for API access.  
 - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
 - **Logger** – Integrated logging for API calls, events, and errors.  
-- Predefined layouts, UI components, and callback structures to accelerate development.  
-- Reusable patterns for efficient and consistent app design.
+- Predefined layouts, UI components, and callback structures to accelerate development.
 
 ### Built With
 
