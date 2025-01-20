@@ -57,6 +57,7 @@
   - [Built With](#built-with)
 - [Quickstart](#Quickstart)
   - [Basic Usage Example](#Basic-Usage-Example)
+  - [Example Usage and Template Overview](#example-usage-and-template-overview)
 - [What Is B-Fabric?](#what-is-bfabric)
 - [What Is B-FabricPy?](#what-is-bfabricpy)
 - [What Is Dash?](#what-is-dash)
@@ -146,12 +147,14 @@ This example sets up a minimal web application using bfabric_web_apps, providing
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+#### Example Usage and Template Overview
+
 To explore the usage of the `bfabric_web_apps` library in greater detail, refer to the [`bfabric-web-app-template`](https://github.com/GWCustom/bfabric-web-app-template) repository. This template demonstrates how to:  
 - Set up a project using `bfabric_web_apps`.  
 - Create visual dashboards with Dash.  
 - Interact with the B-Fabric LIMS through the Python library.  
 
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## What Is B-Fabric?
 
