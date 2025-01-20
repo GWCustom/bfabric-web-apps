@@ -107,14 +107,16 @@ To see how the `bfabric_web_apps` library is used, refer to the [`bfabric-web-ap
 After installation, you can create a simple Dash-based web application using `bfabric_web_apps` like this:
 
 ```python
-from bfabric_web_apps import create_app, load_config, get_static_layout
 from dash import html
+from bfabric_web_apps import(
+    create_app,
+    get_static_layout,
+    HOST, 
+    PORT,
+)
 
 # Initialize the Dash application
 app = create_app()
-
-# Load configuration (if needed)
-config = load_config("./PARAMS.py")
 
 # Define application title
 app_title = "My B-Fabric App"
@@ -140,7 +142,7 @@ app.layout = get_static_layout(
 
 # Run the application
 if __name__ == "__main__":
-    app.run_server(debug=False, port=config["PORT"], host=config["HOST"])
+    app.run_server(debug=False, port=PORT, host=HOST)
 
 ```
 
