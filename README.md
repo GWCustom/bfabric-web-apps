@@ -71,17 +71,13 @@
 
 ## About The Project
 
-The `bfabric_web_apps` is a Python library designed to simplify the creation of web applications that interact with B-Fabric. The library abstracts common functions and components, providing boilerplate code that seamlessly integrates into B-Fabric satellite applications, enabling simple and rapid development. B-Fabric Web Apps are modular satellite applications that extend the functionality of the B-Fabric Laboratory Information Management System (LIMS).
+The `bfabric_web_apps` is a Python library designed to simplify the creation of web applications that interact with B-Fabric. The library streamlines the development of B-Fabric satellite applications by standardizing common patterns and providing developers with a simpler and more efficient code base. B-Fabric Web Apps are modular satellite applications that extend the functionality of the B-Fabric Laboratory Information Management System (LIMS).
 
 ### Key Features
 
-#### Simplified B-Fabric Integration
 - **Token Management** – Securely handle authentication tokens for API access.  
 - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
 - **Logger** – Integrated logging for API calls, events, and errors.  
-- **Resource Management** – Optimize data handling to minimize API calls.
-
-#### Boilerplate Dash Components & Callbacks
 - Predefined layouts, UI components, and callback structures to accelerate development.  
 - Reusable patterns for efficient and consistent app design.
 
