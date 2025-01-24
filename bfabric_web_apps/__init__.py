@@ -15,6 +15,8 @@ from .utils.get_power_user_wrapper import get_power_user_wrapper
 # Export callbacks
 from .utils.callbacks import process_url_and_token, submit_bug_report
 
+from .utils.globals import CONFIG_FILE_PATH
+
 HOST = '0.0.0.0'
 PORT = 8050
 DEV = False 

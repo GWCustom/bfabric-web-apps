@@ -1,6 +1,6 @@
 from bfabric_web_apps.objects.Logger import Logger
 
-def get_logger(token_data, config_file_path: str = "~/.bfabricpy.yml"):
+def get_logger(token_data):
 
     """ Extract logging-related information from token_data, with defaults for missing values """
     jobId = token_data.get('jobId', None)
@@ -11,5 +11,4 @@ def get_logger(token_data, config_file_path: str = "~/.bfabricpy.yml"):
         jobid=jobId,
         username=username,
         environment=environment,
-        config_file_path = config_file_path
     )

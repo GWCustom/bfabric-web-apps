@@ -4,12 +4,14 @@ from typing import List
 from bfabric import Bfabric
 from datetime import datetime as dt
 import base64
+from bfabric_web_apps.utils.globals import CONFIG_FILE_PATH
+
 
 class Logger:
     """
     A Logger class to manage and batch API call logs locally and flush them to the backend when needed.
     """
-    def __init__(self, jobid: int, username: str, environment: str, config_file_path: str):
+    def __init__(self, jobid: int, username: str, environment: str):
         """
         Initializes the Logger with a job ID, username, and environment.
 
@@ -20,7 +22,7 @@ class Logger:
         """
         self.jobid = jobid
         self.username = username
-        self.config_file_path = config_file_path
+        self.config_file_path = CONFIG_FILE_PATH
         self.power_user_wrapper = self._get_power_user_wrapper(environment)
         self.logs = []
 

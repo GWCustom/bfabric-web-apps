@@ -1,7 +1,8 @@
 import os
 from bfabric import Bfabric
+from bfabric_web_apps.utils.globals import CONFIG_FILE_PATH
 
-def get_power_user_wrapper(token_data, config_file_path: str = "~/.bfabricpy.yml"):
+def get_power_user_wrapper(token_data):
     """
     Initializes and returns a Bfabric power user instance configured for a specific environment.
 
@@ -21,6 +22,6 @@ def get_power_user_wrapper(token_data, config_file_path: str = "~/.bfabricpy.yml
     environment = token_data.get("environment", "None")
 
     return  Bfabric.from_config(
-            config_path = os.path.expanduser(config_file_path),
+            config_path = os.path.expanduser(CONFIG_FILE_PATH),
             config_env = environment.upper()
     )
