@@ -4,7 +4,7 @@ from typing import List
 from bfabric import Bfabric
 from datetime import datetime as dt
 import base64
-from bfabric_web_apps.utils.globals import CONFIG_FILE_PATH
+import bfabric_web_apps
 
 
 class Logger:
@@ -22,7 +22,7 @@ class Logger:
         """
         self.jobid = jobid
         self.username = username
-        self.config_file_path = CONFIG_FILE_PATH
+        self.config_file_path = bfabric_web_apps.CONFIG_FILE_PATH
         self.power_user_wrapper = self._get_power_user_wrapper(environment)
         self.logs = []
 
