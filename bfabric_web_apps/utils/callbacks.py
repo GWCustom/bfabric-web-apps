@@ -11,7 +11,6 @@ def process_url_and_token(url_params):
 
     Args:
         url_params (str): The URL parameters containing the token.
-        base_title (str): The base title of the page.
 
     Returns:
         tuple: A tuple containing token data, entity data, and the page content.
@@ -38,30 +37,30 @@ def process_url_and_token(url_params):
         entity_data_json = bfabric_interface.entity_data(tdata)
         entity_data = json.loads(entity_data_json)
         page_title = (
-            f"{tdata['entityClass_data']} - {entity_data['name']} "
-            f"({tdata['environment']} System)"
+            f"{tdata.get('entityClass_data', 'Unknown')} - {entity_data.get('name', 'Unknown')} "
+            f"({tdata.get('environment', 'Unknown')} System)"
         ) if tdata else "Bfabric App Interface"
 
         if not entity_data:
             return token, tdata, None, page_title, None
         else:
             session_details = [
-            html.P([
-                html.B("Entity Name: "), entity_data['name'],
-                html.Br(),
-                html.B("Entity Class: "), tdata['entityClass_data'],
-                html.Br(),
-                html.B("Environment: "), tdata['environment'],
-                html.Br(),
-                html.B("Entity ID: "), tdata['entity_id_data'],
-                html.Br(),
-                html.B("User Name: "), tdata['user_data'],
-                html.Br(),
-                html.B("Session Expires: "), tdata['token_expires'],
-                html.Br(),
-                html.B("Current Time: "), str(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
-            ])
-        ]
+                html.P([
+                    html.B("Entity Name: "), entity_data.get('name', 'Unknown'),
+                    html.Br(),
+                    html.B("Entity Class: "), tdata.get('entityClass_data', 'Unknown'),
+                    html.Br(),
+                    html.B("Environment: "), tdata.get('environment', 'Unknown'),
+                    html.Br(),
+                    html.B("Entity ID: "), tdata.get('entity_id_data', 'Unknown'),
+                    html.Br(),
+                    html.B("User Name: "), tdata.get('user_data', 'Unknown'),
+                    html.Br(),
+                    html.B("Session Expires: "), tdata.get('token_expires', 'Unknown'),
+                    html.Br(),
+                    html.B("Current Time: "), str(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
+                ])
+            ]
             return token, tdata, entity_data, page_title, session_details
     else:
         return None, None, None, base_title, None
