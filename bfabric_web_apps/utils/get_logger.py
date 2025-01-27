@@ -10,5 +10,5 @@ def get_logger(token_data):
     return Logger(
         jobid=jobId,
         username=username,
-        environment=environment
+        environment=environment,
     )

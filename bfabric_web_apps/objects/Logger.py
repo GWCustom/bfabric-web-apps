@@ -4,9 +4,8 @@ from typing import List
 from bfabric import Bfabric
 from datetime import datetime as dt
 import base64
-from ..utils.app_config import load_config
+import bfabric_web_apps
 
-CONFIG_FILE_PATH = load_config()["CONFIG_FILE_PATH"]
 
 class Logger:
     """
@@ -23,6 +22,7 @@ class Logger:
         """
         self.jobid = jobid
         self.username = username
+        self.config_file_path = bfabric_web_apps.CONFIG_FILE_PATH
         self.power_user_wrapper = self._get_power_user_wrapper(environment)
         self.logs = []
 
@@ -37,7 +37,7 @@ class Logger:
             Bfabric: An authenticated Bfabric instance.
         """
         power_user_wrapper = Bfabric.from_config(
-            config_path = os.path.expanduser(CONFIG_FILE_PATH),
+            config_path = os.path.expanduser(self.config_file_path),
             config_env = environment.upper()
         )
         return power_user_wrapper
