@@ -1,27 +1,27 @@
-# Bfabric_web_apps Documentation
+# bfabric_web_apps Documentation
 
-**bfabric_web_apps** is a Python library that streamlines the creation of **satellite web applications** for the **B-Fabric Laboratory Information Management System (LIMS)**. Built around a **template-based approach**, it provides both a **ready-to-use project structure** and a set of **powerful utilities** for integrating with the B-Fabric API, handling authentication, logging, and more.
+A Python-based library designed for the development and integration of satellite applications with the B-Fabric Laboratory Information Management System (LIMS).
 
 ---
 
 ## Overview
 
-Designed to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** abstracts away complex B-Fabric API calls, allowing you to focus on creating intuitive, data-driven user interfaces for scientific data management. By combining B-Fabric’s robust backend with Dash’s interactive capabilities, you can rapidly build **custom dashboards** and **management tools** without reinventing the wheel.
+Designed to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** simplifies the creation of web applications that interact with B-Fabric. Built on a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending the B-Fabric Laboratory Information Management System (LIMS) with satellite applications.
+
+
 
 ### Key Features
 
 - **Simplified B-Fabric Integration**  
-  - **Token Data Management** – Securely handle **authentication tokens** for API access.  
-  - **Entity Data Handling** – Retrieve, modify, and update **B-Fabric entities** dynamically.  
-  - **Authentication** – Built-in **token-based authentication** for a seamless user experience.  
-  - **Logger** – Integrated logging for **API calls, application events**, and errors.  
-  - **Dash Resource Management** – Efficiently handle stored data to reduce unnecessary API calls.
+  - **Token Data Management** – Securely handle authentication tokens for API access.  
+  - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
+  - **Logger** – Integrated logging for API calls, application events, and errors.  
 
 - **Custom Dashboards**  
-  Create **interactive and dynamic** dashboards using Dash and Plotly to visualize and manage your data.
+  Create **interactive and dynamic dashboards** using Dash and Plotly to visualize and manage your data.
 
-- **Layouts**  
-  Utilize **predefined Dash layouts** for structured, consistent UI design that’s easy to extend.
+- **Layouts and UI Components**  
+  Leverage **boilerplate and template Dash components, layouts, and callbacks** to streamline development, maintain consistent design, and accelerate the creation of user-friendly interfaces.
 
 ---
 
@@ -85,4 +85,3 @@ For more details, refer to the [Dash official documentation](https://dash.plotly
 - **BfabricPy Docs Page**: [BfabricPy Documentation](https://fgcz.github.io/bfabricPy/)  
 - **B-Fabric Website**: [Bfabric Official Website](https://www.bfabric.org/)  
 - **B-Fabric User Manual**: [Bfabric User Manual](https://www.bfabric.org/usermanual)  
-

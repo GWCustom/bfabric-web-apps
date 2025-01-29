@@ -1,8 +1,6 @@
 import os
 from bfabric import Bfabric
-from .app_config import load_config
-
-CONFIG_FILE_PATH = load_config()["CONFIG_FILE_PATH"]
+import bfabric_web_apps
 
 def get_power_user_wrapper(token_data):
     """
@@ -13,7 +11,7 @@ def get_power_user_wrapper(token_data):
     determined by the `CONFIG_FILE_PATH` from the application's configuration.
 
     Args:
-        token_data (dict): A dictionary containing token information. 
+        token_data (dict): A dictionary containing token information
             The key "environment" is used to determine the environment 
             (default is "None" if not specified).
 
@@ -24,6 +22,6 @@ def get_power_user_wrapper(token_data):
     environment = token_data.get("environment", "None")
 
     return  Bfabric.from_config(
-            config_path = os.path.expanduser(CONFIG_FILE_PATH),
+            config_path = os.path.expanduser(bfabric_web_apps.CONFIG_FILE_PATH),
             config_env = environment.upper()
     )

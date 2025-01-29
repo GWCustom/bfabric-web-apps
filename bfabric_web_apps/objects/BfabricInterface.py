@@ -5,9 +5,7 @@ import datetime
 import bfabric
 from bfabric import BfabricAuth
 from bfabric import BfabricClientConfig
-from dash import html
-import dash_bootstrap_components as dbc
-from bfabric_web_apps.objects.Logger import Logger
+from bfabric_web_apps.utils.get_logger import get_logger
 import os
 
 
@@ -110,7 +108,6 @@ class BfabricInterface( Bfabric ):
     
 
     def entity_data(self, token_data: dict) -> str: 
-
         """
         Retrieves entity data associated with the provided token.
 
@@ -119,7 +116,7 @@ class BfabricInterface( Bfabric ):
 
         Returns:
             str: A JSON string containing entity data.
-            None: If the retrieval fails.
+            {}: If the retrieval fails or token_data is invalid.
         """
 
         entity_class_map = {
@@ -132,24 +129,18 @@ class BfabricInterface( Bfabric ):
         }
 
         if not token_data:
-            return None
-
+            return json.dumps({})
+        
         wrapper = self.token_response_to_bfabric(token_data)
         entity_class = token_data.get('entityClass_data', None)
         endpoint = entity_class_map.get(entity_class, None)
         entity_id = token_data.get('entity_id_data', None)
         jobId = token_data.get('jobId', None)
         username = token_data.get("user_data", "None")
-        environment= token_data.get("environment", "None")
-
+        environment = token_data.get("environment", "None")
 
         if wrapper and entity_class and endpoint and entity_id and jobId:
-
-            L = Logger(
-                jobid = jobId,
-                username= username,
-                environment= environment
-            ) 
+            L = get_logger(token_data)
             
             # Log the read operation directly using Logger L
             entity_data_dict = L.logthis(
@@ -157,8 +148,8 @@ class BfabricInterface( Bfabric ):
                 endpoint=endpoint,
                 obj={"id": entity_id},
                 max_results=None,
-                params = None,
-                flush_logs = True
+                params=None,
+                flush_logs=True
             )[0]
             
             if entity_data_dict:
@@ -171,17 +162,17 @@ class BfabricInterface( Bfabric ):
                 return json_data
             else:
                 L.log_operation(
-                    operation= "entity_data",
-                    message= "Entity data retrieval failed or returned None.",
+                    operation="entity_data",
+                    message="Entity data retrieval failed or returned None.",
                     params=None,
                     flush_logs=True
                 )
                 print("entity_data_dict is empty or None")
-                return None
+                return json.dumps({})
             
         else:
             print("Invalid input or entity information")
-            return None
+            return json.dumps({})
         
     
     def send_bug_report(self, token_data = None, entity_data = None, description = None):
