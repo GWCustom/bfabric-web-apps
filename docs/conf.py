@@ -45,7 +45,7 @@ html_theme_options = {
 
 
 # Add static path for logos and additional static files
-html_static_path = ['_static']
+html_static_path = ['_static', '_images']
 html_css_files = ['sidebar-nav.css', 'custom.css']
 
 # Custom sidebar definition with "Quick Links"

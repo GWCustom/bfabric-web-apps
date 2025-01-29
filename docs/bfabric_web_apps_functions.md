@@ -1,258 +1,445 @@
 # Bfabric\_web\_apps Functions
 
-This section provides an in-depth explanation of the **core functions** used in bfabric\_web\_apps. These functions are responsible for **configuration, authentication, layout management, logging, API interactions, and bug reporting**.
+This section provides an in-depth explanation of the **core functions** used in bfabric\_web\_apps. These functions are responsible for **authentication, layout management, logging, API interactions, and bug reporting**.
 
 ---
-
 ## 1. Application Initialization
 
-### create\_app()
+### create_app()
+
+The `create_app()` function initializes a **Dash app instance** with pre-configured settings suitable for use with B-Fabric, including responsive design and Bootstrap-based styling. This function simplifies starting a new Dash app by applying common configurations. If you want to explore the implementation of the `create_app()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/utils/app_init.py).
 
 ```python
-from generic_bfabric import app
+app = create_app()
 ```
-
-#### Purpose:
-
-- Initializes a **Dash application** pre-configured for B-Fabric.
-- Automatically includes token processing and authentication mechanisms.
-- Importing app from generic\_bfabric ensures that all **default settings** are applied.
-
-#### Usage:
-
-- You **should not modify** this function.
-- Instead, use the app instance to define your **layout** and **callbacks**.
+#### Returns:
+A Dash app instance with support for dynamic callbacks and responsive design.
 
 ---
 
-## 2. Configuration Management
-
-### load\_config()
-
-```python
-config = load_config("./PARAMS.py")
-```
-
-#### Purpose:
-
-- Loads **configuration settings** from PARAMS.py.
-- Stores key parameters such as:
-  - PORT
-  - HOST
-  - DEV (development mode)
-  - Other app-specific settings
-
-#### Usage:
-
-- Used **once** in index.py to set up the environment.
-- Example:
-
-```python
-if config["DEV"]:
-    app.run_server(debug=True, port=config["PORT"])
-else:
-    app.run_server(debug=False, port=config["PORT"], host=config["HOST"])
-```
+#### Return type:
+`dash.Dash`
 
 ---
 
-## 3. UI and Layout Management
-
-### get\_static\_layout()
+#### Example Usage
 
 ```python
-app.layout = get_static_layout(app_title, app_specific_layout, documentation_content)
+# Import the create_app function from the bfabric_web_apps module.
+from bfabric_web_apps import create_app
+
+# Create an instance of the Dash app using the create_app function.
+app = create_app()
+
+# Define the layout for the Dash app.
+app.layout = get_static_layout(
+    app_title,
+    app_specific_layout,
+    documentation_content
+)
+```
+---
+
+### Understanding the `app` Object in Dash  
+The `app` object is an instance of the [`Dash`](https://dash.plotly.com/) class from the `dash` library. It serves as the central object of a Dash application, managing the layout, callbacks, and overall app configuration. The `Dash()` function is used to create an instance of a Dash application. It initializes the app, providing the structure to define its layout and interactivity. The `Dash()` function serves as the foundation for building Dash applications, allowing developers to add components like HTML elements, interactive controls, and graphs. For more details on defining layouts in Dash, refer to the [Dash Layout Documentation](https://dash.plotly.com/layout#dash-layout).
+
+---
+
+## 2. UI and Layout Management
+
+### get_static_layout()
+
+The `get_static_layout()` function combines various **UI components** into a structured Dash layout with pre-defined tabs for **Main**, **Documentation**, and **Report a Bug**. This layout ensures a consistent look and feel across B-Fabric applications, while allowing customization of the main content and documentation. If you want to explore the implementation of the `get_static_layout()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/layouts/layouts.py#L4).
+
+
+```python
+app.layout = get_static_layout(app_title, main_content, documentation_content)
 ```
 
-#### Purpose:
+#### Args:
+1. **base_title** (*str*, optional): The title displayed in the browser tab. Defaults to `None`.
+2. **main_content** (*Dash HTML Component*, optional): The main content displayed in the "Main" tab. Defaults to `None`.
+3. **documentation_content** (*Dash HTML Component*, optional): The static documentation displayed under the "Documentation" tab. Defaults to `None`.
 
-- **Combines UI components** (main layout + documentation tab) into a **structured** Dash layout.
-- Ensures the **B-Fabric look & feel** is consistent across applications.
+---
 
-#### Parameters:
+#### Returns:
+A Dash layout containing the specified content along with static tabs for **Main**, **Documentation**, and **Report a Bug**.
 
-1. **app\_title** - The title displayed in the browser tab.
-2. **app\_specific\_layout** - The main UI content (defined in index.py).
-3. **documentation\_content** - Static documentation displayed under the "Documentation" tab.
+---
 
-#### Usage:
+#### Return type:
+`dash.html.Div`
 
-- Example:
+---
 
+#### Example Usage:
 ```python
-sidebar = html.Div([...])
-content = html.Div([...])
-documentation = html.Div([...])
+# Import the 'html' module from Dash
+from dash import html
 
+sidebar = html.Div([...])  # Custom sidebar content
+content = html.Div([...])  # Main app content
+documentation = html.Div([...])  # Documentation content
+
+# Set the layout of the app
 app.layout = get_static_layout("My App", sidebar, documentation)
 ```
 
+For detailed guidance on implementing and structuring layouts, please refer to the official [Dash documentation](https://dash.plotly.com/layout).
+
 ---
 
-## 4. Authentication & Token Handling
+## 3. Authentication & Token Handling
 
-### process\_url\_and\_token()
+### process_url_and_token()
 
-#### Purpose:
-
-- Extracts **authentication tokens** from the URL.
-- Stores the token inside a **Dash dcc.Store** component (token\_data).
-- Ensures **secure** interaction with B-Fabric.
-
-#### Usage:
-
-- Automatically applied inside generic\_bfabric.py.
-- In **custom callbacks**, check the token before allowing actions:
+The `process_url_and_token()` function processes URL parameters to extract and validate authentication tokens, retrieve related entity data, and prepare page content for B-Fabric applications. If you want to explore the implementation of the `process_url_and_token()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/utils/callbacks.py#L8).
 
 ```python
+process_url_and_token(url_params)
+```
+
+#### Args:
+1. **url_params** (*str*): The URL parameters containing the token (e.g., `"?token=abc123"`).
+
+---
+
+#### Processing Steps:  
+1. **Extracts the token**:  
+   - Splits the `url_params` string to extract the token value.  
+   - If no token is found (`url_params` is empty or doesn't contain `token`), returns `None` for `token`, `token_data`, `entity_data`, and `page_content`, while `page_title` defaults to `" "`.  
+
+2. **Validates the token**:  
+   - Uses the `BfabricInterface.token_to_data` method to validate the token.  
+   - If the token is expired (`"EXPIRED"`), returns `None` for `token`, `token_data`, `entity_data`, and `page_content`, while `page_title` defaults to `" "`.  
+   - If the token is invalid or not found, returns `None` for all outputs except `page_title`, which defaults to `" "`.  
+
+3. **Retrieves token and entity data**:  
+   - Parses the token data (`tdata_raw`) using `json.loads` into a dictionary (`tdata`).  
+   - Uses `BfabricInterface.entity_data` to fetch entity data based on the token and parses it into a dictionary (`entity_data`).  
+
+4. **Generates page content and title**:  
+   - If entity data is valid, generates a session summary (`session_details`) with detailed information about the entity, user, and environment.  
+   - Creates a `page_title` based on the token data (`tdata`) and entity data (`entity_data`).  
+   - If entity data is missing or invalid, only `token` and `token_data` are returned, while `entity_data` and `page_content` are `None`.  
+
+---
+
+#### Returns:
+The function returns a tuple with the following structure:
+
+1. **Authenticated Case**:
+   - **Returns**:
+     - **token** (*str*): The extracted token string.
+     - **token_data** (*dict*): A dictionary containing valid user and environment data.
+     - **entity_data** (*dict*): A dictionary with details about the current entity (e.g., name, class, environment).
+     - **page_content** (*list*): A session summary as a list of Dash HTML components with details about the entity, user, and environment.
+     - **page_title** (*str*): A dynamically generated string based on the token and entity data.
+   - **Return Type**:
+     - *(str, dict, dict, list, str)*
+
+2. **Authentication Fails**:
+   - **Returns**:
+     - **token**: `None`
+     - **token_data**: `None`
+     - **entity_data**: `None`
+     - **page_content**: `None`
+     - **page_title** (*str*): Defaults to `" "`.
+   - **Return Type**:
+     - *(None, None, None, None, str)*
+
+---
+
+#### Example Usage - Callback Integration:
+This function is typically used within a Dash callback to manage authentication. As reference you can checkout on how this function is used in [`generic_bfabric.py`](https://github.com/GWCustom/bfabric-web-app-template/blob/main/generic_bfabric.py#L44).
+
+```python
+# Define a callback for the Dash app
 @app.callback(
-    Output("auth-message", "children"),
-    Input("token_data", "data")
+    [
+        Output('token', 'data'),
+        Output('token_data', 'data'),       
+
+    ],
+    [Input('url', 'search')] 
 )
-def check_auth(token_data):
-    if not token_data:
-        return "Please log in with a valid token."
-    return f"Authenticated as {token_data['user_data']}"
+def generic_process_url_and_token(url_params):
+    #Processes the URL parameters to extract and return token information
+    return process_url_and_token(url_params)
 ```
 
 ---
-## 5. Logging
 
-### get_logger()
+## 4. Logging
+
+### Overview of Logging in B-Fabric
+
+Logging in B-Fabric is crucial for tracking user actions, API calls, and errors. Logs are stored in B-Fabric's job history, ensuring transparency, accountability, and effective debugging. The system provides two primary methods for creating logs: manual logging (log_operation) and automatic logging (logthis).
+
+#### How does the Logging work
+
+#### Where can I find the Logs
+In B-Fabric, logs are accessible via the Jobs page, where each job’s log can be viewed under the Log column. To reach this page, open the Job menu item (as shown in the screenshot) and locate the relevant job by its ID or other filters. Clicking the Log entry for a specific job displays all recorded logs associated with it.
+
+![Screenshot showing where to find logs in B-Fabric](_images/Logger_page.png)
+
+
+
+### Initializing a Logger Instance  
+
+A logger instance is essential for tracking user actions, API calls, and errors within B-Fabric. This process ensures accountability and simplifies debugging by maintaining detailed logs of system events.
+
+#### get_logger()
+
+The `get_logger()` function extracts logging-related information from `token_data` and initializes a **Logger instance** for managing and storing logs in B-Fabric. If you want to explore the implementation of the `get_logger()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/utils/get_logger.py).
 
 ```python
 L = get_logger(token_data)
 ```
 
-#### Purpose:
+##### **Args**:  
+1. **token_data** (*dict*): A dictionary containing token information. This is required to associate logs with the corresponding user or session in B-Fabric.
 
-- Before logging any actions, we need to **initialize a Logger instance**.
-- The logger tracks **user actions, API calls, and errors**.
-- Requires **authentication (token_data)** to store logs in B-Fabric.
+##### **Returns**:  
+A logger instance for managing and creating logs.
 
-#### Usage:
+#### **Return Type:**: 
+`Logger`
 
-- You need token_data to create the logger instance:
+##### **Example**:
 
 ```python
+# Check if token data is available
 if token_data:
+    # Initialize the logger instance
     L = get_logger(token_data)
+    
+    # Use logger instance to log a simple user action
+    L.log_operation("User Login", "User logged in successfully.")
 ```
 
 ---
 
-## Logging Methods
+### Creating Logs: Manual and Automatic Methods  
 
-Once we have the logger instance (`L`), we can log actions in two different ways:
+Logging in B-Fabric enables tracking of system events through two key methods: **manual logging** with `log_operation()` and **automatic logging** with `logthis()`.  
 
-### 1. log_operation()
+- **Use `log_operation()`** when you need to manually record specific user actions or system events, such as data submissions or logins.
+- **Use `logthis()`** when making API calls to automatically log execution details, including function names, input parameters, execution time, and results. This simplifies API monitoring by capturing all relevant context without additional manual logging.  
+
+---
+
+#### log_operation()
+
+The `log_operation()` function allows manual logging of user actions, storing these logs in **B-Fabric's job history**. It is commonly used for tracking specific events, such as data submissions or user logins. If you want to explore the implementation of the `log_operation()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/objects/Logger.py#L69).
+
 
 ```python
-L.log_operation(
-    operation="Submit Data",
-    message="User submitted a new sample.",
-    params={"sample_id": 1234},
-    flush_logs=True
-)
+L.log_operation(operation, message, params, flush_logs)
 ```
 
-#### Purpose:
+##### **Args**:  
+1. **operation** (*str*): A short event label describing the action (e.g., `"Login"`, `"Update Sample"`).  
+2. **message** (*str*): A detailed description of the event.  
+3. **params** (*dict*, optional): Additional metadata related to the event. Defaults to `{}`.  
+4. **flush_logs** (*bool*): Controls whether logs are immediately sent to the backend. Defaults to `True`.   
+   - If `True`: The log entry is appended to the local log storage and immediately flushed to the backend using the `flush_logs()` method. This ensures that the log is recorded in real time.  
+   - If `False`: The log entry is stored locally and will remain in the local cache until the next time the `flush_logs()` method is explicitly called. This can be useful for batching multiple log entries to minimize backend calls.
 
-- **Manually logs user actions** for auditing and debugging.
-- Stores logs in **B-Fabric's job history**.
+---
 
-#### Parameters:
+##### **Returns**:  
+- `None`
 
-1. **operation** - Short event label (e.g., "Login", "Update Sample").
-2. **message** - Descriptive message.
-3. **params** - (Optional) Dictionary of **extra** metadata.
-4. **flush_logs** - **True** to write logs immediately, **False** to batch logs.
+---
 
-#### Best Practices:
-
-- Log critical user actions:
-
-```python
-L.log_operation("FileUpload", "User uploaded a CSV file", {"filename": "data.csv"})
-```
-
-- Batch logs for performance:
+##### **Example**:
 
 ```python
-L.log_operation("UserLogin", "User authenticated", flush_logs=False)
-# Perform multiple actions...
-L.flush_logs()  # Writes all logs at once
+# Check if token data is available
+if token_data:
+    # Initialize the logger instance
+    L = get_logger(token_data)
+    # Log a file upload action
+    L.log_operation(
+        operation ="FileUpload", 
+        message = "User uploaded a CSV file",
+        params = {"filename": "data.csv"},
+        flush_logs = False #The log entry is stored locally
+    )
 ```
 
 ---
 
-### 2. logthis()
+#### logthis()
+
+The `logthis()` function automatically wraps an API call, logging essential details such as the function name, input parameters, execution time, and return values. This method simplifies logging for API interactions while capturing all necessary context. If you want to explore the implementation of the `logthis()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/objects/Logger.py#L117).
 
 ```python
-result = L.logthis(
-    api_call=power_user_wrapper.read,
-    endpoint="sample",
-    obj={"id": [123]},
-    flush_logs=True
-)
+result = L.logthis(api_call, args, obj, flush_logs, kwargs)
 ```
 
-#### Purpose:
+##### **Args**:  
+1. **api_call** (*function*): The API function to execute.  
+2. **endpoint** (*str*): The endpoint to read from, e.g. "sample".
+3. **obj** (*dict*) A dictionary containing the query, for every field multiple possible values can be provided, the final query requires the condition for each field to be met
+4. **flush_logs** (*bool*): Controls whether logs are immediately sent to the backend. Defaults to `True`.   
+   - If `True`: The log entry is appended to the local log storage and immediately flushed to the backend using the `flush_logs()` method. This ensures that the log is recorded in real time.  
+   - If `False`: The log entry is stored locally and will remain in the local cache until the next time the `flush_logs()` method is explicitly called. This can be useful for batching multiple log entries to minimize backend calls.
+5. **kwargs**: These are keyword arguments passed directly to the API call. For example, `max_results` can be used to specify a cap on the number of results to query. If provided as an integer, the number of results will be limited to the specified value. If set to `None`, the code will load all available pages. The function will continue fetching data page by page until either the maximum number of results is reached or all pages have been retrieved.
 
-- **Automatically wraps an API call** and logs:
-  - The function name
-  - Input parameters
-  - Execution time
-  - Return values
+---
 
-#### Usage:
+##### **Returns**:  
+- **any**: The result of the API call.
 
-- Example with an API read call:
+---
+
+##### **Return Type**:  
+- `any`
+
+---
+
+##### **Example**:
 
 ```python
 lane_samples = L.logthis(
-    api_call=power_user_wrapper.read,
+    api_call = wapper.read,
     endpoint="rununitlane",
-    obj={"id": [456]},
-    flush_logs=True
-)
-```
-
-- Example with a write operation:
-
-```python
-new_entry = L.logthis(
-    api_call=power_user_wrapper.save,
-    obj={"name": "New Sample"},
-    flush_logs=True
+    obj={"id": [str(elt["id"]) for elt in lane_data.get("rununitlane", [])]},
+    flush_logs = False #The log entry is stored locally
+    max_results=None, #Keyword arguments to pass to the API call (kwargs)
 )
 ```
 
 ---
 
-## 6. B-Fabric Power User Access
 
-### get\_power\_user\_wrapper()
+### flush_logs()
+
+The `flush_logs()` function is used to send all accumulated log entries to the backend at once and clear the local cache. This function is particularly useful when multiple logging operations have been performed with `flush_logs=False`, allowing logs to be batched and sent in a single request instead of logging each action individually. If no logs are stored, calling this function has no effect. If you want to explore the implementation of the `flush_logs()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/objects/Logger.py#L103).
+
+```python
+L.flush_logs()
+```
+
+##### **Args**:  
+- None
+
+---
+
+##### **Returns**:  
+- None
+
+---
+
+##### **Behavior**:  
+- If there are **pending logs** saved locally, they are flushed with a **single API call** to the backend, reducing the number of individual requests.
+- After a successful flush, the local log storage is cleared.
+- If no logs are pending, the function does nothing and exits immediately.
+
+---
+
+##### **Example**:
+
+```python
+# Initialize the logger instance
+L = get_logger(token_data)
+
+# Log multiple API calls without flushing immediately
+entity_data_list = L.logthis(
+    api_call=wrapper.read,
+    endpoint=endpoint,
+    obj={"id": entity_id},
+    max_results=None,
+    flush_logs=False # Store log locally
+)
+
+lane_samples = L.logthis(
+    api_call=wrapper.read,
+    endpoint="rununitlane",
+    obj={"id": [str(elt["id"]) for elt in lane_data.get("rununitlane", [])]},
+    max_results=None,
+    flush_logs=False # Store log locally
+)
+
+# Flush all stored logs at once
+L.flush_logs()
+```
+
+---
+
+## 5. B-Fabric Power User Access
+
+### get_power_user_wrapper()
+
+Initializes and returns an **authenticated wrapper** for interacting with the **B-Fabric API**. This wrapper is specifically configured for **Power User** access, allowing privileged operations within the system. The default **Power User** login is **`gfeeder`**.
+
+This function uses the environment information provided in `token_data` to determine the appropriate configuration for initializing the `Bfabric` instance. It reads the configuration from a predefined path (`CONFIG_FILE_PATH`) and applies the environment settings.
 
 ```python
 power_user_wrapper = get_power_user_wrapper(token_data)
+
 ```
-
-#### Purpose:
-
-- Provides an **authenticated** wrapper to interact with the **B-Fabric API**.
-- Used for API calls that require **Power User** rights.
+---
+#### Args  
+1. **token_data** (*dict*): A dictionary containing token-related information.  
+   - The `"environment"` key specifies the environment configuration (e.g., production or testing).  
+   - If the `"environment"` key is not provided, it defaults to `"None"`.
 
 ---
 
-## 7. Submit Bug Report
+#### Returns
+- **Bfabric**: A `Bfabric` instance, authenticated and configured for the specified environment.
 
-### generic\_handle\_bug\_report()
+---
+
+#### Example Usage
+
+```python
+# Initialize the power user wrapper
+power_user_wrapper = get_power_user_wrapper(token_data)
+```
+
+---
+
+### Power User Details
+- **Username**: `gfeeder`   
+- **Purpose**: The power user account is used to perform elevated operations in the B-Fabric system, such as reading or modifying restricted data. Ensure that this access is used responsibly and within the bounds of the system's usage policies.
+
+---
+
+## 6. Submit Bug Report
+
+### generic_handle_bug_report()
+
+Handles the submission of bug reports by delegating the relevant details to the `submit_bug_report` function.
 
 ```python
 def generic_handle_bug_report(n_clicks, bug_description, token, entity_data):
-    """
-    Handles the submission of bug reports by delegating to the submit_bug_report function.
-    """
     return submit_bug_report(n_clicks, bug_description, token, entity_data)
+```
+
+**Args:**
+1. **n\_clicks** (int): The number of times the submit button has been clicked.
+2. **bug\_description** (str): The description of the bug provided by the user.
+3. **token** (str): The authentication token.
+4. **entity\_data** (dict): The data related to the current entity.
+
+**Returns:**
+- **tuple**: A tuple containing two boolean values indicating success and failure status of the submission.
+  - is\_open\_success (bool): Indicates if the bug report submission was successful.
+  - is\_open\_failure (bool): Indicates if the bug report submission failed.
+
+#### Example:
+
+```python
+success, failure = generic_handle_bug_report(
+    n_clicks=1,
+    bug_description="Issue with sample data upload",
+    token="abc123",
+    entity_data={"id": 456}
+)
+print("Success:", success, "Failure:", failure)
 ```

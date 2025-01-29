@@ -11,7 +11,7 @@ def get_power_user_wrapper(token_data):
     determined by the `CONFIG_FILE_PATH` from the application's configuration.
 
     Args:
-        token_data (dict): A dictionary containing token information. ssssssssssssssssssssssssssssss
+        token_data (dict): A dictionary containing token information
             The key "environment" is used to determine the environment 
             (default is "None" if not specified).
 

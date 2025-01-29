@@ -67,22 +67,7 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Configure Your Application
-
-Create a file named `PARAMS.py` in the project root directory to define configuration parameters for the app.
-
-**Example `PARAMS.py`**:
-```python
-# PARAMS.py
-HOST = "0.0.0.0"  # Host to run the app (default: localhost)
-PORT = 8050       # Port to serve the application
-DEV = False       # Enable/disable debug mode
-CONFIG_FILE_PATH = "~/.bfabricpy.yml"  # Path to the configuration file for credentials
-```
-
----
-
-## 6. Set Up `.bfabricpy.yml` Configuration File
+## 5. Set Up `.bfabricpy.yml` Configuration File as Described in [bfabricPy](https://fgcz.github.io/bfabricPy/)
 
 The `.bfabricpy.yml` file is **essential for power users**. It provides credentials needed for interacting with the **B-Fabric API** and enables key functionalities like authentication, logging, and API access. 
 
@@ -105,11 +90,11 @@ PRODUCTION:
 
 Ensure the file is saved in the specified path and accessible by the application.
 
-If you encounter any issues, refer to the [bfabricPy documentation](https://fgcz.github.io/bfabricPy/) for further guidance.
+As mentioned above, if you encounter any issues, please refer to the [bfabricPy documentation](https://fgcz.github.io/bfabricPy/) for further guidance.
 
 ---
 
-## 7. Run the Application
+## 6. Run the Application
 
 Start the development server by running:
 
@@ -119,7 +104,7 @@ python index.py
 
 ---
 
-## 8. Check It Out
+## 7. Check It Out
 
 Visit the following URL to see your application in action:
 
