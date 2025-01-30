@@ -92,6 +92,30 @@ For detailed guidance on implementing and structuring layouts, please refer to t
 
 ## 3. Authentication & Token Handling
 
+### Overview
+
+The B-Fabric authentication flow is designed to be straightforward and seamless for users of the `bfabric_web_app`. While the underlying processes are abstracted, the following provides an overview of how the authentication and token handling works.
+
+![Authentication Token Flow](_images/Authentication_Token_Flow.png)
+
+#### Steps Explained:
+
+1. **Token Sent to FGCZ Application Server**  
+   When a user clicks a link in B-Fabric, they are redirected to the web application's page. The authentication token is included as a parameter in the URL.  
+   Example URL:  
+   `https://some.webapp/param1?token=xyabcdefg1234561234234234asdf`
+
+2. **Token Validation**  
+   The web application sends the token to a dedicated REST endpoint hosted on `fgcz-bfabric.uzh.ch`.
+
+3. **Token Decryption**  
+   If the token is valid, B-Fabric responds with a JSON payload containing essential authentication details, such as the username, web service password, and entity class information.
+
+4. **Authenticated API Calls**  
+   Now the webapplication has authenticated the user, and can use the username and webserivce password they received from the token auth endpoint, to authenticate subsequent calls to bfabric webservice.
+
+---
+
 ### process_url_and_token()
 
 The `process_url_and_token()` function processes URL parameters to extract and validate authentication tokens, retrieve related entity data, and prepare page content for B-Fabric applications. If you want to explore the implementation of the `process_url_and_token()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/utils/callbacks.py#L8).
@@ -175,7 +199,7 @@ def generic_process_url_and_token(url_params):
 
 ### Overview of Logging in B-Fabric
 
-Logging in B-Fabric is crucial for tracking user actions, API calls, and errors. Logs are stored in B-Fabric's job history, ensuring transparency, accountability, and effective debugging. The system provides two primary methods for creating logs: manual logging (log_operation) and automatic logging (logthis).
+Logging in B-Fabric is crucial for tracking user actions, API calls, and errors. Logs are stored in B-Fabric's job history, ensuring transparency, accountability, and effective debugging.
 
 #### How does the Logging work
 
@@ -411,6 +435,17 @@ power_user_wrapper = get_power_user_wrapper(token_data)
 ---
 
 ## 6. Submit Bug Report
+
+### Overview of how the Bug Reports work
+
+Look at Bug Report Details to finish this chapter
+
+The default choice of bug-report mail address is “gwtools@fgcz.system” which is an OTRS queue, which is only accessible from within FGCZ server hardware. This is adaptable for your own use-case. 
+
+
+The bug-report functionality within bfabric-web-apps python library, utilize the unix command-line utility “mail” to send emails from a running application. 
+
+---
 
 ### generic_handle_bug_report()
 

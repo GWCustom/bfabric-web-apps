@@ -19,3 +19,9 @@ html[data-theme="dark"] code {
     padding: 2px 4px;
     border-radius: 4px;
 }
+
+.bd-sidebar-primary div#rtd-footer-container {
+    bottom:-1rem;
+    margin:-1rem;
+    position:fixed;
+}
