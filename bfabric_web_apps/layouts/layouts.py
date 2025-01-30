@@ -1,10 +1,18 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-def get_static_layout(base_title = None, main_content = None, documentation_content = None):
+def get_static_layout(base_title=None, main_content=None, documentation_content=None):
     """
     Returns a layout with static tabs for Main, Documentation, and Report a Bug.
     The main content is customizable, while the other tabs are generic.
+
+    Args:
+        base_title (str): The main title to be displayed in the banner.
+        main_content (html.Div): Content to be displayed in the "Main" tab.
+        documentation_content (html.Div): Content for the "Documentation" tab.
+
+    Returns:
+        html.Div: The complete static layout of the web app.
     """
     return html.Div(
         children=[
@@ -12,14 +20,17 @@ def get_static_layout(base_title = None, main_content = None, documentation_cont
             dcc.Store(id='token', storage_type='session'),
             dcc.Store(id='entity', storage_type='session'),
             dcc.Store(id='token_data', storage_type='session'),
+            dcc.Store(id='dynamic-link-store', storage_type='session'),  # Store for dynamic job link
+
             dbc.Container(
                 children=[
-                    # Banner
+                    # Banner Section
                     dbc.Row(
                         dbc.Col(
                             html.Div(
                                 className="banner",
                                 children=[
+                                    # Title
                                     html.Div(
                                         children=[
                                             html.P(
@@ -35,30 +46,70 @@ def get_static_layout(base_title = None, main_content = None, documentation_cont
                                             )
                                         ],
                                         style={"background-color": "#000000", "border-radius": "10px"}
-                                    )
+                                    ),
                                 ],
+                                style={"position": "relative", "padding": "10px"}
                             ),
                         ),
                     ),
-                    # Page Title
+
+                    # Page Title Section + View Logs Button (Aligned Right)
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                children=[
+                                    # Page Title (Aligned Left)
+                                    html.P(
+                                        id="page-title",
+                                        children=[str(" ")],
+                                        style={"font-size": "40px", "margin-left": "20px", "margin-top": "10px"}
+                                    ),
+
+                                    # View Logs Button (Aligned Right)
+                                    html.Div(
+                                        children=[
+                                            html.A(
+                                                dbc.Button(
+                                                    "View Logs",
+                                                    id="dynamic-link-button",
+                                                    color="secondary",  # Greyish color
+                                                    style={
+                                                        "font-size": "18px",
+                                                        "padding": "10px 20px",
+                                                        "border-radius": "8px"
+                                                    }
+                                                ),
+                                                id="dynamic-link",
+                                                href="#",  # Will be dynamically set in the callback
+                                                target="_blank"
+                                            )
+                                        ],
+                                        style={
+                                            "position": "absolute",
+                                            "right": "20px",
+                                            "top": "10px",  # Aligns with title
+                                        }
+                                    ),
+                                ],
+                                style={
+                                    "position": "relative",  # Ensures absolute positioning works
+                                    "margin-top": "0px",
+                                    "min-height": "80px",
+                                    "height": "6vh",
+                                    "border-bottom": "2px solid #d4d7d9",
+                                    "display": "flex",
+                                    "align-items": "center",
+                                    "justify-content": "space-between",  # Title left, button right
+                                    "padding-right": "20px"  # Space between button & right edge
+                                }
+                            ),
+                        ),
+                    ),
+
+                    # Bug Report Alerts (Restored)
                     dbc.Row(
                         dbc.Col(
                             [
-                                html.Div(
-                                    children=[
-                                        html.P(
-                                            id="page-title",
-                                            children=[str(" ")],
-                                            style={"font-size": "40px", "margin-left": "20px", "margin-top": "10px"}
-                                        )
-                                    ],
-                                    style={
-                                        "margin-top": "0px",
-                                        "min-height": "80px",
-                                        "height": "6vh",
-                                        "border-bottom": "2px solid #d4d7d9"
-                                    }
-                                ),
                                 dbc.Alert(
                                     "Your bug report has been submitted. Thanks for helping us improve!",
                                     id="alert-fade-bug-success",
@@ -86,7 +137,8 @@ def get_static_layout(base_title = None, main_content = None, documentation_cont
                             ]           
                         )
                     ),
-                    # Tabs
+
+                    # Tabs Section
                     dbc.Tabs(
                         [
                             dbc.Tab(main_content, label="Main", tab_id="main"),
