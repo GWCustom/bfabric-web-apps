@@ -1,5 +1,6 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+import bfabric_web_apps
 
 def get_static_layout(base_title=None, main_content=None, documentation_content=None):
     """
@@ -219,8 +220,8 @@ def get_report_bug_tab():
                             [
                                 "Please use the form below to report a bug. If you have any questions, please email the developer at ",
                                 html.A(
-                                    "griffin@gwcustom.com",
-                                    href="mailto:griffin@gwcustom.com",
+                                    bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS,
+                                    href=f"mailto:{bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS}",
                                 ),
                             ]
                         ),
