@@ -1,4 +1,4 @@
-# Bfabric\_web\_apps Functions
+# bfabric\_web\_apps Functions
 
 This section provides an in-depth explanation of the **core functions** used in bfabric\_web\_apps. These functions are responsible for **authentication, layout management, logging, API interactions, and bug reporting**.
 

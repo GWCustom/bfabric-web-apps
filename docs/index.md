@@ -1,4 +1,4 @@
-# bfabric_web_apps Documentation
+# Introduction
 
 A Python-based library designed for the development and integration of satellite applications with the B-Fabric Laboratory Information Management System (LIMS).
 
