@@ -1,48 +1,91 @@
 # Full-Featured Template - index.py
 
-This chapter provides a comprehensive explanation of **index.py**, serving as a user-editable template for building applications with the **bfabric_web_apps** module. Users can customize the layout, callbacks, and components to match their needs.
+This chapter provides a step-by-step breakdown of the **index.py** script. It explains key functions and their roles in setting up a **feature-rich B-Fabric web application**. Each function is linked to its respective detailed documentation.
+
+---
+
+## View the Demo  
+
+Before diving into the details, you can preview a **live demo** of this template:
+
+[View the Demo](https://template-d12.bfabric.org/)  
+
+This will give you an idea of how the **Full-Featured Template** looks and functions.
+
+---
 
 ## Prerequisites
 
 Before starting, ensure familiarity with:
 - [Dash Fundamentals](https://dash.plotly.com/layout)
 
-## Getting Started
+---
 
-To preview the template:
-1. Execute `index.py`.
-2. Open the application in your browser via `localhost`.
+## Running the Template  
+
+To execute the template:
+
+1. Run the following command in your terminal:  
+   ```sh
+   python index.py
+   ```
+2. Open your browser and go to `localhost`.
 
 ---
 
-## Importing Required Modules
+## Importing Dependencies  
+
+This section covers the **necessary imports** that make the template functional.
 
 ```python
 from dash import Input, Output, State, html, dcc
 import dash_bootstrap_components as dbc
-from bfabric_web_apps import load_config, get_static_layout, get_logger, get_power_user_wrapper
+import bfabric_web_apps
 import generic_bfabric
 from generic_bfabric import app
 ```
 
-### Explanation:
-- **Dash components** (`html`, `dcc`, `Input`, `Output`, `State`) provide UI functionality.
-- **Dash Bootstrap Components (dbc)** are used for layout styling.
-- **Bfabric Web Apps Utilities**:
-  - `load_config`: Loads app configurations (see [Configuration](#configuration)).
-  - `get_static_layout`: Creates a structured app layout (see [Layout](#layout)).
-  - `get_logger`: Handles system logging (see [Logging](#logging)).
-  - `get_power_user_wrapper`: Provides advanced user functionalities (see [Power User Wrapper](#power-user-wrapper)).
-- The **app instance** is imported from `generic_bfabric`.
+### Explanation  
+
+1. **Dash Imports**  
+   - `html` and `dcc`: Used to construct the app layout.  
+   - `Input`, `Output`, and `State`: Required for callback interactions.  
+
+2. **Generic B-Fabric Imports**  
+   - `app`: The **Dash instance** that runs the web app.  
+
+3. **bfabric_web_apps Imports**  
+   - **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)**: Provides a **consistent page layout**.  
+   - **[`get_logger`](bfabric_web_apps_functions.md#get-logger)**: Handles **logging of user actions**.  
+   - **[`get_power_user_wrapper`](bfabric_web_apps_functions.md#get-power-user-wrapper)**: Provides **advanced user functionalities**.  
+   - **HOST & PORT**: Define **server configurations** (imported from **bfabric_web_apps**).  
 
 ---
 
-## Sidebar Components
+## Setting Up Default Configuration  
+
+The application defines default **configuration values** for various settings.
+
+```python
+bfabric_web_apps.CONFIG_FILE_PATH = "~/.bfabricpy.yml"
+bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "marc@gwcustom.com"
+bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "marc@gwcustom.com"
+```
+
+### Explanation  
+- **Configuration file path** is set using `CONFIG_FILE_PATH`.  
+- **Developer and bug report email addresses** are defined.  
+
+---
+
+## Defining the Sidebar  
+
+The **sidebar** includes input fields, a slider, and a button for user interaction.
 
 ```python
 sidebar = [
-    html.P(id="sidebar_text", children="Select a Value"),
-    dcc.Slider(0, 20, 5, value=10, id='example-slider'),
+    html.P(id="sidebar_text", children="Select a Value"),  
+    dcc.Slider(0, 20, 5, value=10, id='example-slider'),  
     html.Br(),
     dcc.Dropdown(['Genomics', 'Proteomics', 'Metabolomics'], 'Genomics', id='example-dropdown'),
     html.Br(),
@@ -52,98 +95,99 @@ sidebar = [
 ]
 ```
 
-### Explanation:
-- The **sidebar** is a UI component containing:
-  - A paragraph (`html.P`) for displaying instructions.
-  - A numeric **slider** for selecting values.
-  - A **dropdown** for choosing categories.
-  - A **text input field** for manual entries.
-  - A **submit button** for user actions.
+### Explanation  
+- The **sidebar** contains:  
+  - A **text header** for user instructions.  
+  - A **slider** for selecting numeric values.  
+  - A **dropdown** for selecting categories.  
+  - A **text input field** for manual entries.  
+  - A **submit button** for user interaction.  
 
 ---
 
-## Application Layout
+## Defining the Application Layout  
+
+This section defines the **main content and sidebar structure**.
 
 ```python
 app_specific_layout = dbc.Row(
     id="page-content-main",
     children=[
         dbc.Col(
-            html.Div(id="sidebar", children=sidebar, style={...}),
+            html.Div(id="sidebar", children=sidebar, style={
+                "border-right": "2px solid #d4d7d9",
+                "height": "100%",
+                "padding": "20px",
+                "font-size": "20px"
+            }),
             width=3,
         ),
         dbc.Col(
-            html.Div(id="page-content", children=[html.Div(id="auth-div")], style={...}),
+            html.Div(id="page-content", children=[html.Div(id="auth-div")], style={
+                "margin-top": "20vh",
+                "margin-left": "2vw",
+                "font-size": "20px"
+            }),
             width=9,
         ),
     ],
-    style={...}
+    style={"margin-top": "0px", "min-height": "40vh"}
 )
 ```
 
-### Explanation:
-- **Layout structure**:
-  - **Sidebar** (left column, width = 3): Contains the user input components.
-  - **Main Content Area** (right column, width = 9): Displays authentication-related content.
-- The `auth-div` element is updated dynamically based on user authentication status.
+### Explanation  
+- The **layout consists of two columns**:  
+  - **Sidebar (left column, width = 3)**: Holds the interactive elements.  
+  - **Main Content (right column, width = 9)**: Displays authentication and user-specific content.  
 
 ---
 
-## Documentation Content
+## Documentation Content  
+
+The application includes **static documentation content**.
 
 ```python
 documentation_content = [
     html.H2("Welcome to Bfabric App Template"),
-    html.P(["This app serves as the user interface for ", html.A("Bfabric App Template,", href="#", target="_blank"),
-           " a tool for building and customizing applications."]),
+    html.P([
+        "This app serves as the user-interface for Bfabric App Template, ",
+        "a versatile tool designed to help build and customize new applications."
+    ]),
+    html.Br(),
+    html.P([
+        "Please check out the official documentation of ",
+        html.A("Bfabric Web Apps", href="https://pypi.org/project/bfabric-web-apps/", target="_blank"),
+        "."
+    ])
 ]
 ```
 
-### Explanation:
-- **Documentation content** is displayed in a separate tab within the UI.
-- The main header introduces the template.
-- A link to additional documentation is included.
+### Explanation  
+- **Header** introduces the B-Fabric App Template.  
+- **Paragraph** provides documentation links.  
 
 ---
 
-## Loading Configuration
+## Defining the App Layout  
+
+The `app.layout` function sets up the **final UI structure**.
 
 ```python
-config = load_config("./PARAMS.py")
+app.layout = bfabric_web_apps.get_static_layout(
+    app_title,
+    app_specific_layout,
+    documentation_content
+)
 ```
 
-### Explanation:
-- Loads configuration parameters from **PARAMS.py**.
-- Stores app-specific settings such as **host, port, and debug mode**.
-- See [Configuration](#configuration) for details.
+### Explanation  
+- Uses **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to create a **consistent** page structure.  
 
 ---
 
-## Setting Up the App Title
+## Callback for UI Updates  
 
-```python
-app_title = "My B-Fabric App (Basic)"
-```
-
-### Explanation:
-- Defines the title of the app.
-- Used in the UI for a consistent experience.
-
----
-
-## Defining the App Layout
-
-```python
-app.layout = get_static_layout(app_title, app_specific_layout, documentation_content)
-```
-
-### Explanation:
-- Uses `get_static_layout` to **combine** the app's title, main layout, and documentation content.
-- See [Layout](#layout) for an in-depth explanation.
-
----
-
-## Callback for UI Updates
+This callback **controls UI behavior dynamically**.
 
 ```python
 @app.callback(
@@ -165,65 +209,54 @@ app.layout = get_static_layout(app_title, app_specific_layout, documentation_con
     [State('entity', 'data')]
 )
 def update_ui(slider_val, dropdown_val, input_val, n_clicks, token_data, entity_data):
+    if token_data is None:
+        sidebar_state = (True, True, True, True, True)
+    elif not bfabric_web_apps.DEV:
+        sidebar_state = (False, False, False, False, False)
+    else:
+        sidebar_state = (True, True, True, True, True)
+
+    if not entity_data or not token_data:
+        auth_div_content = html.Div(children=generic_bfabric.no_auth)
+    else:
+        auth_div_content = html.Div(children="Authenticated User Content")
+
+    return (*sidebar_state, auth_div_content)
 ```
 
-### Explanation:
-- **Purpose**: Dynamically updates the sidebar and authentication area based on user interaction.
-- **Input Parameters**:
-  - Values from the **slider, dropdown, text input, and button**.
-  - **Token data** (authentication information).
-  - **Entity data** (additional user context).
-- **Output Parameters**:
-  - Enables/disables sidebar components.
-  - Updates the authentication display.
+### Function Definition  
+
+**Controls sidebar interaction and authentication-based UI updates.**  
+
+#### **Args:**  
+- **`slider_val, dropdown_val, input_val, n_clicks`** – User inputs from the sidebar.  
+- **`token_data`** – User authentication token data.  
+- **`entity_data`** – Entity-specific user information.  
+
+#### **Returns:**  
+- **Tuple**: Sidebar state updates and dynamic content for `auth-div`.  
+
+#### **Return Type:**  
+- `tuple`  
 
 ---
 
-## Power User Wrapper
+## Running the Application  
 
-```python
-power_user_wrapper = get_power_user_wrapper(token_data)
-```
-
-### Explanation:
-- **Power User Wrapper** provides additional tools for managing users.
-- It requires **token_data** for authentication.
-- See [Power User Wrapper](#power-user-wrapper) for advanced usage.
-
----
-
-## Logging System
-
-```python
-L = get_logger(token_data)
-L.log_operation("Example Log", "This is an example of how to use the log_operation method.")
-```
-
-### Explanation:
-- The **logger** records system events and user actions.
-- The `log_operation` method logs a specific event.
-- See [Logging](#logging) for more details.
-
-The `Logger` class provides two primary ways to log operations:  
-1. Using the `log_operation` method for general logging.  
-2. Using the `logthis` method to wrap and log API calls.  
----
-
-## Running the Application
+The script starts the **Dash server**.
 
 ```python
 if __name__ == "__main__":
-    app.run_server(debug=False, port=config["PORT"], host=config["HOST"])
+    app.run_server(debug=False, port=bfabric_web_apps.PORT, host=bfabric_web_apps.HOST)
 ```
 
-### Explanation:
-- Starts the **Dash server** with settings from **PARAMS.py**.
+### Explanation  
+- Runs the **Dash server** with the specified **host** and **port** settings.  
 
 ---
 
-## Further Reading
+## Further Reading  
 
-- **[Configuration](#configuration)**: Understanding `PARAMS.py` settings.
-- **[Layout](#layout)**: Overview of `get_static_layout`.
-- **[Logging](#logging)**: How `get_logger` manages logs.
-- **[Power User Wrapper](#power-user-wrapper)**: Advanced user functionalities.
+- **[Dash Callbacks](https://dash.plotly.com/basic-callbacks)**: Learn more about Dash interactions.  
+- **[Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/)**: Enhance UI elements.  
+- **[bfabric_web_apps Functions](bfabric_web_apps_functions.md)**: Detailed explanations of helper functions like `get_static_layout`, `get_logger`, and authentication handling.  

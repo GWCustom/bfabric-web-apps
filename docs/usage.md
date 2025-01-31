@@ -32,7 +32,6 @@ These functionalities are **built-in** to both templates, so they work out of th
 |---------------------------|--------------------------------|--------------------------------|
 | **Integrates `generic_bfabric.py`** | ✅ Yes | ✅ Yes |
 | **Logging**               | ✅ Minimal (only login events) | ✅ Extensive (logs multiple actions) |
-| **Session Details**       | ✅ Yes | ✅ Yes |
 | **Dynamic Variable Configuration** | ❌ No | ✅ Yes (sets default variables like config paths and emails) |
 | **Sidebar UI**            | ❌ No | ✅ Yes (includes dropdowns, sliders, and text input) |
 | **Dynamic Callbacks**      | ❌ No | ✅ Yes (interactive UI with callbacks) |
@@ -51,5 +50,5 @@ These functionalities are **built-in** to both templates, so they work out of th
 
 Now that you understand the structure, the next sections will explore:  
 
-1. **Full-Featured Template (`index.py`)** 
-2. **Minimal Template (`index_basic.py`)**
+1. **[Full-Featured Template (`index.py`)](index_py.md)**  
+2. **[Minimal Template (`index_basic.py`)](index_basic_py.md)**  

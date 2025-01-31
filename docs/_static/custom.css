@@ -1,3 +1,23 @@
+.bd-breadcrumbs {
+    display: none !important; /* Hides breadcrumbs */
+}
+
+.bd-header:not(:first-of-type) {
+    display: none !important;
+}
+
+
+.bd-content {
+    margin-top: 0 !important;  /* Removes extra margin from top */
+    padding-top: 0 !important; /* Ensures no extra padding */
+}
+
+.bd-header-article {
+    display: none !important;  /* Removes any breadcrumb container if present */
+}
+
+
+
 /* Change color for inline code in both light and dark mode */
 :root {
     --inline-code-bg: #2d2d2d; /* Background for inline code */
@@ -24,4 +44,35 @@ html[data-theme="dark"] code {
     bottom:-1rem;
     margin:-1rem;
     position:fixed;
+}
+
+/* Align the header title precisely with the page title */
+.navbar-header-items__center {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: calc(var(--bd-sidebar-width, 270px) + 1.5rem); /* Adjusted to 1.5rem */
+}
+
+/* Style the title text */
+.navbar-header-items__center .navbar-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--pst-color-text);
+    text-align: left;
+}
+
+/* Adjust for medium screens */
+@media (max-width: 1200px) {
+    .navbar-header-items__center {
+        padding-left: 2.5rem; /* Slightly more on medium screens */
+    }
+}
+
+/* Adjust for small screens */
+@media (max-width: 768px) {
+    .navbar-header-items__center {
+        padding-left: 1.2rem; /* Adjust for mobile */
+    }
 }

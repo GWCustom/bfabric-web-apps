@@ -1,6 +1,6 @@
-# Minimal Template - `index_basic.py`
+# Minimal Template - index_basic.py
 
-This chapter provides a step-by-step breakdown of the `index_basic.py` script. It explains key functions and their roles in setting up a **basic but functional** B-Fabric web application.
+This chapter provides a step-by-step breakdown of the **index_basic.py** script. It explains key functions and their roles in setting up a **basic but functional** B-Fabric web application.
 
 ---
 
@@ -11,6 +11,13 @@ Before diving into the details, you can preview a **live demo** of this template
 [View the Demo](https://small-template-d12.bfabric.org/)  
 
 This will give you an idea of how the **Minimal Template** looks and functions.
+
+---
+
+## Prerequisites
+
+Before starting, ensure familiarity with:
+- [Dash Fundamentals](https://dash.plotly.com/layout)
 
 ---
 
@@ -111,7 +118,7 @@ app.layout = get_static_layout(
 
 This callback function updates the **user display** dynamically based on authentication status.  
 
-### **How It Works**
+### How It Works
 - **Listens for authentication changes** using `token_data`.  
 - **Extracts user information** from `entity_data`.  
 - **Logs the login event** using [`get_logger`](bfabric_web_apps_functions.md#get-logger).  

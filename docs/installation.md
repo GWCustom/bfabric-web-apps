@@ -31,7 +31,7 @@ cd bfabric-web-app-template
 
 Choose one of the following options to create and activate a virtual environment:
 
-#### Using `venv`:
+#### Using venv:
 **For Linux/Mac:**
 ```sh
 python3 -m venv venv
@@ -44,13 +44,13 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-#### Using `conda`:
+#### Using conda:
 ```sh
 conda create -n bfabric-web-apps pip
 conda activate bfabric-web-apps
 ```
 
-#### Using `mamba`:
+#### Using mamba:
 ```sh
 mamba create -n bfabric-web-apps pip
 mamba activate bfabric-web-apps
@@ -67,13 +67,13 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Set Up `.bfabricpy.yml` Configuration File as Described in [bfabricPy](https://fgcz.github.io/bfabricPy/)
+## 5. Set Up .bfabricpy.yml Configuration File as Described in [bfabricPy](https://fgcz.github.io/bfabricPy/)
 
-The `.bfabricpy.yml` file is **essential for power users**. It provides credentials needed for interacting with the **B-Fabric API** and enables key functionalities like authentication, logging, and API access. 
+The **.bfabricpy.yml** file is **essential for power users**. It provides credentials needed for interacting with the **B-Fabric API** and enables key functionalities like authentication, logging, and API access. 
 
-Create a `.bfabricpy.yml` file in your home directory (e.g., `~/.bfabricpy.yml`) and format it as follows:
+Create a **.bfabricpy.yml** file in your home directory (e.g., **~/.bfabricpy.yml**) and format it as follows:
 
-**Example `.bfabricpy.yml`**:
+**Example .bfabricpy.yml**:
 ```yaml
 GENERAL:
   default_config: PRODUCTION
