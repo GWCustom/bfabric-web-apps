@@ -32,7 +32,6 @@ These functionalities are **built-in** to both templates, so they work out of th
 |---------------------------|--------------------------------|--------------------------------|
 | **Integrates `generic_bfabric.py`** | ✅ Yes | ✅ Yes |
 | **Logging**               | ✅ Minimal (only login events) | ✅ Extensive (logs multiple actions) |
-| **Bug Reporting System**  | ✅ Yes | ✅ Yes |
 | **Session Details**       | ✅ Yes | ✅ Yes |
 | **Dynamic Variable Configuration** | ❌ No | ✅ Yes (sets default variables like config paths and emails) |
 | **Sidebar UI**            | ❌ No | ✅ Yes (includes dropdowns, sliders, and text input) |

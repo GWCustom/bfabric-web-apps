@@ -447,7 +447,7 @@ The bug-report functionality within bfabric-web-apps python library, utilize the
 
 ---
 
-### generic_handle_bug_report()
+### generic_handle_bug_report() To Delet!!!!!
 
 Handles the submission of bug reports by delegating the relevant details to the `submit_bug_report` function.
 
