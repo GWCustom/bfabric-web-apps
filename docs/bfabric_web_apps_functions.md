@@ -433,21 +433,37 @@ power_user_wrapper = get_power_user_wrapper(token_data)
 - **Purpose**: The power user account is used to perform elevated operations in the B-Fabric system, such as reading or modifying restricted data. Ensure that this access is used responsibly and within the bounds of the system's usage policies.
 
 ---
-
 ## 6. Submit Bug Report
 
-### Overview of how the Bug Reports work
+### Overview of how the Bug Reports work / double check with the doc griffin is providing
 
-Look at Bug Report Details to finish this chapter
+The bug-report functionality within the `bfabric-web-apps` Python library utilizes the Unix command-line utility `mail` to send emails from a running application. 
 
-The default choice of bug-report mail address is “gwtools@fgcz.system” which is an OTRS queue, which is only accessible from within FGCZ server hardware. This is adaptable for your own use-case. 
+When the `send_bug_report` function is invoked, **token details, session details, and entity details** are sent as input parameters from the browser cache. These details are aggregated into a `mail_string`, which is then sent to the **bug-report email address** via a system call to the Unix command-line utility `mail`.
 
+For this functionality to work, `mail` must be active and running on the deployed system, and it must be accessible to the application process.
 
-The bug-report functionality within bfabric-web-apps python library, utilize the unix command-line utility “mail” to send emails from a running application. 
+The default choice of bug-report mail address is **“gwtools@fgcz.system”**, which is an **OTRS queue**, accessible only within FGCZ server hardware. However, this can be adapted for your specific use case.
 
 ---
 
-### generic_handle_bug_report() To Delet!!!!!
+### Modifying the Bug-Report Email Address
+
+By default, bug reports are sent to `gwtools@fgcz.system`, but you can customize this to fit your organization's needs. The bug-report email address can be modified as follows:
+
+```python
+import bfabric_web_apps 
+bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "my_email@my_domain.com" 
+```
+
+This change ensures that bug reports are redirected to your preferred email address instead of the default FGCZ system queue.
+
+For further details on modifying global variables, refer to [Chapter 7: Dynamic Variable Configuration](#dynamic-variable-configuration).
+
+---
+
+
+### generic_handle_bug_report()
 
 Handles the submission of bug reports by delegating the relevant details to the `submit_bug_report` function.
 
@@ -478,3 +494,69 @@ success, failure = generic_handle_bug_report(
 )
 print("Success:", success, "Failure:", failure)
 ```
+
+
+## 7. Dynamic Variable Configuration
+
+### Overview
+
+B-Fabric Web Apps provide a set of **global variables** that can be customized by users to adapt the application's behavior to specific needs. These variables control aspects such as configuration file paths, email addresses for support, server settings, and the development environment state.
+
+This chapter explains how to modify these variables and where they are stored.
+
+---
+
+### List of Configurable Variables
+
+The following global variables can be modified in B-Fabric Web Apps:
+
+| Variable                                    | Default Value                                        | Description                                                       |
+| ------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------- |
+| `bfabric_web_apps.CONFIG_FILE_PATH`         | "\~/.bfabricpy.yml"                                  | Path to the configuration file used by the application.           |
+| `bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS`  | "griffin\@gwcustom.com"                              | Email address for development-related inquiries.                  |
+| `bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS` | "gwtools@fgcz.system" | Email address for submitting bug reports.                         |
+| `HOST`                                      | '0.0.0.0'                                            | The IP address where the Dash app is hosted.                      |
+| `PORT`                                      | 8050                                                 | The port number used by the Dash server.                          |
+| `DEV`                                       | False                                                | Indicates whether the application is running in development mode. |
+
+---
+
+### How to Modify Global Variables
+
+You can modify these global variables within your script before initializing the application.
+
+#### Change the Configuration File Path
+
+```python
+bfabric_web_apps.CONFIG_FILE_PATH = "~/custom_config.yml"
+```
+
+#### Update Developer Email Address
+
+```python
+bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "support@mydomain.com"
+```
+
+#### Update Bug Report Email Address
+
+```python
+bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "bugs@mydomain.com"
+```
+
+#### Change Host and Port Settings
+
+```python
+HOST = "127.0.0.1"
+PORT = 8080
+```
+
+#### Enable Development Mode
+
+```python
+DEV = True
+```
+
+These settings allow customization of the application behavior to fit different use cases, such as development, testing, or production environments.
+
+---
+

@@ -52,7 +52,7 @@ html[data-theme="dark"] code {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding-left: calc(var(--bd-sidebar-width, 270px) + 1.5rem); /* Adjusted to 1.5rem */
+    padding-left: calc(var(--bd-sidebar-width, 270px) + 1.75rem); /* Adjusted to 1.75rem */
 }
 
 /* Style the title text */
@@ -66,13 +66,13 @@ html[data-theme="dark"] code {
 /* Adjust for medium screens */
 @media (max-width: 1200px) {
     .navbar-header-items__center {
-        padding-left: 2.5rem; /* Slightly more on medium screens */
+        padding-left: 2.25rem; /* Slightly more on medium screens */
     }
 }
 
 /* Adjust for small screens */
 @media (max-width: 768px) {
     .navbar-header-items__center {
-        padding-left: 1.2rem; /* Adjust for mobile */
+        padding-left: 1.2rem; /* Keep it balanced on mobile */
     }
 }
