@@ -8,18 +8,24 @@ from bfabric_web_apps.utils.get_logger import get_logger
 def process_url_and_token(url_params):
     """
     Processes URL parameters to extract the token, validates it, and retrieves the corresponding data.
+    Additionally, it constructs a dynamic job link based on the environment and job ID.
 
     Args:
         url_params (str): The URL parameters containing the token.
 
     Returns:
-        tuple: A tuple containing token data, entity data, and the page content.
-               (token, token_data, entity_data, page_content, page_title)
+        tuple: A tuple containing:
+               - token (str): Authentication token.
+               - token_data (dict): Token metadata.
+               - entity_data (dict): Retrieved entity information.
+               - page_title (str): Title for the page header.
+               - session_details (list): HTML-formatted session details.
+               - job_link (str): Dynamically generated link to the job page.
     """
     base_title = " "
 
     if not url_params:
-        return None, None, None, base_title, None
+        return None, None, None, base_title, None, None
 
     token = "".join(url_params.split('token=')[1:])
     bfabric_interface = BfabricInterface()
@@ -27,11 +33,11 @@ def process_url_and_token(url_params):
 
     if tdata_raw:
         if tdata_raw == "EXPIRED":
-            return None, None, None, base_title, None
+            return None, None, None, base_title, None, None
         else:
             tdata = json.loads(tdata_raw)
     else:
-        return None, None, None, base_title, None
+        return None, None, None, base_title, None, None
 
     if tdata:
         entity_data_json = bfabric_interface.entity_data(tdata)
@@ -41,29 +47,40 @@ def process_url_and_token(url_params):
             f"({tdata.get('environment', 'Unknown')} System)"
         ) if tdata else "Bfabric App Interface"
 
-        if not entity_data:
-            return token, tdata, None, page_title, None
-        else:
-            session_details = [
-                html.P([
-                    html.B("Entity Name: "), entity_data.get('name', 'Unknown'),
-                    html.Br(),
-                    html.B("Entity Class: "), tdata.get('entityClass_data', 'Unknown'),
-                    html.Br(),
-                    html.B("Environment: "), tdata.get('environment', 'Unknown'),
-                    html.Br(),
-                    html.B("Entity ID: "), tdata.get('entity_id_data', 'Unknown'),
-                    html.Br(),
-                    html.B("User Name: "), tdata.get('user_data', 'Unknown'),
-                    html.Br(),
-                    html.B("Session Expires: "), tdata.get('token_expires', 'Unknown'),
-                    html.Br(),
-                    html.B("Current Time: "), str(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
-                ])
-            ]
-            return token, tdata, entity_data, page_title, session_details
+        environment = tdata.get("environment", "").strip().lower()  # 'test' or 'prod'
+        job_id = tdata.get("jobId", None)  # Extract job ID
+
+        job_link = None
+        if job_id:
+            if "test" in environment:
+                job_link = f"https://fgcz-bfabric-test.uzh.ch/bfabric/job/show.html?id={job_id}&tab=details"
+            else:
+                job_link = f"https://fgcz-bfabric.uzh.ch/bfabric/job/show.html?id={job_id}&tab=details"
+
+        session_details = [
+            html.P([
+                html.B("Entity Name: "), entity_data.get('name', 'Unknown'),
+                html.Br(),
+                html.B("Entity Class: "), tdata.get('entityClass_data', 'Unknown'),
+                html.Br(),
+                html.B("Environment: "), tdata.get('environment', 'Unknown'),
+                html.Br(),
+                html.B("Entity ID: "), tdata.get('entity_id_data', 'Unknown'),
+                html.Br(),
+                html.B("Job ID: "), job_id if job_id else "Unknown",
+                html.Br(),
+                html.B("User Name: "), tdata.get('user_data', 'Unknown'),
+                html.Br(),
+                html.B("Session Expires: "), tdata.get('token_expires', 'Unknown'),
+                html.Br(),
+                html.B("Current Time: "), str(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
+            ])
+        ]
+
+        return token, tdata, entity_data, page_title, session_details, job_link
     else:
-        return None, None, None, base_title, None
+        return None, None, None, base_title, None, None
+
 
 
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
