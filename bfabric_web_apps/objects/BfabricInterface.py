@@ -7,6 +7,8 @@ from bfabric import BfabricAuth
 from bfabric import BfabricClientConfig
 from bfabric_web_apps.utils.get_logger import get_logger
 import os
+import bfabric_web_apps
+
 
 
 VALIDATION_URL = "https://fgcz-bfabric.uzh.ch/bfabric/rest/token/validate?token="
@@ -198,7 +200,7 @@ class BfabricInterface( Bfabric ):
         """
 
         mail = f"""
-            echo "{mail_string}" | mail -s "Bug Report" gwtools@fgcz.system
+            echo "{mail_string}" | mail -s "Bug Report" {bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS}
         """
 
         print("MAIL STRING:")
