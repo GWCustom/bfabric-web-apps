@@ -153,6 +153,8 @@ class BfabricInterface( Bfabric ):
                 params=None,
                 flush_logs=True
             )[0]
+
+            print(token_data)
             
             if entity_data_dict:
                 json_data = json.dumps({
@@ -176,6 +178,74 @@ class BfabricInterface( Bfabric ):
             print("Invalid input or entity information")
             return json.dumps({})
         
+
+    def app_data(self, token_data: dict) -> str:
+        """
+        Retrieves application data (App Name and Description) associated with the provided token.
+
+        Args:
+            token_data (dict): The token data.
+
+        Returns:
+            str: A JSON string containing application data.
+            {}: If retrieval fails or token_data is invalid.
+        """
+
+        if not token_data:
+            return json.dumps({})  # Return empty JSON if no token data
+
+        # Extract App ID from token
+        app_data_raw = token_data.get("application_data", None)
+        
+        if isinstance(app_data_raw, int):  
+            app_id = app_data_raw  # Already an integer
+        elif isinstance(app_data_raw, str) and app_data_raw.isdigit():  
+            app_id = int(app_data_raw)  # Convert from string to integer
+        else:
+            print("Invalid application_data format in token_data")
+            return json.dumps({})  # Return empty JSON if app_id is invalid
+
+        # Define API endpoint
+        endpoint = "application"
+        
+        # Initialize Logger
+        L = get_logger(token_data)
+        
+        # Get API wrapper
+        wrapper = self.token_response_to_bfabric(token_data)  # Same as entity_data
+        if not wrapper:
+            print("Failed to get Bfabric API wrapper")
+            return json.dumps({})
+
+        # Make API Call
+        app_data_dict = L.logthis(
+            api_call=wrapper.read,
+            endpoint=endpoint,
+            obj={"id": app_id},  # Query using the App ID
+            max_results=None,
+            params=None,
+            flush_logs=True
+        )
+
+        # If API call fails, return empty JSON
+        if not app_data_dict or len(app_data_dict) == 0:
+            L.log_operation(
+                operation="app_data",
+                message=f"Failed to retrieve application data for App ID {app_id}",
+                params=None,
+                flush_logs=True
+            )
+            return json.dumps({})
+
+        # Extract Name and Description
+        app_info = app_data_dict[0]  # First (and only) result
+        json_data = json.dumps({
+            "name": app_info.get("name", "Unknown"),
+            "description": app_info.get("description", "No description available")
+        })
+
+        return json_data
+     
     
     def send_bug_report(self, token_data = None, entity_data = None, description = None):
         """
@@ -212,4 +282,7 @@ class BfabricInterface( Bfabric ):
         os.system(mail)
 
         return True
+
+
+
 
