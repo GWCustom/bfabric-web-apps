@@ -154,7 +154,6 @@ class BfabricInterface( Bfabric ):
                 flush_logs=True
             )[0]
 
-            print(token_data)
             
             if entity_data_dict:
                 json_data = json.dumps({
