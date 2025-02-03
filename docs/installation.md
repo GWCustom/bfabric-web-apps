@@ -1,5 +1,9 @@
 # Installation & Deployment
 
+This chapter provides a step-by-step guide for installing and deploying **bfabric_web_apps**, a Python-based framework for integrating satellite applications with B-Fabric LIMS.
+
+---
+
 ## Dependencies
 Before installing **bfabric_web_app**, ensure you have the following dependencies installed on your system. These are the dependencies required to install **bfabric_web_app**; additional packages (such as Dash and Flask) will be installed later with a single command during deployment.
 
@@ -16,6 +20,8 @@ You can install **bfabric_web_apps** directly from PyPI:
 ```sh
 pip install bfabric_web_apps
 ```
+
+---
 
 ### 2. Clone the Template (Optional but Recommended)
 To get started quickly, clone the **bfabric_web_app-template**, which provides a ready-to-use project structure:

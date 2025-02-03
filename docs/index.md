@@ -1,27 +1,25 @@
 # Introduction
 
-A Python-based library designed for the development and integration of satellite applications with the B-Fabric Laboratory Information Management System (LIMS).
+**bfabric_web_apps** is a Python library designed for developing and integrating satellite applications with the **B-Fabric Laboratory Information Management System (LIMS)**.
 
 ---
 
 ## Overview
 
-Designed to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** simplifies the creation of web applications that interact with B-Fabric. Built on a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending the B-Fabric Laboratory Information Management System (LIMS) with satellite applications.
-
-
+Built to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** simplifies the development of web applications that interact with B-Fabric. Using a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending B-Fabric with satellite applications.
 
 ### Key Features
 
-- **Simplified B-Fabric Integration**  
-  - **Token Data Management** – Securely handle authentication tokens for API access.  
+- **Seamless B-Fabric Integration**  
+  - **Token Management** – Securely handle authentication tokens for API access.  
   - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
-  - **Logger** – Integrated logging for API calls, application events, and errors.  
+  - **Integrated Logging** – Track API calls, application events, and errors for debugging and auditing.  
 
 - **Custom Dashboards**  
-  Create **interactive and dynamic dashboards** using Dash and Plotly to visualize and manage your data.
+  - Build **interactive, data-driven dashboards** with Dash and Plotly.  
 
-- **Layouts and UI Components**  
-  Leverage **boilerplate and template Dash components, layouts, and callbacks** to streamline development, maintain consistent design, and accelerate the creation of user-friendly interfaces.
+- **Prebuilt UI Components & Layouts**  
+  - Utilize **predefined Dash components, layouts, and callbacks** to accelerate development, maintain consistency, and enhance user experience.
 
 ---
 
@@ -35,6 +33,8 @@ Designed to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web
 To see the **full source code** or to **contribute**, visit the main GitHub repository:  
 [**bfabric_web_apps**](https://github.com/GWCustom/bfabric-web-apps)
 
+
+---
 
 ## Get Started Quickly
 
@@ -81,7 +81,7 @@ For more details, refer to the [Dash official documentation](https://dash.plotly
 - **Template App**: [bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template)  
 - **BfabricPy**: [BfabricPy GitHub](https://github.com/fgcz/bfabricPy/tree/main)  
 - **Dash Docs**: [Dash Documentation](https://dash.plotly.com/)  
-- **Dash Bootstrap Components Docs**: [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/)  
+- **Dash Bootstrap Components**: [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/)  
 - **BfabricPy Docs Page**: [BfabricPy Documentation](https://fgcz.github.io/bfabricPy/)  
 - **B-Fabric Website**: [Bfabric Official Website](https://www.bfabric.org/)  
 - **B-Fabric User Manual**: [Bfabric User Manual](https://www.bfabric.org/usermanual)  

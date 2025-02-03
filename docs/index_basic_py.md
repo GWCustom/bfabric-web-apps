@@ -18,6 +18,7 @@ This will give you an idea of how the **Minimal Template** looks and functions.
 
 Before starting, ensure familiarity with:
 - [Dash Fundamentals](https://dash.plotly.com/layout)
+- [bfabric_web_apps Documentation](bfabric_web_apps_functions.md)  
 
 ---
 
@@ -114,44 +115,54 @@ app.layout = get_static_layout(
 
 ---
 
-## Creating a Callback for User Display  
+## **Creating a Callback for User Display**  
 
-This callback function updates the **user display** dynamically based on authentication status.  
+This callback function dynamically updates the **user display** based on authentication status and the associated application details.
 
-### How It Works
+### **How It Works**
 - **Listens for authentication changes** using `token_data`.  
-- **Extracts user information** from `entity_data`.  
+- **Extracts user information** from `token_data` and **application details** from `app_data`.  
 - **Logs the login event** using [`get_logger`](bfabric_web_apps_functions.md#get-logger).  
-- **Updates the UI** to show the username if authenticated, otherwise prompts for login.  
+- **Updates the UI** to show the username, application name, and description if authenticated; otherwise, prompts for login.
 
 ```python
 @app.callback(
     Output('user-display', 'children'),
     Input('token_data', 'data'),
-    State('entity', 'data')
+    State('app_data', 'data')
 )
-def update_user_display(token_data, entity_data):
-    if token_data and entity_data:
-        user_name = token_data.get("user_data", "Unknown User")  
-        
-        # Initialize the logger
-        L = get_logger(token_data)  
+def update_user_display(token_data, app_data):
+    if token_data and app_data:
+        user_name = token_data.get("user_data", "Unknown User")
+        app_name = app_data.get("name", "Unknown App")
+        app_description = app_data.get("description", "Unknown App")
+
+        # Initialize logger and log the login event
+        L = get_logger(token_data)
         L.log_operation("User Login", "User logged in successfully.")
-        
-        return f"User {user_name} is logged in successfully!"
+
+        return html.Div([
+            html.P(f"User {user_name} has successfully logged in!"),
+            html.Br(),
+            html.P(f"Application Name: {app_name}"),
+            html.P(f"Application Description: {app_description}")
+        ])
+
     else:
         return "Please log in."
 ```
 
-#### **Args:**  
-- **`token_data` (dict or None)** – User authentication token data.  
-- **`entity_data` (dict or None)** – Entity information linked to the user.  
+### **Arguments**
+- **`token_data` (dict or None)** – Contains user authentication token data.  
+- **`app_data` (dict or None)** – Contains application details such as name and description.  
 
-#### **Returns:**  
-- **`str`** – A message indicating login success or prompting login.  
+### **Returns**
+- **`html.Div`** – A UI component displaying the login status, application name, and description.  
+- **`str`** – `"Please log in."` if authentication data is missing.  
 
-#### **Return Type:**  
-- `str`
+### **Return Type**
+- `html.Div | str`
+
 ---
 
 ## Running the App  
@@ -166,10 +177,3 @@ if __name__ == "__main__":
 ### Explanation  
 - **`PORT` and `HOST`** define the server's **address and port number** (imported from `bfabric_web_apps`).  
 
----
-
-## Further Reading  
-
-- **[Dash Callbacks](https://dash.plotly.com/basic-callbacks)**: Learn more about Dash interactions.  
-- **[Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/)**: Enhance UI elements.  
-- **[bfabric_web_apps Functions](bfabric_web_apps_functions.md)**: Detailed explanations of helper functions like `get_static_layout`, `get_logger`, and authentication handling.  

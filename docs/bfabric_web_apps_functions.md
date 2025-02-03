@@ -1,6 +1,6 @@
 # Bfabric Web Apps Functions
 
-This section provides an in-depth explanation of the **core functions** used in **bfabric\_web\_apps**. These functions are responsible for **authentication, layout management, logging, API interactions, and bug reporting**.
+This section provides an in-depth explanation of the **core functions** used in **bfabric\_web\_apps**. These functions are responsible for **authentication, layout management, logging, API interactions, bug reporting** and more.
 
 ---
 ## 1. Application Initialization
@@ -40,7 +40,7 @@ app.layout = get_static_layout(
 ```
 ---
 
-### Understanding the `app` Object in Dash  
+### Understanding the app Object in Dash  
 The `app` object is an instance of the [`Dash`](https://dash.plotly.com/) class from the `dash` library. It serves as the central object of a Dash application, managing the layout, callbacks, and overall app configuration. The `Dash()` function is used to create an instance of a Dash application. It initializes the app, providing the structure to define its layout and interactivity. The `Dash()` function serves as the foundation for building Dash applications, allowing developers to add components like HTML elements, interactive controls, and graphs. For more details on defining layouts in Dash, refer to the [Dash Layout Documentation](https://dash.plotly.com/layout#dash-layout).
 
 ---
@@ -197,22 +197,38 @@ def generic_process_url_and_token(url_params):
 
 ## 4. Logging
 
-### Overview of Logging in B-Fabric
+### Overview
 
 Logging in B-Fabric is crucial for tracking user actions, API calls, and errors. Logs are stored in B-Fabric's job history, ensuring transparency, accountability, and effective debugging.
 
-#### How does the Logging work
+---
 
-#### Where can I find the Logs
-In B-Fabric, logs are accessible via the Jobs page, where each job’s log can be viewed under the Log column. To reach this page, open the Job menu item (as shown in the screenshot) and locate the relevant job by its ID or other filters. Clicking the Log entry for a specific job displays all recorded logs associated with it.
+### Accessing Logs in B-Fabric  
 
-![Screenshot showing where to find logs in B-Fabric](_images/Logger_page.png)
+1. Open the **Job** menu item (see screenshot).  
+2. Use filters or search by **Job ID** to find the relevant job.  
+3. Click on the **Job ID** to open the job details.  
+4. In the job details view, click on the **Log** entry to access all recorded logs for that job.  
+
+![Screenshot showing where to find logs in B-Fabric](_images/Logger_page.png)  
+
+If the web application is based on the provided **[templates](usage.md)**, there is an additional way to find the logs.
+
+#### Through Web Applications
+If the web applications are built using the provided **[templates](usage.md)**, a shortcut to logs is available:  
+1. In the application, locate the **button in the top-right corner** (see screenshot).  
+2. Clicking this button will **directly open the corresponding logs** for the job.  
 
 
+![Screenshot of the log button in web apps](_images/View_Logs.png)  
+
+---
 
 ### Initializing a Logger Instance  
 
 A logger instance is essential for tracking user actions, API calls, and errors within B-Fabric. This process ensures accountability and simplifies debugging by maintaining detailed logs of system events.
+
+---
 
 #### get_logger()
 
@@ -429,30 +445,29 @@ power_user_wrapper = get_power_user_wrapper(token_data)
 ---
 
 ### Power User Details
-- **Username**: `gfeeder`   
+- **Username**: **gfeeder**
 - **Purpose**: The power user account is used to perform elevated operations in the B-Fabric system, such as reading or modifying restricted data. Ensure that this access is used responsibly and within the bounds of the system's usage policies.
 
 ---
-## 6. Submit Bug Report
+## 6. Bug Reports
 
-### Overview of how the Bug Reports work / double check with the doc griffin is providing
+### Overview
 
 The bug-report functionality within the `bfabric-web-apps` Python library utilizes the Unix command-line utility `mail` to send emails from a running application. 
 
 When the `send_bug_report` function is invoked, **token details, session details, and entity details** are sent as input parameters from the browser cache. These details are aggregated into a `mail_string`, which is then sent to the **bug-report email address** via a system call to the Unix command-line utility `mail`.
 
-For this functionality to work, `mail` must be active and running on the deployed system, and it must be accessible to the application process.
+**“Mail”** must therefore be active and running on the deployed system, and accessible to the application process for the bug-report functionality to work. 
 
-The default choice of bug-report mail address is **“gwtools@fgcz.system”**, which is an **OTRS queue**, accessible only within FGCZ server hardware. However, this can be adapted for your specific use case.
+The default choice of bug-report mail address is **"gwtools@fgcz.system"** which is an OTRS queue, which is only accessible from within FGCZ server hardware. This is adaptable for your own use-case.
 
 ---
 
-### Modifying the Bug-Report Email Address
+#### Modifying the Bug-Report Email Address
 
 By default, bug reports are sent to `gwtools@fgcz.system`, but you can customize this to fit your organization's needs. The bug-report email address can be modified as follows:
 
 ```python
-import bfabric_web_apps 
 bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "my_email@my_domain.com" 
 ```
 
@@ -463,13 +478,12 @@ For further details on modifying global variables, refer to [Chapter 7: Dynamic 
 ---
 
 
-### generic_handle_bug_report()
+### submit_bug_report()
 
-Handles the submission of bug reports by delegating the relevant details to the `submit_bug_report` function.
+Handles the submission of bug reports by delegating the relevant details to the `submit_bug_report()` function.
 
 ```python
-def generic_handle_bug_report(n_clicks, bug_description, token, entity_data):
-    return submit_bug_report(n_clicks, bug_description, token, entity_data)
+submit_bug_report(n_clicks, bug_description, token, entity_data)
 ```
 
 **Args:**
@@ -486,13 +500,21 @@ def generic_handle_bug_report(n_clicks, bug_description, token, entity_data):
 #### Example:
 
 ```python
-success, failure = generic_handle_bug_report(
-    n_clicks=1,
-    bug_description="Issue with sample data upload",
-    token="abc123",
-    entity_data={"id": 456}
+@app.callback(
+    [
+        Output("alert-fade-bug-success", "is_open"),  # Show success alert.
+        Output("alert-fade-bug-fail", "is_open")       # Show failure alert.
+    ],
+    [Input("submit-bug-report", "n_clicks")],          # Detect button clicks.
+    [
+        State("bug-description", "value"),            # Bug description input.
+        State("token", "data"),                       # Authentication token.
+        State("entity", "data")                       # Entity metadata.
+    ],
+    prevent_initial_call=True                            # Prevent callback on initial load.
 )
-print("Success:", success, "Failure:", failure)
+def generic_handle_bug_report(n_clicks, bug_description, token, entity_data):
+    return submit_bug_report(n_clicks, bug_description, token, entity_data)
 ```
 
 
@@ -512,12 +534,12 @@ The following global variables can be modified in B-Fabric Web Apps:
 
 | Variable                                    | Default Value                                        | Description                                                       |
 | ------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------- |
-| `bfabric_web_apps.CONFIG_FILE_PATH`         | "\~/.bfabricpy.yml"                                  | Path to the configuration file used by the application.           |
-| `bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS`  | "griffin\@gwcustom.com"                              | Email address for development-related inquiries.                  |
-| `bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS` | "gwtools@fgcz.system" | Email address for submitting bug reports.                         |
-| `HOST`                                      | '0.0.0.0'                                            | The IP address where the Dash app is hosted.                      |
-| `PORT`                                      | 8050                                                 | The port number used by the Dash server.                          |
-| `DEV`                                       | False                                                | Indicates whether the application is running in development mode. |
+| bfabric_web_apps.CONFIG_FILE_PATH         | "\~/.bfabricpy.yml"                                  | Path to the configuration file used by the application.           |
+| bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS  | "griffin\@gwcustom.com"                              | Email address for development-related inquiries.                  |
+| bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS | "gwtools@fgcz.system" | Email address for submitting bug reports.                         |
+| HOST                                      | '0.0.0.0'                                            | The IP address where the Dash app is hosted.                      |
+| PORT                                      | 8050                                                 | The port number used by the Dash server.                          |
+| DEV                                       | False                                                | Indicates whether the application is running in development mode. |
 
 ---
 
