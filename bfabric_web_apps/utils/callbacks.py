@@ -25,7 +25,7 @@ def process_url_and_token(url_params):
     base_title = " "
 
     if not url_params:
-        return None, None, None, base_title, None, None
+        return None, None, None, None, base_title, None, None
 
     token = "".join(url_params.split('token=')[1:])
     bfabric_interface = BfabricInterface()
@@ -37,11 +37,13 @@ def process_url_and_token(url_params):
         else:
             tdata = json.loads(tdata_raw)
     else:
-        return None, None, None, base_title, None, None
+        return None, None, None, None, base_title, None, None
 
     if tdata:
         entity_data_json = bfabric_interface.entity_data(tdata)
+        app_data_json = bfabric_interface.app_data(tdata)
         entity_data = json.loads(entity_data_json)
+        app_data = json.loads(app_data_json)
         page_title = (
             f"{tdata.get('entityClass_data', 'Unknown')} - {entity_data.get('name', 'Unknown')} "
             f"({tdata.get('environment', 'Unknown')} System)"
@@ -73,13 +75,17 @@ def process_url_and_token(url_params):
                 html.Br(),
                 html.B("Session Expires: "), tdata.get('token_expires', 'Unknown'),
                 html.Br(),
+                html.B("App Name: "), app_data.get("name", "Unknown"),
+                html.Br(),
+                html.B("App Description: "), app_data.get("description", "No description available"),
+                html.Br(),
                 html.B("Current Time: "), str(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
             ])
         ]
 
-        return token, tdata, entity_data, page_title, session_details, job_link
+        return token, tdata, entity_data, app_data, page_title, session_details, job_link
     else:
-        return None, None, None, base_title, None, None
+        return None, None, None, None, base_title, None, None
 
 
 

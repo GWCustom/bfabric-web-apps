@@ -20,6 +20,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
             dcc.Location(id='url', refresh=False),
             dcc.Store(id='token', storage_type='session'),
             dcc.Store(id='entity', storage_type='session'),
+            dcc.Store(id='app_data', storage_type='session'),
             dcc.Store(id='token_data', storage_type='session'),
             dcc.Store(id='dynamic-link-store', storage_type='session'),  # Store for dynamic job link
 
