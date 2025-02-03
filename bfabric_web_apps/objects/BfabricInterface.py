@@ -196,11 +196,9 @@ class BfabricInterface( Bfabric ):
         # Extract App ID from token
         app_data_raw = token_data.get("application_data", None)
         
-        if isinstance(app_data_raw, int):  
-            app_id = app_data_raw  # Already an integer
-        elif isinstance(app_data_raw, str) and app_data_raw.isdigit():  
-            app_id = int(app_data_raw)  # Convert from string to integer
-        else:
+        try:
+            app_id = int(app_data_raw)
+        except:
             print("Invalid application_data format in token_data")
             return json.dumps({})  # Return empty JSON if app_id is invalid
 
