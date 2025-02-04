@@ -5,7 +5,7 @@ This chapter provides a step-by-step guide for installing and deploying **bfabri
 ---
 
 ## Dependencies
-Before installing **bfabric_web_app**, ensure you have the following dependencies installed on your system. These are the dependencies required to install **bfabric_web_app**; additional packages (such as Dash and Flask) will be installed later with a single command during deployment.
+Before installing **bfabric_web_apps**, ensure you have the following dependencies installed on your system. These are the dependencies required to install **bfabric_web_apps**; additional packages (such as Dash and Flask) will be installed later with a single command during deployment.
 
 - **Python** (>= 3.8)  
 - **pip** (latest version recommended)  
@@ -33,7 +33,7 @@ cd bfabric-web-app-template
 
 ---
 
-## 3. Set Up a Virtual Environment
+### 3. Set Up a Virtual Environment
 
 Choose one of the following options to create and activate a virtual environment:
 
@@ -64,7 +64,7 @@ mamba activate bfabric-web-apps
 
 ---
 
-## 4. Install Dependencies
+### 4. Install Dependencies
 Once the virtual environment is active, install all required dependencies:
 
 ```sh
@@ -73,9 +73,12 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Set Up .bfabricpy.yml Configuration File as Described in [bfabricPy](https://fgcz.github.io/bfabricPy/)
+### 5. Set Up .bfabricpy.yml Configuration File as Described in [bfabricPy](https://fgcz.github.io/bfabricPy/)
 
 The **.bfabricpy.yml** file is **essential for power users**. It provides credentials needed for interacting with the **B-Fabric API** and enables key functionalities like authentication, logging, and API access. 
+
+> **Note:** By default, the application expects the configuration file to be located at `~/.bfabricpy.yml`. However, this default location can be changed. For details on how to modify the configuration path, see the [How to Modify Global Variables](bfabric_web_apps_functions.md#how-to-modify-global-variables) section.
+
 
 Create a **.bfabricpy.yml** file in your home directory (e.g., **~/.bfabricpy.yml**) and format it as follows:
 
@@ -100,7 +103,7 @@ As mentioned above, if you encounter any issues, please refer to the [bfabricPy 
 
 ---
 
-## 6. Run the Application
+### 6. Run the Application
 
 Start the development server by running:
 
@@ -110,7 +113,7 @@ python index.py
 
 ---
 
-## 7. Check It Out
+### 7. Test the Application
 
 Visit the following URL to see your application in action:
 

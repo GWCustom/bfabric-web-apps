@@ -174,10 +174,10 @@ The **documentation section** provides users with an introduction to the **B-Fab
 
 ```python
 documentation_content = [
-    html.H2("Welcome to Bfabric App Template"),
+    html.H2("Welcome to B-Fabric App Template"),
     html.P(
         [
-            "This app serves as the user-interface for Bfabric App Template, "
+            "This app serves as the user-interface for B-Fabric App Template, "
             "a versatile tool designed to help build and customize new applications."
         ]
     ),
@@ -185,7 +185,7 @@ documentation_content = [
     html.P(
         [
             "Please check out the official documentation of ",
-            html.A("Bfabric Web Apps", href="https://pypi.org/project/bfabric-web-apps/", target="_blank"),
+            html.A("B-Fabric Web Apps", href="https://pypi.org/project/bfabric-web-apps/", target="_blank"),
             "."
         ]
     )
@@ -204,7 +204,7 @@ documentation_content = [
 The **application title** provides a clear and identifiable name for the B-Fabric web app. This title appears in the **UI header** and helps users understand the purpose of the application.  
 
 ```python
-app_title = "Bfabric App Template"
+app_title = "B-Fabric App Template"
 ```
 
 ---
@@ -381,7 +381,7 @@ The function returns:
 - **`entity_data` (dict or None)** – Entity information linked to the user.  
 
 #### Returns:  
-- **Tuple** – Contains sidebar state settings and updated authentication UI.  
+- Contains sidebar state settings and updated authentication UI.  
 
 #### Return Type: 
 - **`tuple`**  

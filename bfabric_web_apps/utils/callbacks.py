@@ -33,7 +33,7 @@ def process_url_and_token(url_params):
 
     if tdata_raw:
         if tdata_raw == "EXPIRED":
-            return None, None, None, base_title, None, None
+            return None, None, None, None, base_title, None, None
         else:
             tdata = json.loads(tdata_raw)
     else:

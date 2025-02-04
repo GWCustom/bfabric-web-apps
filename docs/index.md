@@ -54,7 +54,7 @@ By combining the **template** with the **bfabric_web_apps** library, you’ll ha
 
 B-Fabric is a Laboratory Information Management System (LIMS) developed for managing scientific experiments and their associated data. It offers a robust platform to track samples, analyze results, and organize workflows efficiently for researchers, laboratories, and core facilities.
 
-For more information, visit the [Bfabric official website](https://fgcz-bfabric.uzh.ch/bfabric/).
+For more information, visit the [B-Fabric official website](https://fgcz-bfabric.uzh.ch/bfabric/).
 
 ---
 
@@ -83,5 +83,5 @@ For more details, refer to the [Dash official documentation](https://dash.plotly
 - **Dash Docs**: [Dash Documentation](https://dash.plotly.com/)  
 - **Dash Bootstrap Components**: [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/)  
 - **BfabricPy Docs Page**: [BfabricPy Documentation](https://fgcz.github.io/bfabricPy/)  
-- **B-Fabric Website**: [Bfabric Official Website](https://www.bfabric.org/)  
-- **B-Fabric User Manual**: [Bfabric User Manual](https://www.bfabric.org/usermanual)  
+- **B-Fabric Website**: [B-Fabric Official Website](https://fgcz-bfabric.uzh.ch/bfabric/)  
+- **B-Fabric User Manual**: [B-Fabric User Manual](https://www.bfabric.org/usermanual)  
