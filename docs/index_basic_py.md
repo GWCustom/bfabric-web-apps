@@ -74,9 +74,9 @@ app_title = "My B-Fabric App (Basic)"
 
 ---
 
-## Defining the Layout  
+## Designing the Main Page
 
-This section defines the **structure of the app**, including the sidebar and main content.
+The **application layout** organizes the **sidebar and main content area** into a structured, two-column design. The **left column** houses interactive elements for user input, while the **right column** displays content dynamically based on authentication and user selections.  
 
 ```python
 app_specific_layout = dbc.Row([
@@ -89,41 +89,66 @@ app_specific_layout = dbc.Row([
         html.Div(id='user-display', style={"margin": "2vh 0 2vh 0"}),
     ], width=9)
 ])
+```
 
+### Explanation  
+- **app_specific_layout**: Defines **two columns**:
+  - A **left sidebar** (currently empty, but can be extended).
+  - A **main content area**, including:
+    - A **welcome message**.
+    - A **user display section** (id='user-display'), which updates dynamically based on login status.
+
+---
+
+## Defining the Documentation Section
+
+The **documentation section** provides users with an introduction to the **B-Fabric App Template** and links to external resources for further learning.  
+
+```python
 documentation_content = [
     html.H2("Documentation"),
     html.P("Describe your app's features here.")
 ]
+```
 
+### Explanation  
+- **Header (html.H2)** – Displays a **title** for the documentation section.  
+- **Content (html.P)** – Placeholder for future documentation, explaining the **purpose of the application** and its customization options.  
+
+---
+
+## Integrating the App Layout
+
+The `app.layout` function **establishes the final structure** of the application by integrating the **title, main content, and documentation** into a cohesive layout. This ensures a **consistent user experience** across all pages.  
+
+```python
 app.layout = get_static_layout(
-    app_title,  
-    app_specific_layout,  
-    documentation_content  
+    app_title,  # Application title
+    app_specific_layout,  # The main content for the app
+    documentation_content  # Documentation section
 )
 ```
 
 ### Explanation  
-- **`app_specific_layout`**: Defines **two columns**:
-  - A **left sidebar** (currently empty, but can be extended).
-  - A **main content area**, including:
-    - A **welcome message**.
-    - A **user display section** (`id='user-display'`), which updates dynamically based on login status.
+- Uses **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a **consistent page structure** throughout the application.  
+- **app_title** – Defines the **main heading** of the application.  
+- **app_specific_layout** – Contains the **sidebar and main content area**.  
+- **documentation_content** – Displays **informational resources** for users.  
 
-- **`get_static_layout()`**:
-  - Combines the **title**, **app layout**, and **documentation section**.
-  - Uses **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** for consistency across B-Fabric applications.
 
 ---
 
-## **Creating a Callback for User Display**  
+## Callback for User Display
 
-This callback function dynamically updates the **user display** based on authentication status and the associated application details.
+This callback **dynamically updates the UI** to reflect user authentication status and application information.  
 
-### **How It Works**
-- **Listens for authentication changes** using `token_data`.  
-- **Extracts user information** from `token_data` and **application details** from `app_data`.  
-- **Logs the login event** using [`get_logger`](bfabric_web_apps_functions.md#get-logger).  
-- **Updates the UI** to show the username, application name, and description if authenticated; otherwise, prompts for login.
+For more details on Dash callbacks, see: **[Dash Callbacks Documentation](https://dash.plotly.com/basic-callbacks)**  
+
+---
+
+### Callback Definition
+
+The callback **listens for authentication** (`token_data`) and **application details** (`app_data`) and decides what to display in the `user-display` component.
 
 ```python
 @app.callback(
@@ -131,37 +156,70 @@ This callback function dynamically updates the **user display** based on authent
     Input('token_data', 'data'),
     State('app_data', 'data')
 )
+```
+
+### Explanation
+- **Output:**  
+  - **`user-display`**: A Dash component to show user/app data or a login prompt.  
+- **Input:**  
+  - **`token_data`**: Tracks user authentication status.  
+- **State:**  
+  - **`app_data`**: Stores application information (e.g., name, description).
+
+---
+
+### Handling User and Application Data
+
+```python
 def update_user_display(token_data, app_data):
     if token_data and app_data:
         user_name = token_data.get("user_data", "Unknown User")
         app_name = app_data.get("name", "Unknown App")
         app_description = app_data.get("description", "Unknown App")
+```
 
+### Explanation
+- Checks if both `token_data` and `app_data` exist.  
+- Retrieves:
+  - **`user_name`** from `token_data`.
+  - **`app_name`** and **`app_description`** from `app_data`.  
+
+---
+
+### Logging the Event
+
+```python
         # Initialize logger and log the login event
         L = get_logger(token_data)
         L.log_operation("User Login", "User logged in successfully.")
+```
 
+### Explanation
+- **['get_logger'](bfabric_web_apps_functions.md#get-logger)** is used to capture user actions.  
+- The **[`log_operation`](bfabric_web_apps_functions.mdl#log-operation)** method records a **“User Login”** event in the logs.
+
+---
+
+### Return Statements
+
+```python
         return html.Div([
             html.P(f"User {user_name} has successfully logged in!"),
             html.Br(),
             html.P(f"Application Name: {app_name}"),
             html.P(f"Application Description: {app_description}")
         ])
-
     else:
         return "Please log in."
 ```
 
-### **Arguments**
-- **`token_data` (dict or None)** – Contains user authentication token data.  
-- **`app_data` (dict or None)** – Contains application details such as name and description.  
+### Explanation
+1. **If authenticated** (both `token_data` and `app_data` present):  
+   - Returns an `html.Div` showing the user’s name, application name, and application description.  
 
-### **Returns**
-- **`html.Div`** – A UI component displaying the login status, application name, and description.  
-- **`str`** – `"Please log in."` if authentication data is missing.  
+2. **If not authenticated** (missing data):  
+   - Returns the string **"Please log in."**, prompting the user to authenticate.
 
-### **Return Type**
-- `html.Div | str`
 
 ---
 
