@@ -4,7 +4,7 @@ import os
 from bfabric_web_apps.objects import BfabricInterface, Logger
 
 # Export components
-from .utils.components import *
+from .utils import components
 
 # Export layouts
 from .layouts.layouts import get_static_layout
