@@ -1,6 +1,6 @@
 # Template Usage
 
-This section explains how to use **bfabric_web_apps** with the help of the  **bfabric_web_app_template**.
+This section explains how to use **bfabric_web_apps** with the help of the **bfabric_web_app_template**.
 
 ---
 
@@ -41,8 +41,8 @@ These functionalities are **built-in** to both templates, so they work out of th
 ---
 
 > **Important:**  
-> - **`generic_bfabric.py`** is a **core system file** and **must not be modified**. Any changes here may break authentication or system integration.  
-> - **All customization** (e.g., adding UI components, callbacks, or logging) should be done in **`index.py` or `index_basic.py`**.  
+> - **`generic_bfabric.py`** is a **core system file** and **must not be modified**. Any changes to this file may break authentication or system integration.  
+> - **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index.py` or `index_basic.py`**.  
 
 ---
 

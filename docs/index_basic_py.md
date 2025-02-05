@@ -1,6 +1,6 @@
 # Minimal Template - index_basic.py
 
-This chapter provides a step-by-step breakdown of the **index_basic.py** script. It explains key functions and their roles in setting up a **basic but functional** B-Fabric web application.
+This chapter provides a step-by-step breakdown of the **index_basic.py** script. It explains key functions and their roles in setting up a **basic B-Fabric web application**.
 
 ---
 
@@ -57,20 +57,23 @@ import dash_bootstrap_components as dbc
 3. **bfabric_web_apps Imports**  
    - **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)**: Provides a **consistent page layout**.  
    - **[`get_logger`](bfabric_web_apps_functions.md#get-logger)**: Handles **logging of user actions**.  
-   - **HOST & PORT**: Define **server configurations** (imported from `bfabric_web_apps`).  
+   - **HOST & PORT**: Define **server configurations** (imported from `bfabric_web_apps`).
+
+4. **Dash Bootstrap Components (DBC)**  
+   - Provides **pre-styled UI elements** to enhance the look and functionality of the app.  
 
 ---
 
 ## Setting Up the App Title  
 
-The **title** of the application is defined here.
+The **application title** provides a clear and identifiable name for the B-Fabric web app. This title appears in the **UI header** and helps users understand the purpose of the application.
 
 ```python
 app_title = "My B-Fabric App (Basic)"
 ```
 
 ### Explanation  
-- This **title appears in the browser tab** and is used inside **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a consistent UI.  
+- This title is used inside **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a consistent UI.  
 
 ---
 
@@ -195,7 +198,7 @@ def update_user_display(token_data, app_data):
 ```
 
 ### Explanation
-- **['get_logger'](bfabric_web_apps_functions.md#get-logger)** is used to capture user actions.  
+- The **['get_logger'](bfabric_web_apps_functions.md#get-logger)** method is used to capture user actions.  
 - The **[`log_operation`](bfabric_web_apps_functions.mdl#log-operation)** method records a **“User Login”** event in the logs.
 
 ---
@@ -232,6 +235,6 @@ if __name__ == "__main__":
     app.run_server(debug=False, port=PORT, host=HOST)
 ```
 
-### Explanation  
-- **`PORT` and `HOST`** define the server's **address and port number** (imported from `bfabric_web_apps`).  
-
+### Explanation
+- **`PORT` and `HOST`** define the server’s **address and port number**.
+- These values are **imported by default from the `bfabric_web_apps` module**. If you want to modify them, refer to the **[Global Configuration Variables](bfabric_web_apps_functions.md#dynamic-variable-configuration)** chapter for more information.

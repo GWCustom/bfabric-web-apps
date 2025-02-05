@@ -1,6 +1,6 @@
 # Full-Featured Template - index.py
 
-This chapter provides a step-by-step breakdown of the **index.py** script. It explains key functions and their roles in setting up a **feature-rich B-Fabric web application**.
+This chapter provides a step-by-step breakdown of the **index.py** script. It explains key functions and their roles in setting up a feature-rich B-Fabric web application.
 
 ---
 
@@ -59,13 +59,23 @@ from generic_bfabric import app
 2. **Dash Bootstrap Components (DBC)**  
    - Provides **pre-styled UI elements** to enhance the look and functionality of the app.  
 
-3. **bfabric_web_apps Imports**  
+3. **bfabric_web_apps**  
    - Contains **utilities and configurations** for seamless integration with B-Fabric.  
 
-4. **Generic B-Fabric Imports**  
-   - `app`: The **Dash instance** that initializes and runs the web app.  
+4. **Generic B-Fabric**  
+   - `generic_bfabric`: This file provides **generalized functions** that the template relies on.
+
+5. **Generic B-Fabric app Import**  
+   - `app`: The **Dash instance** that initializes and runs the web app.
 
 ---
+
+> **Important:**  
+> - **`generic_bfabric.py`** is a **core system file** and **must not be modified**. Any changes to this file may break authentication or system integration.  
+> - **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index.py` or `index_basic.py`**.  
+
+---
+
 ## Setting Up Default Configuration
 
 The application uses **global variables** in bfabric_web_apps to define important **default configuration values**.  
@@ -177,7 +187,7 @@ documentation_content = [
     html.H2("Welcome to B-Fabric App Template"),
     html.P(
         [
-            "This app serves as the user-interface for B-Fabric App Template, "
+            "This app serves as the user interface for B-Fabric App Template, "
             "a versatile tool designed to help build and customize new applications."
         ]
     ),
@@ -364,11 +374,13 @@ For more details, refer to: **[Logging Functions](bfabric_web_apps_functions.md#
 
 The function returns:  
 - **Sidebar state settings** (enabled/disabled components).  
-- **Authentication UI content** (login prompt or user details).  
+- **Authentication UI content** (updated authentication UI).  
 
 ```python
     return (*sidebar_state, auth_div_content)
 ```
+
+---
 
 ### Function Definition  
 
@@ -380,8 +392,12 @@ The function returns:
 - **`token_data` (dict or None)** – Authentication token data.  
 - **`entity_data` (dict or None)** – Entity information linked to the user.  
 
+---
+
 #### Returns:  
 - Contains sidebar state settings and updated authentication UI.  
+
+---
 
 #### Return Type: 
 - **`tuple`**  
@@ -390,12 +406,13 @@ The function returns:
 
 ## Running the Application
 
-The script starts the **Dash server**.
+This section ensures the app **runs on the correct server settings**.
 
 ```python
 if __name__ == "__main__":
     app.run_server(debug=False, port=bfabric_web_apps.PORT, host=bfabric_web_apps.HOST)
 ```
+---
 
 ### Explanation
 - Runs the **Dash server** with the specified **host** and **port** settings.
