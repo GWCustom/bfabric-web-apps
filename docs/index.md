@@ -15,9 +15,6 @@ Built to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_ap
   - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
   - **Integrated Logging** – Track API calls, application events, and errors for debugging and auditing.  
 
-- **Custom Dashboards**  
-  - Build **interactive, data-driven dashboards** with Dash and Plotly.  
-
 - **Prebuilt UI Components & Layouts**  
   - Utilize **predefined Dash components, layouts, and callbacks** to accelerate development, maintain consistency, and enhance user experience.
 
@@ -36,7 +33,7 @@ To see the **full source code** or to **contribute**, visit the main GitHub repo
 
 ---
 
-## Get Started Quickly
+## Quickstart 
 
 Developers can hit the ground running with the **[bfabric_web_app_template](https://github.com/GWCustom/bfabric-web-app-template)**, a **ready-made** project that demonstrates how to configure and deploy a `bfabric_web_apps` application end-to-end. It includes:
 

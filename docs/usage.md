@@ -13,6 +13,14 @@ The **bfabric_web_app_template** provides two ready-to-use starting points:
 
 Both templates are designed to be **modified and extended** by users, serving as the main entry points for custom B-Fabric web applications.
 
+Additionally, within the **bfabric_web_app_template**, the following files are available:
+
+- **`generic_bfabric.py`** – Both templates **import** and **rely** on `generic_bfabric.py` for core functionality.
+- **`bfabric_apps_auto_registration.py`** – Calls the [`create_web_app()`](bfabric_web_apps_functions.md#remote-creation-of-web-applications) function to remotely create a B-Fabric web application.
+
+This structure ensures a modular and reusable approach to web application development within B-Fabric.
+
+
 ---
 
 ## Choosing the Right Template
@@ -50,5 +58,6 @@ These functionalities are **built-in** to both templates, so they work out of th
 
 Now that you understand the structure, the next sections will explore:  
 
-1. **[Full-Featured Template (`index.py`)](index_py.md)**  
-2. **[Minimal Template (`index_basic.py`)](index_basic_py.md)**  
+1. **[Template Deployment Guide](installation_template.md)**  
+2. **[Full-Featured Template (`index.py`)](index_py.md)**  
+3. **[Minimal Template (`index_basic.py`)](index_basic_py.md)**  

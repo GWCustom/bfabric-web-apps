@@ -27,18 +27,10 @@ A Dash app instance with support for dynamic callbacks and responsive design.
 #### Example Usage
 
 ```python
-# Import the create_app function from the bfabric_web_apps module.
 from bfabric_web_apps import create_app
 
 # Create an instance of the Dash app using the create_app function.
 app = create_app()
-
-# Define the layout for the Dash app.
-app.layout = get_static_layout(
-    app_title,
-    app_specific_layout,
-    documentation_content
-)
 ```
 ---
 
@@ -275,7 +267,7 @@ L = get_logger(token_data)
 A logger instance for managing and creating logs.
 
 #### Return Type:: 
-`Logger`
+`bfabric_web_apps.Logger.Logger`
 
 ##### Example
 
@@ -355,13 +347,13 @@ result = L.logthis(api_call, args, obj, flush_logs, kwargs)
 ```
 
 ##### Args:  
-1. **api_call** (*function*): The API function to execute.  
+1. **api_call** (*function*): The API function to execute. Example API calls could be `read` or `save`, depending on whether data needs to be retrieved or stored.
 2. **endpoint** (*str*): The endpoint to read from, e.g. "sample".
 3. **obj** (*dict*) A dictionary containing the query, for every field multiple possible values can be provided, the final query requires the condition for each field to be met
 4. **flush_logs** (*bool*): Controls whether logs are immediately sent to the backend. Defaults to `True`.   
    - If `True`: The log entry is appended to the local log storage and immediately flushed to the backend using the `flush_logs()` method. This ensures that the log is recorded in real time.  
    - If `False`: The log entry is stored locally and will remain in the local cache until the next time the `flush_logs()` method is explicitly called. This can be useful for batching multiple log entries to minimize backend calls.
-5. **kwargs**: These are keyword arguments passed directly to the API call. For example, `max_results` can be used to specify a cap on the number of results to query. If provided as an integer, the number of results will be limited to the specified value. If set to `None`, the code will load all available pages. The function will continue fetching data page by page until either the maximum number of results is reached or all pages have been retrieved.
+5. **kwargs**: These are keyword arguments passed directly to the API call. For example, `max_results` can be used to specify a cap on the number of results to query. This example applies specifically to a `read` API call. If provided as an integer, the number of results will be limited to the specified value. If set to `None`, the code will load all available pages. The function will continue fetching data page by page until either the maximum number of results is reached or all pages have been retrieved.
 
 ---
 
@@ -475,7 +467,11 @@ power_user_wrapper = get_power_user_wrapper(token_data)
 ---
 
 #### Returns:
-- **Bfabric**: A `Bfabric` instance, authenticated and configured for the specified environment.
+- A `Bfabric` instance, authenticated and configured for the specified environment.
+
+---
+##### Return Type:  
+- `bfabric_web_apps.bfabric_web_apps.Bfabric`
 
 ---
 
@@ -559,9 +555,81 @@ def generic_handle_bug_report(n_clicks, bug_description, token, entity_data):
 ```
 
 ---
+# 7. Remote Creation of Web Applications
 
+## Overview
 
-## 7. Dynamic Variable Configuration
+The `create_web_app()` function allows users to remotely create a new web application by providing necessary inputs such as **name, URL, description, and technology type**. This function eliminates the need to manually open B-Fabric, enabling application creation directly from the terminal.
+
+---
+
+## create_web_app()
+
+The `create_web_app()` function prompts the user for **input parameters** required for creating a web application, validates these inputs, and then submits them to B-Fabric's API.
+
+If you want to explore the implementation of the `create_web_app()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/14-auto-registration-of-apps-in-b-fabric/bfabric_web_apps/utils/create_app_in_bfabric.py).
+
+```python
+create_web_app()
+```
+
+### Input Parameters:
+These are the variables used to create the web application. Some require user input, while others have default values.
+
+| Parameter        | Input/Default  | Description |
+|-----------------|---------------|-------------|
+| **system**      | User Input     | The system where the web app will be created (`TEST` or `PROD`). |
+| **technologyid** | User Input     | The ID corresponding to the chosen application type. Must be selected from available options. |
+| **name**        | User Input     | The name of the web application. |
+| **weburl**      | User Input     | The URL of the web application. |
+| **description** | User Input     | A brief description of the web application. |
+| **type**        | Default (`WebApp`) | Defines the application type. Always set to `WebApp`. |
+| **supervisorid**| Default (`2446`)  | The ID of the supervisor managing the application. |
+| **enabled**     | Default (`True`)  | Specifies whether the application is active. |
+| **valid**       | Default (`True`)  | Indicates whether the application is valid. |
+| **hidden**      | Default (`False`) | Determines whether the application is hidden. |
+
+---
+
+## Example Usage
+
+```python
+from bfabric_web_apps import create_web_app
+
+# Run the function to create a new web application
+create_web_app()
+```
+
+### Steps to Fill Out the Inputs:
+1. **Select the System**:
+   - Type `TEST` for the test system or `PROD` for the production system.
+   - If an invalid input is entered, the function will prompt again.
+
+2. **Choose the Application Type**:
+   - Available technologies for **TEST**:
+     - 1: Genomics / Transcriptomics
+     - 2: Proteomics
+     - 4: Metabolomics / Biophysics
+     - 6: General
+     - 10: New Tech
+   - Available technologies for **PRODUCTION**:
+     - 1: Genomics / Transcriptomics
+     - 2: Proteomics
+     - 4: Metabolomics / Biophysics
+     - 6: General
+     - 10: Bioinformatics
+   - Select the number corresponding to your application type.
+
+3. **Provide Additional Information**:
+   - Enter the **Application Name**.
+   - Provide the **Web URL** where the application is hosted.
+   - Enter a **short description** of the web application.
+
+Once all inputs are provided, the function submits the data to B-Fabric and confirms successful creation.
+
+--- 
+
+## 8. Dynamic Variable Configuration
 
 ### Overview
 
@@ -577,9 +645,9 @@ The following global variables can be modified in B-Fabric Web Apps:
 
 | Variable                                    | Default Value                                        | Description                                                       |
 | ------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------- |
-| bfabric_web_apps.CONFIG_FILE_PATH         | "\~/.bfabricpy.yml"                                  | Path to the configuration file used by the application.           |
-| bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS  | "griffin\@gwcustom.com"                              | Email address for development-related inquiries.                  |
-| bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS | "gwtools@fgcz.system" | Email address for submitting bug reports.                         |
+| CONFIG_FILE_PATH         | "\~/.bfabricpy.yml"                                  | Path to the configuration file used by the application.           |
+| DEVELOPER_EMAIL_ADDRESS  | "griffin\@gwcustom.com"                              | Email address for development-related inquiries.                  |
+| BUG_REPORT_EMAIL_ADDRESS | "gwtools@fgcz.system" | Email address for submitting bug reports.                         |
 | HOST                                      | '0.0.0.0'                                            | The IP address where the Dash app is hosted.                      |
 | PORT                                      | 8050                                                 | The port number used by the Dash server.                          |
 | DEV                                       | False                                                | Indicates whether the application is running in development mode. |
@@ -611,14 +679,14 @@ bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "bugs@mydomain.com"
 #### Change Host and Port Settings
 
 ```python
-HOST = "127.0.0.1"
-PORT = 8080
+bfabric_web_apps.HOST = "127.0.0.1"
+bfabric_web_apps.PORT = 8080
 ```
 
 #### Enable Development Mode
 
 ```python
-DEV = True
+bfabric_web_apps.DEV = True
 ```
 
 These settings allow customization of the application behavior to fit different use cases, such as development, testing, or production environments.
