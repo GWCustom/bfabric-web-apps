@@ -13,6 +13,7 @@ from .layouts.layouts import get_static_layout
 from .utils.app_init import create_app
 from .utils.get_logger import get_logger
 from .utils.get_power_user_wrapper import get_power_user_wrapper
+from .utils.create_app_in_bfabric import create_app_in_bfabric
 
 # Export callbacks
 from .utils.callbacks import process_url_and_token, submit_bug_report
@@ -45,6 +46,7 @@ __all__ = [
     'CONFIG_FILE_PATH',
     'DEVELOPER_EMAIL_ADDRESS',
     'BUG_REPORT_EMAIL_ADDRESS',
+    'create_app_in_bfabric'
 ]
 
 
