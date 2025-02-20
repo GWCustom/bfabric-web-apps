@@ -16,6 +16,8 @@ HOST = "fgcz-bfabric.uzh.ch"
 
 
 class BfabricInterface( Bfabric ):
+    _instance = None  # Singleton instance
+    _wrapper = None   # Shared wrapper instance
     """
     A class to interface with the Bfabric API, providing methods to validate tokens,
     retrieve data, and send bug reports.
@@ -26,6 +28,30 @@ class BfabricInterface( Bfabric ):
         Initializes an instance of BfabricInterface.
         """
         pass
+
+    def __new__(cls, *args, **kwargs):
+        """Ensure only one instance exists (Singleton Pattern)."""
+        if cls._instance is None:
+            cls._instance = super(BfabricInterface, cls).__new__(cls)
+        return cls._instance
+    
+    def _initialize_wrapper(self, token_data):
+        """Internal method to initialize the Bfabric wrapper after token validation."""
+        if not token_data:
+            raise ValueError("Token data is required to initialize the wrapper.")
+
+        # Create and store the wrapper
+        if self._wrapper is None:
+            self._wrapper = self.token_response_to_bfabric(token_data)
+
+
+    def get_wrapper(self):
+        """Return the existing wrapper or raise an error if not initialized."""
+        if self._wrapper is None:
+            raise RuntimeError("Bfabric wrapper is not initialized. Token validation must run first.")
+        return self._wrapper
+
+
 
     def token_to_data(self, token):
         """
@@ -70,6 +96,8 @@ class BfabricInterface( Bfabric ):
             
             environment_dict = {"Production":"https://fgcz-bfabric.uzh.ch/bfabric","Test":"https://fgcz-bfabric-test.uzh.ch/bfabric"}
             
+            print('userinfo', userinfo)
+
             token_data = dict(
                 environment = userinfo['environment'],
                 user_data = userinfo['user'],
@@ -82,6 +110,9 @@ class BfabricInterface( Bfabric ):
                 userWsPassword = userinfo['userWsPassword'],
                 jobId = userinfo['jobId']
             )
+
+            # Initialize the wrapper right after validating the token
+            self._initialize_wrapper(token_data)
 
             return json.dumps(token_data)
         
@@ -133,7 +164,7 @@ class BfabricInterface( Bfabric ):
         if not token_data:
             return json.dumps({})
         
-        wrapper = self.token_response_to_bfabric(token_data)
+        wrapper = self.get_wrapper()
         entity_class = token_data.get('entityClass_data', None)
         endpoint = entity_class_map.get(entity_class, None)
         entity_id = token_data.get('entity_id_data', None)
@@ -209,7 +240,7 @@ class BfabricInterface( Bfabric ):
         L = get_logger(token_data)
         
         # Get API wrapper
-        wrapper = self.token_response_to_bfabric(token_data)  # Same as entity_data
+        wrapper = self.get_wrapper()
         if not wrapper:
             print("Failed to get Bfabric API wrapper")
             return json.dumps({})
@@ -234,9 +265,11 @@ class BfabricInterface( Bfabric ):
             )
             return json.dumps({})
 
-        # Extract Name and Description
+        # Extract App ID, Name, and Description
         app_info = app_data_dict[0]  # First (and only) result
+        print('app_info', app_info)
         json_data = json.dumps({
+            "id": app_info.get("id", "Unknown"),
             "name": app_info.get("name", "Unknown"),
             "description": app_info.get("description", "No description available")
         })
@@ -281,5 +314,9 @@ class BfabricInterface( Bfabric ):
         return True
 
 
+
+
+# Create a globally accessible instance
+bfabric_interface = BfabricInterface()
 
 
