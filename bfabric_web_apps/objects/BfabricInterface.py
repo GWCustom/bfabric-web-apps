@@ -312,10 +312,9 @@ class BfabricInterface( Bfabric ):
         os.system(mail)
 
         return True
+    
 
-
-
-
+    
 # Create a globally accessible instance
 bfabric_interface = BfabricInterface()
 

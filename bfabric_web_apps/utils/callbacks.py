@@ -1,5 +1,5 @@
 from dash import Input, Output, State, html, dcc
-from bfabric_web_apps.objects.BfabricInterface import BfabricInterface
+from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
 import json
 import dash_bootstrap_components as dbc
 from datetime import datetime as dt
@@ -28,7 +28,6 @@ def process_url_and_token(url_params):
         return None, None, None, None, base_title, None, None
 
     token = "".join(url_params.split('token=')[1:])
-    bfabric_interface = BfabricInterface()
     tdata_raw = bfabric_interface.token_to_data(token)
 
     if tdata_raw:
@@ -103,7 +102,7 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
         tuple: A tuple containing two boolean values indicating success and failure status of the submission.
                (is_open_success, is_open_failure)
     """
-    bfabric_interface = BfabricInterface()
+
     print("submit bug report", token)
 
     # Parse token data if token is provided, otherwise set it to an empty dictionary
@@ -168,3 +167,43 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
 
     return False, False
 
+
+# def populate_workunit_data(token):
+
+#     """
+#     Function to populate workunit data for the current app instance.
+
+#     Args: 
+#         token_data (dict): Token metadata.
+
+#     Returns:
+#         html.Div: A div containing the populated workunit data.
+#     """
+
+#     # Parse token data if token is provided, otherwise set it to an empty dictionary
+#     if token:
+#         token_data = json.loads(bfabric_interface.token_to_data(token))
+#     else:
+#         token_data = {}
+
+#     print(token_data)
+
+#     # Extract logging-related information from token_data, with defaults for missing values
+#     jobId = token_data.get('jobId', None)
+#     username = token_data.get("user_data", "None")
+#     environment = token_data.get("environment", "None")
+
+#     if token_data:
+#         L = get_logger(token_data)
+
+
+#         workunit_response = L.logthis(
+#             api_call=wrapper.save,
+#             endpoint="workunit",
+#             obj=workunit_data,
+#             params=None,
+#             flush_logs=True
+#         )
+
+#     else: 
+#         return html.Div()
