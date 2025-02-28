@@ -2,7 +2,7 @@
 name = "bfabric-web-apps"
 version = "0.1.0"
 description = "A package containing handy boilerplate utilities for developing bfabric web-applications"
-authors = ["Mark Zuber, Griffin White, GWC GmbH"]
+authors = ["Marc Zuber, Griffin White, GWC GmbH"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

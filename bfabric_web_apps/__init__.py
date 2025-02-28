@@ -20,7 +20,7 @@ from .utils.callbacks import process_url_and_token, submit_bug_report
 
 from .utils import defaults
 
-from bfabric_web_apps.nextflow.nextflow_pipeline import create_workunit, create_resource
+from bfabric_web_apps.utils.resource_utilities import create_workunit, create_resource
 HOST = os.getenv("HOST", defaults.HOST)
 PORT = int(os.getenv("PORT", defaults.PORT))  # Convert to int since env variables are strings
 DEV = os.getenv("DEV", str(defaults.DEV)).lower() in ["true", "1", "yes"]  # Convert to bool

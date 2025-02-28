@@ -1,63 +1,71 @@
 from bfabric_web_apps.utils.get_logger import get_logger
 from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
 from bfabric_web_apps.utils.get_power_user_wrapper import get_power_user_wrapper
+from bfabric_scripts.bfabric_upload_resource import bfabric_upload_resource
+from pathlib import Path
 
-def create_workunit(token_data, application_name, application_description, application_id, container_id=2220):
+def create_workunit(token_data, application_name, application_description, application_id, container_ids):
     """
-    Create a new workunit in B-Fabric.
-    
+    Create a new workunit in B-Fabric for each container ID.
+
     Args:
         token_data (dict): Authentication token data.
         application_name (str): Name of the application.
         application_description (str): Description of the application.
         application_id (int): Application ID.
-        container_id (int): Container ID (default: 2220).
+        container_ids (list): List of container IDs.
     
     Returns:
-        int: Workunit ID if successful, None otherwise.
+        list: List of created workunit IDs.
     """
-    workunit_data = {
-        "name": application_name,
-        "description": application_description,
-        "applicationid": int(application_id),
-        "containerid": container_id,
-    }
-
     L = get_logger(token_data)
     wrapper = bfabric_interface.get_wrapper()
+    workunit_ids = []
 
-    try:
-        workunit_response = L.logthis(
-            api_call=wrapper.save,
-            endpoint="workunit",
-            obj=workunit_data,
-            params=None,
-            flush_logs=True
-        )
-        workunit_id = workunit_response[0].get("id")
-        print(f"Workunit created with ID: {workunit_id}")
-        return workunit_id
+    # Ensure container_ids is a list
+    if not isinstance(container_ids, list):
+        container_ids = [container_ids]  # Convert to list if single value
 
-    except Exception as e:
-        L.log_operation(
-            "Error",
-            f"Failed to create workunit: {e}",
-            params=None,
-            flush_logs=True,
-        )
-        print(f"Failed to create workunit: {e}")
-        return None
+    for container_id in container_ids:
+        workunit_data = {
+            "name": f"{application_name} - Order {container_id}",
+            "description": f"{application_description} for Order {container_id}",
+            "applicationid": int(application_id),
+            "containerid": container_id,  # Assigning order ID dynamically
+        }
+
+        try:
+            workunit_response = L.logthis(
+                api_call=wrapper.save,
+                endpoint="workunit",
+                obj=workunit_data,
+                params=None,
+                flush_logs=True
+            )
+            workunit_id = workunit_response[0].get("id")
+            print(f"Created Workunit ID: {workunit_id} for Order ID: {container_id}")
+            workunit_ids.append(workunit_id)
+
+        except Exception as e:
+            L.log_operation(
+                "Error",
+                f"Failed to create workunit for Order {container_id}: {e}",
+                params=None,
+                flush_logs=True,
+            )
+            print(f"Failed to create workunit for Order {container_id}: {e}")
+
+    return workunit_ids  # Returning a list of all created workunits
 
 
-def create_resource(token_data, workunit_id, resource_name, file_content):
+def create_resource(token_data, workunit_id, gz_file_path):
     """
-    Upload a resource to an existing B-Fabric workunit.
+    Upload a .gz resource to an existing B-Fabric workunit.
     
     Args:
         token_data (dict): Authentication token data.
         workunit_id (int): ID of the workunit to associate the resource with.
-        resource_name (str): Name of the resource.
-        file_content (bytes): Binary content of the file to upload.
+        gz_file_path (str): Full path to the .gz file to upload.
     
     Returns:
         int: Resource ID if successful, None otherwise.
@@ -66,23 +74,27 @@ def create_resource(token_data, workunit_id, resource_name, file_content):
     wrapper = get_power_user_wrapper(token_data)
 
     try:
-        resource_response = wrapper.upload_resource(resource_name, file_content, workunit_id)
-        resource_id = resource_response[0].get("id")
-        if resource_id:
-            print(f"Resource uploaded with ID: {resource_id}")
+        file_path = Path(gz_file_path)
+
+        # Use the proper upload function
+        print("test", wrapper, file_path, workunit_id)
+        result = bfabric_upload_resource(wrapper, file_path, workunit_id)
+
+        if result:
+            print(f"Resource uploaded: {file_path.name}")
             L.log_operation(
                 "upload_resource",
-                f"Resource uploaded successfully with ID: {resource_id}",
+                f"Resource uploaded successfully: {file_path.name}",
                 params=None,
                 flush_logs=True,
             )
-            return resource_id
+            return result
         else:
-            raise ValueError("Resource ID not found in the response.")
+            raise ValueError(f"Failed to upload resource: {file_path.name}")
 
     except Exception as e:
         L.log_operation(
-            "Error",
+            "error",
             f"Failed to upload resource: {e}",
             params=None,
             flush_logs=True,
