@@ -1,6 +1,6 @@
 annotated-types==0.7.0
 attrs==24.2.0
-bfabric @ git+https://github.com/fgcz/bfabricPy.git@8c74f22ccdf1f370ed93e003cd8aad9ea42a4b98
+bfabric @ git+https://github.com/fgcz/bfabricPy.git@8c74f22ccdf1f370ed93e003cd8aad9ea42a4b98#egg=bfabric
 blinker==1.9.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
