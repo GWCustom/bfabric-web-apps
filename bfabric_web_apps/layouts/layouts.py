@@ -144,9 +144,9 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                     dbc.Tabs(
                         [
                             dbc.Tab(main_content, label="Main", tab_id="main"),
-                            dbc.Tab(get_documentation_tab(documentation_content), label="Documentation", tab_id="documentation"),
-                            dbc.Tab(get_workunits_tab(), label="Workunits", tab_id="workunits"),
-                            dbc.Tab(get_report_bug_tab(), label="Report a Bug", tab_id="report-bug"),
+                            dbc.Tab(dcc.Loading(get_documentation_tab(documentation_content)), label="Documentation", tab_id="documentation"),
+                            dbc.Tab(dcc.Loading(get_workunits_tab()), label="Workunits", tab_id="workunits"),
+                            dbc.Tab(dcc.Loading(get_report_bug_tab()), label="Report a Bug", tab_id="report-bug"),
                         ],
                         id="tabs",
                         active_tab="main",
@@ -251,6 +251,8 @@ def get_report_bug_tab():
                         "margin-left": "2vw",
                         "font-size": "20px",
                         "padding-right": "40px",
+                        "overflow-y": "scroll",
+                        "max-height": "65vh",
                     },
                 ),
                 width=9,
@@ -285,20 +287,18 @@ def get_workunits_tab():
                     id="page-content-workunits-children",
                     children=[
                         html.H2("Workunits"),
-                        html.P(
-                            [
-                                "This tab will display the workunits that have been created by this app instance."
-                            ]
-                        ),
-                        html.Br(),
-                        html.H4("Workunit Details: "),
-                        html.Br(),
+                        html.Div(id="refresh-workunits", children=[]),
+                        html.Div(
+                            id="workunits-content"
+                        )
                     ],
                     style={
                         "margin-top": "2vh",
                         "margin-left": "2vw",
                         "font-size": "20px",
                         "padding-right": "40px",
+                        "overflow-y": "scroll",
+                        "max-height": "65vh",
                     },
                 ),
                 width=9,

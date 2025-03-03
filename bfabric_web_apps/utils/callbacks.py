@@ -87,7 +87,6 @@ def process_url_and_token(url_params):
         return None, None, None, None, base_title, None, None
 
 
-
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
     """
     Submits a bug report based on user input, token, and entity data.
@@ -168,42 +167,65 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
     return False, False
 
 
-# def populate_workunit_data(token):
+def populate_workunit_details(token_data):
 
-#     """
-#     Function to populate workunit data for the current app instance.
+    """
+    Function to populate workunit data for the current app instance.
 
-#     Args: 
-#         token_data (dict): Token metadata.
+    Args: 
+        token_data (dict): Token metadata.
 
-#     Returns:
-#         html.Div: A div containing the populated workunit data.
-#     """
+    Returns:
+        html.Div: A div containing the populated workunit data.
+    """
 
-#     # Parse token data if token is provided, otherwise set it to an empty dictionary
-#     if token:
-#         token_data = json.loads(bfabric_interface.token_to_data(token))
-#     else:
-#         token_data = {}
+    environment_urls = {
+        "Test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
+        "Prod": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
+    }
 
-#     print(token_data)
+    if token_data:
 
-#     # Extract logging-related information from token_data, with defaults for missing values
-#     jobId = token_data.get('jobId', None)
-#     username = token_data.get("user_data", "None")
-#     environment = token_data.get("environment", "None")
+        jobId = token_data.get('jobId', None)
+        print("jobId", jobId)
+        
+        job = bfabric_interface.get_wrapper().read("job", {"id": jobId})[0]
+        workunits = job.get("workunit", [])
 
-#     if token_data:
-#         L = get_logger(token_data)
+        if workunits:
+            wus = bfabric_interface.get_wrapper().read(
+                "workunit", 
+                {"id": [wu["id"] for wu in workunits]}
+            )
+        else:
+            return html.Div(
+                [
+                    html.P("No workunits found for the current job.")
+                ]
+            )
 
+        wu_cards = []
 
-#         workunit_response = L.logthis(
-#             api_call=wrapper.save,
-#             endpoint="workunit",
-#             obj=workunit_data,
-#             params=None,
-#             flush_logs=True
-#         )
+        for wu in wus: 
+            print(wu)
+            wu_card = html.A(
+                dbc.Card([
+                    dbc.CardHeader(html.B(f"Workunit {wu['id']}")),
+                    dbc.CardBody([
+                        html.P(f"Name: {wu.get('name', 'n/a')}"),
+                        html.P(f"Description: {wu.get('description', 'n/a')}"),
+                        html.P(f"Num Resources: {len(wu.get('resource', []))}"),
+                        html.P(f"Created: {wu.get('created', 'n/a')}"),
+                        html.P(f"Status: {wu.get('status', 'n/a')}")
+                    ])
+                ], style={"width": "400px", "margin":"10px"}),
+                href=environment_urls[token_data.get("environment", "Test")] + str(wu["id"]),
+                target="_blank",
+                style={"text-decoration": "none"}
+            )
 
-#     else: 
-#         return html.Div()
+            wu_cards.append(wu_card)
+
+        return dbc.Container(wu_cards, style={"display": "flex", "flex-wrap": "wrap"})
+    else:
+        return html.Div()

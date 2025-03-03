@@ -9,11 +9,8 @@ from bfabric_web_apps.utils.get_logger import get_logger
 import os
 import bfabric_web_apps
 
-
-
 VALIDATION_URL = "https://fgcz-bfabric.uzh.ch/bfabric/rest/token/validate?token="
 HOST = "fgcz-bfabric.uzh.ch"
-
 
 class BfabricInterface( Bfabric ):
     _instance = None  # Singleton instance
@@ -50,8 +47,7 @@ class BfabricInterface( Bfabric ):
         if self._wrapper is None:
             raise RuntimeError("Bfabric wrapper is not initialized. Token validation must run first.")
         return self._wrapper
-
-
+    
 
     def token_to_data(self, token):
         """
@@ -96,8 +92,6 @@ class BfabricInterface( Bfabric ):
             
             environment_dict = {"Production":"https://fgcz-bfabric.uzh.ch/bfabric","Test":"https://fgcz-bfabric-test.uzh.ch/bfabric"}
             
-            print('userinfo', userinfo)
-
             token_data = dict(
                 environment = userinfo['environment'],
                 user_data = userinfo['user'],
@@ -267,7 +261,7 @@ class BfabricInterface( Bfabric ):
 
         # Extract App ID, Name, and Description
         app_info = app_data_dict[0]  # First (and only) result
-        print('app_info', app_info)
+
         json_data = json.dumps({
             "id": app_info.get("id", "Unknown"),
             "name": app_info.get("name", "Unknown"),

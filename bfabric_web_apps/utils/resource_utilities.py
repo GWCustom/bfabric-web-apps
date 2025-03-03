@@ -43,7 +43,6 @@ def create_workunit(token_data, application_name, application_description, appli
                 flush_logs=True
             )
             workunit_id = workunit_response[0].get("id")
-            print(f"Created Workunit ID: {workunit_id} for Order ID: {container_id}")
             workunit_ids.append(workunit_id)
 
         except Exception as e:
@@ -54,6 +53,18 @@ def create_workunit(token_data, application_name, application_description, appli
                 flush_logs=True,
             )
             print(f"Failed to create workunit for Order {container_id}: {e}")
+    
+    # First we get the existing workunit_ids for the current job object: 
+    pre_existing_workunit_ids = [elt.get("id") for elt in wrapper.read("job", {"id": token_data.get("jobId")})[0].get("workunit", [])]
+    
+    # Now we associate the job object with the workunits 
+    job = L.logthis(
+        api_call=L.power_user_wrapper.save,
+        endpoint="job",
+        obj={"id": token_data.get("jobId"), "workunitid": workunit_ids + pre_existing_workunit_ids},
+        params=None,
+        flush_logs=True
+    )
 
     return workunit_ids  # Returning a list of all created workunits
 
@@ -70,6 +81,7 @@ def create_resource(token_data, workunit_id, gz_file_path):
     Returns:
         int: Resource ID if successful, None otherwise.
     """
+
     L = get_logger(token_data)
     wrapper = get_power_user_wrapper(token_data)
 
