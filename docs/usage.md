@@ -4,6 +4,15 @@ This section explains how to use **bfabric_web_apps** with the help of the **bfa
 
 ---
 
+```{note}
+**Version Compatibility Notice**  
+To ensure proper functionality, the `bfabric_web_apps` library and the `bfabric_web_app_template` must have the **same version**. For example, if `bfabric_web_apps` is version `0.1.3`, then `bfabric_web_app_template` must also be `0.1.3`.  
+
+Please verify and update the versions accordingly before running the application.
+```
+
+---
+
 ## Overview
 
 The **bfabric_web_app_template** provides two ready-to-use starting points:  
