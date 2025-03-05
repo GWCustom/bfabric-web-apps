@@ -1,5 +1,5 @@
 from dash import Input, Output, State, html, dcc
-from bfabric_web_apps.objects.BfabricInterface import BfabricInterface
+from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
 import json
 import dash_bootstrap_components as dbc
 from datetime import datetime as dt
@@ -28,7 +28,6 @@ def process_url_and_token(url_params):
         return None, None, None, None, base_title, None, None
 
     token = "".join(url_params.split('token=')[1:])
-    bfabric_interface = BfabricInterface()
     tdata_raw = bfabric_interface.token_to_data(token)
 
     if tdata_raw:
@@ -88,7 +87,6 @@ def process_url_and_token(url_params):
         return None, None, None, None, base_title, None, None
 
 
-
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
     """
     Submits a bug report based on user input, token, and entity data.
@@ -103,7 +101,7 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
         tuple: A tuple containing two boolean values indicating success and failure status of the submission.
                (is_open_success, is_open_failure)
     """
-    bfabric_interface = BfabricInterface()
+
     print("submit bug report", token)
 
     # Parse token data if token is provided, otherwise set it to an empty dictionary
@@ -168,3 +166,66 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
 
     return False, False
 
+
+def populate_workunit_details(token_data):
+
+    """
+    Function to populate workunit data for the current app instance.
+
+    Args: 
+        token_data (dict): Token metadata.
+
+    Returns:
+        html.Div: A div containing the populated workunit data.
+    """
+
+    environment_urls = {
+        "Test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
+        "Prod": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
+    }
+
+    if token_data:
+
+        jobId = token_data.get('jobId', None)
+        print("jobId", jobId)
+        
+        job = bfabric_interface.get_wrapper().read("job", {"id": jobId})[0]
+        workunits = job.get("workunit", [])
+
+        if workunits:
+            wus = bfabric_interface.get_wrapper().read(
+                "workunit", 
+                {"id": [wu["id"] for wu in workunits]}
+            )
+        else:
+            return html.Div(
+                [
+                    html.P("No workunits found for the current job.")
+                ]
+            )
+
+        wu_cards = []
+
+        for wu in wus: 
+            print(wu)
+            wu_card = html.A(
+                dbc.Card([
+                    dbc.CardHeader(html.B(f"Workunit {wu['id']}")),
+                    dbc.CardBody([
+                        html.P(f"Name: {wu.get('name', 'n/a')}"),
+                        html.P(f"Description: {wu.get('description', 'n/a')}"),
+                        html.P(f"Num Resources: {len(wu.get('resource', []))}"),
+                        html.P(f"Created: {wu.get('created', 'n/a')}"),
+                        html.P(f"Status: {wu.get('status', 'n/a')}")
+                    ])
+                ], style={"width": "400px", "margin":"10px"}),
+                href=environment_urls[token_data.get("environment", "Test")] + str(wu["id"]),
+                target="_blank",
+                style={"text-decoration": "none"}
+            )
+
+            wu_cards.append(wu_card)
+
+        return dbc.Container(wu_cards, style={"display": "flex", "flex-wrap": "wrap"})
+    else:
+        return html.Div()
