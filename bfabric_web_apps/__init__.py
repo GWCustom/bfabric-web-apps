@@ -56,4 +56,5 @@ __all__ = [
     'create_resource',
     'create_workunits',
     'create_resources',
+    'populate_workunit_details',
 ]
