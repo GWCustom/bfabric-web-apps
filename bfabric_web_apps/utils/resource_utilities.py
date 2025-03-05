@@ -28,52 +28,28 @@ def create_workunit(token_data, application_name, application_description, appli
         "containerid": container_id, 
     }
 
-    try:
-        workunit_response = L.logthis(
-            api_call=wrapper.save,
-            endpoint="workunit",
-            obj=workunit_data,
-            params=None,
-            flush_logs=True
-        )
-        workunit_id = workunit_response[0].get("id")
-        print(f"Created Workunit ID: {workunit_id} for Order ID: {container_id}")
-        return workunit_id
+        try:
+            workunit_response = L.logthis(
+                api_call=wrapper.save,
+                endpoint="workunit",
+                obj=workunit_data,
+                params=None,
+                flush_logs=True
+            )
+            workunit_id = workunit_response[0].get("id")
+            print(f"Created Workunit ID: {workunit_id} for Order ID: {container_id}")
+            workunit_ids.append(workunit_id)
 
-    except Exception as e:
-        L.log_operation(
-            "Error",
-            f"Failed to create workunit for Order {container_id}: {e}",
-            params=None,
-            flush_logs=True,
-        )
-        print(f"Failed to create workunit for Order {container_id}: {e}")
-        return None
+        except Exception as e:
+            L.log_operation(
+                "Error",
+                f"Failed to create workunit for Order {container_id}: {e}",
+                params=None,
+                flush_logs=True,
+            )
+            print(f"Failed to create workunit for Order {container_id}: {e}")
 
-
-def create_workunits(token_data, application_name, application_description, application_id, container_ids):
-    """
-    Create multiple workunits in B-Fabric.
-
-    Args:
-        token_data (dict): Authentication token data.
-        application_name (str): Name of the application.
-        application_description (str): Description of the application.
-        application_id (int): Application ID.
-        container_ids (list): List of container IDs.
-    
-    Returns:
-        list: List of created workunit IDs.
-    """
-    if not isinstance(container_ids, list):
-        container_ids = [container_ids]  # Ensure it's a list
-
-    workunit_ids = [
-        create_workunit(token_data, application_name, application_description, application_id, container_id)
-        for container_id in container_ids
-    ]
-
-    return [wu_id for wu_id in workunit_ids if wu_id is not None]  # Filter out None values
+    return workunit_ids  # Returning a list of all created workunits
 
 
 def create_resource(token_data, workunit_id, gz_file_path):
@@ -88,6 +64,7 @@ def create_resource(token_data, workunit_id, gz_file_path):
     Returns:
         int: Resource ID if successful, None otherwise.
     """
+
     L = get_logger(token_data)
     wrapper = get_power_user_wrapper(token_data)
 
