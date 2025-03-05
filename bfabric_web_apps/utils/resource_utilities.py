@@ -44,12 +44,12 @@ def create_workunit(token_data, application_name, application_description, appli
         
         # Now we associate the job object with the workunits 
         job = L.logthis(
-        api_call=L.power_user_wrapper.save,
-        endpoint="job",
-        obj={"id": token_data.get("jobId"), "workunitid": [workunit_id] + pre_existing_workunit_ids},
-        params=None,
-        flush_logs=True
-    )
+            api_call=L.power_user_wrapper.save,
+            endpoint="job",
+            obj={"id": token_data.get("jobId"), "workunitid": [workunit_id] + pre_existing_workunit_ids},
+            params=None,
+            flush_logs=True
+        )
         return workunit_id
 
     except Exception as e:
