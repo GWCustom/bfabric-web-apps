@@ -186,6 +186,11 @@ def execute_and_log_bash_commands(bash_commands: list[str], logger):
                              params=None, flush_logs=True)
         print(f"Executed: {cmd}\nOutput:\n{output}")
 
+        try:
+            os.remove("bash_log.txt")
+        except OSError:
+            pass  # If for some reason it doesn't exist or is locked
+
 
     return logstring
 
