@@ -8,27 +8,43 @@ import os
 import shutil
 
 
-def run_main_job(filepaths: dict, bash_commands: list[str], resource_paths: list[str], report_paths: list[dict], token: str):
+def run_main_job(filepaths: dict, 
+                 bash_commands: list[str], 
+                 resource_paths: list[str], 
+                 attachment_paths: list[dict], 
+                 token: str):
     """
     Main function to handle:
       1) File copy
       2) Execute local bash commands
       3) Create workunits in B-Fabric
       4) Register resources in B-Fabric
+      5) Attach additional files (logs/reports/etc.) to entities in B-Fabric
 
     :param filepaths: {source_path: destination_path}
     :param bash_commands: List of bash commands to execute
-    :param resource_paths: Paths to resources you want to attach to the new workunits
-    :param report_paths: Placeholder, not used yet
+    :param resource_paths: Paths to resources (.gz, .txt, etc.) to attach to new workunits
+    :param attachment_paths: List of dictionaries describing attachments to be applied
+                            to some B-Fabric entity (e.g. logs, final reports, etc.)
     :param token: Authentication token
+
+    
+Dev Notes:
+    !!! All exceptions get logged (make sure to log the exception message i.e. "except Exception as e: log(e)") !!!
+    !!! If an exception doesn't occur, log that some step ran successfully to the job object !!!
     """
 
-    # All exceptions get logged (make sure to log the exception message i.e. "except Exception as e: log(e)")
-    # If an exception doesn't occur, log that some step ran successfully to the job object 
 
 
-    # Parse token data and retrieve logger
+
+    # STEP 0: Parse token, logger, etc.
     token, token_data, entity_data, app_data, page_title, session_details, job_link = bfabric_web_apps.process_url_and_token(token)
+    
+    L = bfabric_web_apps.get_logger(token_data)
+    print("Token Data:", token_data)
+    print("Entity Data:", entity_data)
+    print("App Data:", app_data)
+
 
     # Ensure tdata is not None before proceeding
     if token_data is not None:
@@ -39,11 +55,6 @@ def run_main_job(filepaths: dict, bash_commands: list[str], resource_paths: list
     if isinstance(entity_data, dict):
         entity_data["container_ids"] = container_ids  # Add list of container IDs
     
-    
-    L = bfabric_web_apps.get_logger(token_data)
-
-    print("Token Data:", token_data)
-
 
     # Step 1: Copy files to the server
     try:
@@ -67,7 +78,7 @@ def run_main_job(filepaths: dict, bash_commands: list[str], resource_paths: list
         print("Error executing bash commands:", e)
 
 
-    # STEP 3: Create Workunits (Refactored)
+    # STEP 3: Create Workunits
     try:
         workunit_ids = create_workunits_step(token_data, app_data, entity_data, L)
     except Exception as e:
@@ -76,10 +87,24 @@ def run_main_job(filepaths: dict, bash_commands: list[str], resource_paths: list
         print("Error creating workunits:", e)
         workunit_ids = []
 
+    # STEP 4: Register Resources (Refactored)
+    try:
+        attach_resources_to_workunits(token_data, L, workunit_ids, resource_paths)
+    except Exception as e:
+        L.log_operation("Error", f"Failed to register resources: {e}", params=None, flush_logs=True)
+        print("Error registering resources:", e)
+
+    # STEP 5: Attach extra files (logs, reports, etc.) to B-Fabric entity
+    try:
+        #attach_files_to_entities(token_data, L, attachment_paths)
+        print("Attachment Paths:", attachment_paths)
+    except Exception as e:
+        L.log_operation("Error", f"Failed to attach extra files: {e}", params=None, flush_logs=True)
+        print("Error attaching extra files:", e)
+
 
 
 #---------------------------------------------------------------------------------------------------------------------
-
 #---------------------------------------------------------------------------------------------------------------------
 
 
@@ -227,12 +252,121 @@ def create_workunits_step(token_data, app_data, entity_data, logger):
 
 
 
+# -----------------------------------------------------------------------------
+# Step 4: Register Resources in B-Fabric
+# -----------------------------------------------------------------------------
+def attach_resources_to_workunits(token_data, logger, workunit_ids, resource_paths):
+    """
+    Attaches each file in resource_paths to each workunit ID in workunit_ids.
+    Uses bfabric_web_apps.create_resources internally.
+    
+    :param token_data: B-Fabric token data
+    :param logger: logger instance
+    :param workunit_ids: List of B-Fabric workunit IDs
+    :param resource_paths: List of file paths to attach as resources
+    """
+    if not workunit_ids:
+        logger.log_operation("Info", "No workunits found, skipping resource registration.", 
+                             params=None, flush_logs=True)
+        print("No workunits found, skipping resource registration.")
+        return
 
+    if not resource_paths:
+        logger.log_operation("Info", "No resource paths provided, skipping resource registration.", 
+                             params=None, flush_logs=True)
+        print("No resource paths provided, skipping resource registration.")
+        return
 
+    for wuid in workunit_ids:
+        # For each file in resource_paths, we attach it to the current workunit ID
+        # Your library function can handle multiple files at once, or one-by-one – 
+        # that depends on your bfabric_web_apps.create_resources implementation.
+        resource_ids = bfabric_web_apps.create_resources(token_data, wuid, resource_paths)
+        print("Resource IDs:", resource_ids)
+        
+        if resource_ids:
+            logger.log_operation("Success", f"Resources {resource_ids} attached to Workunit {wuid}",
+                                params=None, flush_logs=True)
+            print(f"Resources {resource_ids} attached to Workunit {wuid}")
+        else:
+            logger.log_operation("Error", f"Failed to attach resources for Workunit {wuid}", 
+                                 params=None, flush_logs=True)
+            print(f"Failed to attach resources for Workunit {wuid}")
 
+# -----------------------------------------------------------------------------
+# Step 5: Attachments in B-Fabric
+# -----------------------------------------------------------------------------
 
+def attach_files_to_entities(token_data, logger, attachment_paths: list[dict]):
+    """
+    Attaches files (logs, reports, or other documentation) to a B-Fabric entity.
+    Each item in 'attachment_paths' is a dict with keys, for example:
+        {
+          "file_name": "some_log.log",
+          "file_path": "./some_log.log",
+          "entity_class": "workunit" or "order" or ...
+          "entity_id": 1234
+        }
 
+    :param token_data: B-Fabric token data (dict)
+    :param logger: logger instance
+    :param attachment_paths: List of file attachments to create
+    :return: None (logs success/failure for each attachment)
+    """
 
+    if not attachment_paths:
+        logger.log_operation("Info", "No attachment paths provided, skipping attachment step.",
+                             params=None, flush_logs=True)
+        print("No attachment paths provided, skipping attachment step.")
+        return
+
+    for attachment_info in attachment_paths:
+        # Extract fields from the dict. Adjust naming to match your actual keys.
+        file_name = attachment_info.get("file_name")
+        file_path = attachment_info.get("file_path")
+        entity_class = attachment_info.get("entity_class")
+        entity_id = attachment_info.get("entity_id")
+
+        # Ensure required info is present
+        if not all([file_name, file_path, entity_class, entity_id]):
+            msg = f"Missing one or more required fields in attachment_info: {attachment_info}"
+            logger.log_operation("Error", msg, params=None, flush_logs=True)
+            print("Error:", msg)
+            continue  # Skip this entry
+
+        # Attempt to attach the file to the entity
+        try:
+            # Pseudocode calling your B-Fabric library:
+            # result = bfabric_web_apps.attach_file_to_entity(
+            #       token_data=token_data,
+            #       entity_class=entity_class,
+            #       entity_id=entity_id,
+            #       attachment_name=file_name,
+            #       attachment_path=file_path
+            #   )
+            #
+
+            # The library function might return True, or an ID, or some info about the attachment.
+            if result:
+                success_msg = (f"Successfully attached '{file_name}' ({file_path}) "
+                               f"to {entity_class} with ID={entity_id}")
+                logger.log_operation("Success", success_msg, params=None, flush_logs=True)
+                print(success_msg)
+            else:
+                error_msg = (f"Failed to attach '{file_name}' ({file_path}) "
+                             f"to {entity_class} with ID={entity_id}")
+                logger.log_operation("Error", error_msg, params=None, flush_logs=True)
+                print(error_msg)
+
+        except Exception as e:
+            error_msg = (f"Exception while attaching '{file_name}' "
+                         f"to {entity_class} {entity_id}: {e}")
+            logger.log_operation("Error", error_msg, params=None, flush_logs=True)
+            print(error_msg)
+
+# -----------------------------------------------------------------------------
+# Additional Helper Functions
+# -----------------------------------------------------------------------------
 
 def get_container_id(token_data):
 
@@ -247,7 +381,6 @@ def get_container_id(token_data):
         flush_logs=True
     )
 
-    
     print("Samples retrieved:", samples)
 
     # Extract unique order IDs from samples
@@ -257,64 +390,3 @@ def get_container_id(token_data):
 
     # Create a workunit for each order ID
     return(container_ids) 
-
-'''
-    
-
-    # STEP 4: Register Resources (refactored)
-    try:
-        attach_resources_to_workunits(token_data, L, workunit_ids, resource_paths)
-    except Exception as e:
-        L.log_operation("Error", f"Failed to register resources: {e}", params=None, flush_logs=True)
-        print("Error registering resources:", e)
-
-
-
-    for attachment_path in report_paths:
-
-        try:
-            res = generate_and_attach_attachment_paths(attachment_path, workunits)
-        except Exception as e:
-            res = e
-        log res
-
-    
-
-# ---------------------------------------------------------
-
-
-
-
-
-# -----------------------------------------------------------------------------
-# Step 4: Register Resources in B-Fabric (Refactored)
-# -----------------------------------------------------------------------------
-def attach_resources_to_workunits(token_data, logger, workunit_ids, resource_paths):
-    """
-    Attaches resource_paths to each workunit in workunit_ids using the bfabric_web_apps library.
-    If either is empty, nothing happens. Otherwise, logs success for each.
-    """
-    if not workunit_ids or not resource_paths:
-        logger.log_operation("Info", "No workunits or no resources to attach, skipping resource registration.", 
-                             params=None, flush_logs=True)
-        print("No workunits or no resources to attach, skipping resource registration.")
-        return
-
-    for wuid in workunit_ids:
-        resource_ids = bfabric_web_apps.create_resources(token_data, wuid, resource_paths)
-        logger.log_operation(
-            "Success", 
-            f"Resources {resource_ids} attached to Workunit {wuid}",
-            params=None,
-            flush_logs=True
-        )
-        print(f"Resources {resource_ids} attached to Workunit {wuid}")
-
-def: generate_and_attach_attachment_paths(attachment_paths, workunit):
-    for each report in report_paths:
-        attach_log_to_bfabric(report, workunit)
-        attach_report_to_bfabric(report, workunit)
-    Return success
-
-
-'''

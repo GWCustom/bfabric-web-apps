@@ -88,14 +88,14 @@ def create_workunits(token_data, application_name, application_description, appl
     return [wu_id for wu_id in workunit_ids if wu_id is not None]  # Filter out None values
 
 
-def create_resource(token_data, workunit_id, gz_file_path):
+def create_resource(token_data, workunit_id, file_path):
     """
-    Upload a single .gz resource to an existing B-Fabric workunit.
+    Upload a single file as a resource to an existing B-Fabric workunit.
 
     Args:
         token_data (dict): Authentication token data.
         workunit_id (int): ID of the workunit to associate the resource with.
-        gz_file_path (str): Full path to the .gz file to upload.
+        file_path (str): Full path to the file to upload.
     
     Returns:
         int: Resource ID if successful, None otherwise.
@@ -104,21 +104,32 @@ def create_resource(token_data, workunit_id, gz_file_path):
     wrapper = get_power_user_wrapper(token_data)
 
     try:
-        file_path = Path(gz_file_path)
-
-        # Upload the resource
-        print("Uploading:", file_path, "to workunit:", workunit_id)
-        result = bfabric_upload_resource(wrapper, file_path, workunit_id)
+        file_path = Path(file_path)
+        
+        # Upload the resource using the new API call
+        print(f"Uploading: {file_path.name} to workunit: {workunit_id}")
+        
+        result = wrapper.save(
+            endpoint="resource",
+            obj={
+                "workunitid": str(workunit_id),
+                "name": file_path.name,
+                "description": f"Resource uploaded for workunit {workunit_id}",
+                "relativepath": file_path.name,
+                "storageid": "20", #GWC server
+            }
+        )
 
         if result:
-            print(f"Resource uploaded: {file_path.name}")
+            resource_id = result[0]["id"]
+            print(f"Resource uploaded: {file_path.name} (ID: {resource_id})")
             L.log_operation(
                 "upload_resource",
                 f"Resource uploaded successfully: {file_path.name}",
                 params=None,
                 flush_logs=True,
             )
-            return result
+            return resource_id
         else:
             raise ValueError(f"Failed to upload resource: {file_path.name}")
 
@@ -133,24 +144,24 @@ def create_resource(token_data, workunit_id, gz_file_path):
         return None
 
 
-def create_resources(token_data, workunit_id, gz_file_paths):
+def create_resources(token_data, workunit_id, file_paths):
     """
-    Upload multiple .gz resources to an existing B-Fabric workunit.
+    Upload multiple files as resources to an existing B-Fabric workunit.
 
     Args:
         token_data (dict): Authentication token data.
         workunit_id (int): ID of the workunit to associate the resources with.
-        gz_file_paths (list): List of full paths to .gz files to upload.
+        file_paths (list): List of full paths to files to upload.
     
     Returns:
         list: List of successfully uploaded resource IDs.
     """
-    if not isinstance(gz_file_paths, list):
-        gz_file_paths = [gz_file_paths]  # Ensure it's a list
+    if not isinstance(file_paths, list):
+        file_paths = [file_paths]  # Ensure it's a list
 
     resource_ids = [
-        create_resource(token_data, workunit_id, gz_file_path)
-        for gz_file_path in gz_file_paths
+        create_resource(token_data, workunit_id, file_path)
+        for file_path in file_paths
     ]
 
     return [res_id for res_id in resource_ids if res_id is not None]  # Filter out None values
