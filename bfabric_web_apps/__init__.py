@@ -24,6 +24,8 @@ from .utils.callbacks import (
 
 from .utils import defaults
 
+from. utils.run_main_pipeline import run_main_job
+
 from bfabric_web_apps.utils.resource_utilities import create_workunit, create_resource, create_workunits, create_resources
 HOST = os.getenv("HOST", defaults.HOST)
 PORT = int(os.getenv("PORT", defaults.PORT))  # Convert to int since env variables are strings
@@ -57,4 +59,5 @@ __all__ = [
     'create_workunits',
     'create_resources',
     'populate_workunit_details',
+    'run_main_job'
 ]
