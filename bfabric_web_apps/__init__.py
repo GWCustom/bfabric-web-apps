@@ -22,17 +22,25 @@ from .utils.callbacks import (
     populate_workunit_details
 )
 
-from .utils import defaults
+from .utils.config import settings as config
 
-from bfabric_web_apps.utils.resource_utilities import create_workunit, create_resource, create_workunits, create_resources
-HOST = os.getenv("HOST", defaults.HOST)
-PORT = int(os.getenv("PORT", defaults.PORT))  # Convert to int since env variables are strings
-DEV = os.getenv("DEV", str(defaults.DEV)).lower() in ["true", "1", "yes"]  # Convert to bool
-CONFIG_FILE_PATH = os.getenv("CONFIG_FILE_PATH", defaults.CONFIG_FILE_PATH)
+from bfabric_web_apps.utils.resource_utilities import (
+    create_workunit, 
+    create_resource, 
+    create_workunits, 
+    create_resources
+)
 
-DEVELOPER_EMAIL_ADDRESS = os.getenv("DEVELOPER_EMAIL_ADDRESS", defaults.DEVELOPER_EMAIL_ADDRESS)
-BUG_REPORT_EMAIL_ADDRESS = os.getenv("BUG_REPORT_EMAIL_ADDRESS", defaults.BUG_REPORT_EMAIL_ADDRESS)
+REDIS_HOST = config.REDIS_HOST
+REDIS_PORT = config.REDIS_PORT
 
+HOST = config.HOST
+PORT = config.PORT
+DEV = config.DEV
+CONFIG_FILE_PATH = config.CONFIG_FILE_PATH
+
+DEVELOPER_EMAIL_ADDRESS = config.DEVELOPER_EMAIL_ADDRESS
+BUG_REPORT_EMAIL_ADDRESS = config.BUG_REPORT_EMAIL_ADDRESS
 
 # Define __all__ for controlled imports
 __all__ = [

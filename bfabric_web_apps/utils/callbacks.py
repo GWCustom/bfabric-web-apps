@@ -181,7 +181,7 @@ def populate_workunit_details(token_data):
 
     environment_urls = {
         "Test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
-        "Prod": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
+        "Production": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
     }
 
     if token_data:
