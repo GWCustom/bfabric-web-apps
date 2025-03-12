@@ -28,7 +28,7 @@ URL = config.URL
 
 def run_main_job(files_as_byte_strings: dict, 
                  bash_commands: list[str], 
-                 resource_paths: list[dict],
+                 resource_paths: dict,
                  attachment_paths: list[dict], 
                  token: str):
     """
@@ -41,7 +41,7 @@ def run_main_job(files_as_byte_strings: dict,
 
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
-    :param resource_paths: List of dicts, where each dict has {resource_path: order_id}
+    :param resource_paths: dict, {resource_path: order_id}
     :param attachment_paths: List of dictionaries describing attachments to be applied
                              to some B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
@@ -55,21 +55,21 @@ Dev Notes:
     # STEP 0: Parse token, logger, etc.
     token, token_data, entity_data, app_data, page_title, session_details, job_link = process_url_and_token(token)
 
-    # Implement a check for the extracted Data!
+    if token is None:
+        raise ValueError("Error: 'token' is None")
+    if token_data is None:
+        raise ValueError("Error: 'token_data' is None")
+    if entity_data is None:
+        raise ValueError("Error: 'entity_data' is None")
+    if app_data is None:
+        raise ValueError("Error: 'app_data' is None")
+    
     
     L = get_logger(token_data)
     print("Token Data:", token_data)
     print("Entity Data:", entity_data)
     print("App Data:", app_data)
-  
-
-    # Ensure tdata is not None before proceeding
-    if token_data is not None:
-        # Get the list of container IDs
-        container_ids = get_container_ids(token_data)
-
-    entity_data["container_ids"] = container_ids  # Add list of container IDs
-    
+     
 
     # Step 1: Save files to the server
     try:
@@ -148,32 +148,14 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
             # Write file from byte string
             with open(destination, "wb") as f:
                 f.write(file_bytes)
-
-            results[destination] = True  # Success
+            logger.log_operation("Files saved", "All files saved successfully.", params=None, flush_logs=True)
+            return "All files saved successfully."
+        
         except Exception as e:
-            results[destination] = str(e)  # Store error message
-
-    # Second pass: log/print successes and errors
-    success_count = 0
-    for destination, result in results.items():
-        if result is True:
-            success_msg = f"Saved file: {destination}"
-            logger.log_operation("Info", success_msg, params=None, flush_logs=False)
-            print(success_msg)
-            success_count += 1
-        else:
-            error_msg = f"Error saving file: {destination}, Error: {result}"
-            logger.log_operation("Error", error_msg, params=None, flush_logs=False)
+            error_msg = f"Error saving file: {destination}, Error: {str(e)}"
+            logger.log_operation("Error", error_msg, params=None, flush_logs=True)
             print(error_msg)
-
-    # Return a summary message
-    total_files = len(files_as_byte_strings)
-    if success_count == total_files:
-        return "All files saved successfully."
-    else:
-        failure_count = total_files - success_count
-        return f"{success_count}/{total_files} files saved successfully, {failure_count} failed."
-
+            raise RuntimeError(error_msg)
 
 
 # -----------------------------------------------------------------------------
@@ -225,6 +207,14 @@ def execute_and_log_bash_commands(bash_commands: list[str], logger):
 # Step 3: Create Workunits in B-Fabric
 # -----------------------------------------------------------------------------
 
+"""
+Dev Notes:
+
+- resource_paths needs to be a dict: {file_path: order_id}
+- simplify the workunit and resource mapping
+
+"""
+
 def create_workunits_step(token_data, app_data, entity_data, resource_paths, logger):
     """
     Creates multiple workunits in B-Fabric based on unique order IDs found in resource_paths.
@@ -232,14 +222,14 @@ def create_workunits_step(token_data, app_data, entity_data, resource_paths, log
     :param token_data: dict with token/auth info
     :param app_data: dict with fields like {"id": <app_id>} or other app info
     :param entity_data: dict with additional metadata (not used in this step)
-    :param resource_paths: List of dicts where each dict has {file_path: order_id}
+    :param resource_paths: Dictionary {file_path: order_id}
     :param logger: a logger instance
     :return: A dictionary mapping file_paths to workunit IDs {file_path: workunit_id}
     """
     app_id = app_data["id"]  # Extract the application ID
 
     # Extract unique order IDs from resource_paths
-    order_ids = list(set(value for res in resource_paths for value in res.values()))  # Unique order IDs
+    order_ids = list(set(resource_paths.values()))  # Get unique order IDs
 
     if not order_ids:
         raise ValueError("No order IDs found in resource_paths; cannot create workunits.")
@@ -257,20 +247,15 @@ def create_workunits_step(token_data, app_data, entity_data, resource_paths, log
         raise ValueError(f"Mismatch in workunit creation: Expected {len(order_ids)} workunits, got {len(created_ids)}.")
 
     # Create a mapping {order_id: workunit_id}
-    order_to_workunit_map = {order_id: created_id for order_id, created_id in zip(order_ids, created_ids)}
+    order_to_workunit_map = dict(zip(order_ids, created_ids))
 
-    # create the final mapping {file_path: workunit_id}
-    workunit_map = {}
-    for resource_dict in resource_paths:
-        for file_path, order_id in resource_dict.items():
-            if order_id in order_to_workunit_map:
-                workunit_map[file_path] = order_to_workunit_map[order_id]
+    # Directly map {file_path: workunit_id} using dictionary comprehension
+    workunit_map = {file_path: order_to_workunit_map[order_id] for file_path, order_id in resource_paths.items()}
 
     logger.log_operation("Success", f"Total created Workunits: {list(workunit_map.values())}", params=None, flush_logs=True)
     print(f"Total created Workunits: {list(workunit_map.values())}")
 
-    
-    return workunit_map  # Returning a dictionary {file_path: workunit_id}
+    return workunit_map  # Returning {file_path: workunit_id}
 
 
 
@@ -429,43 +414,3 @@ def create_api_link(token_data, logger, entity_class, entity_id, file_name):
         error_msg = f"Failed to create API link for '{file_name}': {e}"
         logger.log_operation("Error", error_msg, params=None, flush_logs=True)
         print(error_msg)
-
-
-
-
-
-# -----------------------------------------------------------------------------
-# Additional Helper Functions
-# -----------------------------------------------------------------------------
-
-"""
-get_container_ids() funciton needs to be more generalised to work with any entity class.
-
-implement for:
-
-- runs
-- workunit
-
-"""
-def get_container_ids(token_data):
-
-    L = get_logger(token_data)
-    wrapper = BfabricInterface.bfabric_interface.get_wrapper()
-
-    samples = L.logthis(
-        api_call=wrapper.read,
-        endpoint="sample",
-        obj={"runid": token_data['entity_id_data']},  # Falls jobId eigentlich ein Sample-ID ist
-        params=None,
-        flush_logs=True
-    )
-
-    print("Samples retrieved:", samples)
-
-    # Extract unique order IDs from samples
-    container_ids = list(set(sample["container"]["id"] for sample in samples if "container" in sample))
-
-    print("Unique Order IDs:", container_ids)
-
-    # Create a workunit for each order ID
-    return(container_ids) 
