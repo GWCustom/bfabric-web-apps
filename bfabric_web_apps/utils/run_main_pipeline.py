@@ -26,20 +26,20 @@ TRX_LOGIN = config.TRX_LOGIN
 TRX_SSH_KEY = config.TRX_SSH_KEY
 URL = config.URL
 
-def run_main_job(filepaths: dict, 
+def run_main_job(files_as_byte_strings: dict, 
                  bash_commands: list[str], 
                  resource_paths: list[dict],
                  attachment_paths: list[dict], 
                  token: str):
     """
     Main function to handle:
-      1) File copy
+      1) Save Files on Server
       2) Execute local bash commands
       3) Create workunits in B-Fabric
       4) Register resources in B-Fabric
       5) Attach additional gstore files (logs/reports/etc.) to entities in B-Fabric
 
-    :param filepaths: {source_path: destination_path}
+    :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
     :param resource_paths: List of dicts, where each dict has {resource_path: order_id}
     :param attachment_paths: List of dictionaries describing attachments to be applied
@@ -54,26 +54,26 @@ Dev Notes:
 
     # STEP 0: Parse token, logger, etc.
     token, token_data, entity_data, app_data, page_title, session_details, job_link = process_url_and_token(token)
+
+    # Implement a check for the extracted Data!
     
     L = get_logger(token_data)
     print("Token Data:", token_data)
     print("Entity Data:", entity_data)
     print("App Data:", app_data)
-
+  
 
     # Ensure tdata is not None before proceeding
     if token_data is not None:
         # Get the list of container IDs
-        container_ids = get_container_id(token_data)
+        container_ids = get_container_ids(token_data)
 
-    # Ensure entity_data is a dictionary before modifying it
-    if isinstance(entity_data, dict):
-        entity_data["container_ids"] = container_ids  # Add list of container IDs
+    entity_data["container_ids"] = container_ids  # Add list of container IDs
     
 
-    # Step 1: Copy files to the server
+    # Step 1: Save files to the server
     try:
-        summary = copy_files(filepaths, L)
+        summary = save_files_from_bytes(files_as_byte_strings, L)
         L.log_operation("Success", f"File copy summary: {summary}", params=None, flush_logs=True)
         print("Summary:", summary)
     except Exception as e:
@@ -124,49 +124,56 @@ Dev Notes:
 
 
 # -----------------------------------------------------------------------------
-# Step 1: Copy Files
+# Step 1: Save Files from bytes
 # -----------------------------------------------------------------------------
 
-def copy_files(filepaths: dict, logger):
-    """
-    Copies files for each source -> destination mapping in 'filepaths'.
-    Logs/prints each file's result *after* the entire loop completes.
+import os
 
-    :param filepaths: Dictionary where keys are source paths and values are destination paths
+def save_files_from_bytes(files_as_byte_strings: dict, logger):
+    """
+    Saves byte string files to their respective paths.
+
+    :param files_as_byte_strings: Dictionary where keys are destination paths and values are byte strings
     :param logger: Logging instance
     :return: Summary indicating how many files succeeded vs. failed
     """
-    # Store results in a dict: (source, destination) -> True (if success) or error message (if failure)
-    results = {} 
+    results = {}  # Store results: (destination) -> True (if success) or error message (if failure)
 
-    # First pass: attempt all copies
-    for source, destination in filepaths.items():
+    # First pass: attempt to write all files
+    for destination, file_bytes in files_as_byte_strings.items():
         try:
-            shutil.copy(source, destination)
-            results[(source, destination)] = True
+            # Ensure the directory exists
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+
+            # Write file from byte string
+            with open(destination, "wb") as f:
+                f.write(file_bytes)
+
+            results[destination] = True  # Success
         except Exception as e:
-            results[(source, destination)] = str(e)
+            results[destination] = str(e)  # Store error message
 
     # Second pass: log/print successes and errors
     success_count = 0
-    for (source, destination), result in results.items():
+    for destination, result in results.items():
         if result is True:
-            success_msg = f"Copied file: {source} -> {destination}"
+            success_msg = f"Saved file: {destination}"
             logger.log_operation("Info", success_msg, params=None, flush_logs=False)
             print(success_msg)
             success_count += 1
         else:
-            error_msg = f"Error copying file: {source} -> {destination}, Error: {result}"
+            error_msg = f"Error saving file: {destination}, Error: {result}"
             logger.log_operation("Error", error_msg, params=None, flush_logs=False)
             print(error_msg)
 
     # Return a summary message
-    total_files = len(filepaths)
+    total_files = len(files_as_byte_strings)
     if success_count == total_files:
-        return "All files copied successfully."
+        return "All files saved successfully."
     else:
         failure_count = total_files - success_count
-        return f"{success_count}/{total_files} files copied successfully, {failure_count} failed."
+        return f"{success_count}/{total_files} files saved successfully, {failure_count} failed."
+
 
 
 # -----------------------------------------------------------------------------
@@ -431,7 +438,16 @@ def create_api_link(token_data, logger, entity_class, entity_id, file_name):
 # Additional Helper Functions
 # -----------------------------------------------------------------------------
 
-def get_container_id(token_data):
+"""
+get_container_ids() funciton needs to be more generalised to work with any entity class.
+
+implement for:
+
+- runs
+- workunit
+
+"""
+def get_container_ids(token_data):
 
     L = get_logger(token_data)
     wrapper = BfabricInterface.bfabric_interface.get_wrapper()
