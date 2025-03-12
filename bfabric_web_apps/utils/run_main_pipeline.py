@@ -42,8 +42,8 @@ def run_main_job(files_as_byte_strings: dict,
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
     :param resource_paths: dict, {resource_path: order_id}
-    :param attachment_paths: List of dictionaries describing attachments to be applied
-                             to some B-Fabric entity (e.g., logs, final reports, etc.)
+    :param attachment_paths: Dictionary mapping source file paths to their corresponding file names ({"path/test.txt": "name.txt"})
+                             for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
 
     
@@ -95,7 +95,7 @@ Dev Notes:
 
     # STEP 3: Create Workunits
     try:
-        workunit_map = create_workunits_step(token_data, app_data, entity_data, resource_paths, L)
+        workunit_map = create_workunits_step(token_data, app_data, resource_paths, L)
     except Exception as e:
         L.log_operation("Error", f"Failed to create workunits in B-Fabric: {e}", 
                         params=None, flush_logs=True)
@@ -207,55 +207,48 @@ def execute_and_log_bash_commands(bash_commands: list[str], logger):
 # Step 3: Create Workunits in B-Fabric
 # -----------------------------------------------------------------------------
 
-"""
-Dev Notes:
-
-- resource_paths needs to be a dict: {file_path: order_id}
-- simplify the workunit and resource mapping
-
-"""
-
-def create_workunits_step(token_data, app_data, entity_data, resource_paths, logger):
+def create_workunits_step(token_data, app_data, resource_paths, logger):
     """
     Creates multiple workunits in B-Fabric based on unique order IDs found in resource_paths.
 
     :param token_data: dict with token/auth info
     :param app_data: dict with fields like {"id": <app_id>} or other app info
-    :param entity_data: dict with additional metadata (not used in this step)
     :param resource_paths: Dictionary {file_path: order_id}
     :param logger: a logger instance
-    :return: A dictionary mapping file_paths to workunit IDs {file_path: workunit_id}
+    :return: A dictionary mapping file_paths to workunit objects {file_path: workunit}
     """
     app_id = app_data["id"]  # Extract the application ID
 
     # Extract unique order IDs from resource_paths
-    order_ids = list(set(resource_paths.values()))  # Get unique order IDs
+    order_ids = list(set(resource_paths.values()))
 
     if not order_ids:
         raise ValueError("No order IDs found in resource_paths; cannot create workunits.")
 
     # Create all workunits in one API call
-    created_ids = create_workunits(
+    created_workunits = create_workunits(
         token_data=token_data,
         application_name="Test Workunit",
         application_description="Workunits for batch processing",
         application_id=app_id,
-        container_ids=order_ids  # Pass entire list at once
+        container_ids=order_ids
     )
 
-    if not created_ids or len(created_ids) != len(order_ids):
-        raise ValueError(f"Mismatch in workunit creation: Expected {len(order_ids)} workunits, got {len(created_ids)}.")
+    if not created_workunits or len(created_workunits) != len(order_ids):
+        raise ValueError(f"Mismatch in workunit creation: Expected {len(order_ids)} workunits, got {len(created_workunits)}.")
 
-    # Create a mapping {order_id: workunit_id}
-    order_to_workunit_map = dict(zip(order_ids, created_ids))
-
-    # Directly map {file_path: workunit_id} using dictionary comprehension
-    workunit_map = {file_path: order_to_workunit_map[order_id] for file_path, order_id in resource_paths.items()}
+    workunit_map = {
+        file_path: wu["id"]
+        for wu in created_workunits
+        for file_path, order_id in resource_paths.items()
+        if order_id == wu["container"]["id"]
+    }
 
     logger.log_operation("Success", f"Total created Workunits: {list(workunit_map.values())}", params=None, flush_logs=True)
     print(f"Total created Workunits: {list(workunit_map.values())}")
 
-    return workunit_map  # Returning {file_path: workunit_id}
+    print(workunit_map)
+    return workunit_map  # Returning {file_path: workunit}
 
 
 
@@ -278,10 +271,15 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
                              params=None, flush_logs=True)
         print("No workunits found, skipping resource registration.")
         return
+    
+    print("Workunit Map:", workunit_map)
 
     for file_path, workunit_id in workunit_map.items():
+        print(f"Processing file: {file_path}, Workunit ID: {workunit_id}")  # Corrected print statement
         # Upload the file as a resource
-        resource_id = create_resource(token_data, workunit_id, file_path)
+        resource = create_resource(token_data, workunit_id, file_path)
+        resource_id = resource.get("id")
+        print("Resource ID:", resource_id)
 
         if resource_id:
             logger.log_operation("Success", f"Resource {resource_id} attached to Workunit {workunit_id}",
@@ -298,7 +296,7 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
 # Step 5: Attachments of gstore in B-Fabric as a Link
 # -----------------------------------------------------------------------------
 
-def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths: list[dict]):
+def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths: dict):
 
     """
     Attaches files to a B-Fabric entity by copying them to the FGCZ storage and creating an API link.
@@ -306,7 +304,7 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
     Args:
         token_data (dict): Authentication token data.
         logger: Logger instance for logging operations.
-        attachment_paths (list): List of dictionaries containing attachment details.
+        attachment_paths (dict): Dictionary mapping source file paths to their corresponding file names.
     
     Returns:
         None
@@ -320,13 +318,10 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
     remote_access = check_remote_access(TRX_LOGIN, TRX_SSH_KEY, GSTORE_REMOTE_PATH)
 
     # Process each attachment
-    for attachment in attachment_paths:
-        source_path = attachment.get("source_path")
-        file_name = attachment.get("file_name")
-
+    for source_path, file_name in attachment_paths.items():
         if not source_path or not file_name:
-            logger.log_operation("Error", f"Missing required attachment details: {attachment}", params=None, flush_logs=True)
-            print(f"Error: Missing required attachment details: {attachment}")
+            logger.log_operation("Error", f"Missing required attachment details: {source_path} -> {file_name}", params=None, flush_logs=True)
+            print(f"Error: Missing required attachment details: {source_path} -> {file_name}")
             continue
 
         try:
@@ -355,7 +350,6 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
             error_msg = f"Exception while processing '{file_name}': {e}"
             logger.log_operation("Error", error_msg, params=None, flush_logs=True)
             print(error_msg)
-
 
 def check_remote_access(ssh_user, ssh_key, remote_path):
     """Checks if we have SSH access to the remote FGCZ server."""

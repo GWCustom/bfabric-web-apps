@@ -16,7 +16,7 @@ def create_workunit(token_data, application_name, application_description, appli
         container_id (int): Container ID (Order ID).
     
     Returns:
-        int: Created workunit ID or None if creation fails.
+        obj: Created workunit object or None if creation fails.
     """
     L = get_logger(token_data)
     wrapper = bfabric_interface.get_wrapper()
@@ -50,7 +50,7 @@ def create_workunit(token_data, application_name, application_description, appli
             params=None,
             flush_logs=True
         )
-        return workunit_id
+        return workunit_response[0]
 
     except Exception as e:
         L.log_operation(
@@ -75,7 +75,7 @@ def create_workunits(token_data, application_name, application_description, appl
         container_ids (list): List of container IDs.
     
     Returns:
-        list: List of created workunit IDs.
+        list[obj]: List of created workunit objects.
     """
     if not isinstance(container_ids, list):
         container_ids = [container_ids]  # Ensure it's a list
@@ -100,7 +100,7 @@ def create_resource(token_data, workunit_id, file_path):
         file_path (str): Full path to the file to attach.
     
     Returns:
-        int: Resource ID if successful, None otherwise.
+        obj: Resource object if successful, None otherwise.
     """
     L = get_logger(token_data)
     wrapper = get_power_user_wrapper(token_data)
@@ -123,7 +123,7 @@ def create_resource(token_data, workunit_id, file_path):
         )
 
         if result:
-            resource_id = result[0]["id"]
+            resource_id = result[0].get("id")
             print(f"Resource attached: {file_path.name} (ID: {resource_id})")
             L.log_operation(
                 "Attach_resource",
@@ -131,7 +131,7 @@ def create_resource(token_data, workunit_id, file_path):
                 params=None,
                 flush_logs=True,
             )
-            return resource_id
+            return result[0]
         else:
             raise ValueError(f"Failed to attach resource: {file_path.name}")
 
@@ -156,7 +156,7 @@ def create_resources(token_data, workunit_id, file_paths):
         file_paths (list): List of full paths to files to attach.
     
     Returns:
-        list: List of successfully attached resource IDs.
+        list[obj]: List of successfully attached resource objects.
     """
     if not isinstance(file_paths, list):
         file_paths = [file_paths]  # Ensure it's a list
