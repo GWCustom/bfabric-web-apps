@@ -19,17 +19,21 @@ from .utils.create_app_in_bfabric import create_app_in_bfabric
 from .utils.callbacks import (
     process_url_and_token, 
     submit_bug_report,
-    populate_workunit_details
+    populate_workunit_details,
+    get_redis_queue_layout
 )
 
 from .utils.config import settings as config
 
-from bfabric_web_apps.utils.resource_utilities import (
+from .utils.resource_utilities import (
     create_workunit, 
     create_resource, 
     create_workunits, 
     create_resources
 )
+
+from .utils.redis_worker_init import run_worker, test_job
+from .utils.redis_queue import q
 
 REDIS_HOST = config.REDIS_HOST
 REDIS_PORT = config.REDIS_PORT
@@ -37,32 +41,9 @@ REDIS_PORT = config.REDIS_PORT
 HOST = config.HOST
 PORT = config.PORT
 DEV = config.DEV
+DEBUG = config.DEBUG
+
 CONFIG_FILE_PATH = config.CONFIG_FILE_PATH
 
 DEVELOPER_EMAIL_ADDRESS = config.DEVELOPER_EMAIL_ADDRESS
 BUG_REPORT_EMAIL_ADDRESS = config.BUG_REPORT_EMAIL_ADDRESS
-
-# Define __all__ for controlled imports
-__all__ = [
-    "BfabricInterface",
-    "Logger",
-    "components",
-    "get_static_layout",
-    "create_app",
-    "process_url_and_token",
-    "submit_bug_report",
-    'get_logger',
-    'get_power_user_wrapper',
-    'HOST',
-    'PORT', 
-    'DEV',
-    'CONFIG_FILE_PATH',
-    'DEVELOPER_EMAIL_ADDRESS',
-    'BUG_REPORT_EMAIL_ADDRESS',
-    'create_app_in_bfabric',
-    'create_workunit',
-    'create_resource',
-    'create_workunits',
-    'create_resources',
-    'populate_workunit_details',
-]

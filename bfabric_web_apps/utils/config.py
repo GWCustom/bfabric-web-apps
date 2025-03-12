@@ -10,7 +10,9 @@ class Settings(BaseSettings):
 
     HOST: str = "127.0.0.1"
     PORT: int = 8050
+
     DEV: bool = False
+    DEBUG: bool = False
 
     DEVELOPER_EMAIL_ADDRESS: EmailStr = "griffin@gwcustom.com"
     BUG_REPORT_EMAIL_ADDRESS: EmailStr = "gwtools@fgcz.system"

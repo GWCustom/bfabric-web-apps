@@ -2,7 +2,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 import bfabric_web_apps
 
-def get_static_layout(base_title=None, main_content=None, documentation_content=None):
+def get_static_layout(base_title=None, main_content=None, documentation_content=None, layout_config={}):
     """
     Returns a layout with static tabs for Main, Documentation, and Report a Bug.
     The main content is customizable, while the other tabs are generic.
@@ -11,10 +11,24 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
         base_title (str): The main title to be displayed in the banner.
         main_content (html.Div): Content to be displayed in the "Main" tab.
         documentation_content (html.Div): Content for the "Documentation" tab.
+        layout_config (dict): Configuration for the layout, determining which tabs are shown.
 
     Returns:
         html.Div: The complete static layout of the web app.
     """
+
+    tab_list = [
+        dbc.Tab(main_content, label="Main", tab_id="main"),
+        dbc.Tab(dcc.Loading(get_documentation_tab(documentation_content)), label="Documentation", tab_id="documentation"),
+    ]
+
+    if layout_config.get("workunits", False):
+        tab_list.append(dbc.Tab(dcc.Loading(get_workunits_tab()), label="Workunits", tab_id="workunits"))
+    if layout_config.get("queue", False):
+        tab_list.append(dbc.Tab(get_queue_tab(), label="Queue", tab_id="queue"))
+    if layout_config.get("bug", False):
+        tab_list.append(dbc.Tab(dcc.Loading(get_report_bug_tab()), label="Report a Bug", tab_id="report-bug"))
+
     return html.Div(
         children=[
             dcc.Location(id='url', refresh=False),
@@ -142,12 +156,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
 
                     # Tabs Section
                     dbc.Tabs(
-                        [
-                            dbc.Tab(main_content, label="Main", tab_id="main"),
-                            dbc.Tab(dcc.Loading(get_documentation_tab(documentation_content)), label="Documentation", tab_id="documentation"),
-                            dbc.Tab(dcc.Loading(get_workunits_tab()), label="Workunits", tab_id="workunits"),
-                            dbc.Tab(dcc.Loading(get_report_bug_tab()), label="Report a Bug", tab_id="report-bug"),
-                        ],
+                        tab_list,
                         id="tabs",
                         active_tab="main",
                     ),
@@ -303,6 +312,40 @@ def get_workunits_tab():
                 ),
                 width=9,
             ),
+        ],
+        style={"margin-top": "0px", "min-height": "40vh"},
+    )
+
+
+def get_queue_tab(): 
+
+    return dbc.Row(
+        id="page-content-queue",
+        children=[
+            dbc.Col(
+                html.Div(
+                    id="page-content-queue-children",
+                    children=[],
+                    style={
+                        "margin-top": "2vh",
+                        "margin-left": "2vw",
+                        "font-size": "20px",
+                        "padding-right": "40px",
+                        "overflow-y": "scroll",
+                        "max-height": "65vh",
+                    },
+                ),
+            ),
+            dbc.Col(
+                children = [
+                    dcc.Interval(
+                        id="queue-interval",
+                        interval=5 * 1000,  # in milliseconds
+                        n_intervals=0,
+                    ),
+                ],
+                style={"display": "none"}
+            )
         ],
         style={"margin-top": "0px", "min-height": "40vh"},
     )
