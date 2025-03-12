@@ -4,6 +4,10 @@ import json
 import dash_bootstrap_components as dbc
 from datetime import datetime as dt
 from bfabric_web_apps.utils.get_logger import get_logger
+from rq import Queue
+from .redis_connection import redis_conn
+from rq.registry import StartedJobRegistry, FailedJobRegistry, FinishedJobRegistry
+
 
 def process_url_and_token(url_params):
     """
@@ -181,7 +185,7 @@ def populate_workunit_details(token_data):
 
     environment_urls = {
         "Test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
-        "Prod": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
+        "Production": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
     }
 
     if token_data:
@@ -229,3 +233,106 @@ def populate_workunit_details(token_data):
         return dbc.Container(wu_cards, style={"display": "flex", "flex-wrap": "wrap"})
     else:
         return html.Div()
+
+def get_redis_queue_layout():
+    # Get all queues dynamically
+    queues = Queue.all(connection=redis_conn)
+
+    queue_cards = []
+
+    print("QUEUES", queues)
+    
+    for queue in queues:
+        queue_name = queue.name
+
+        # Get queue stats
+        started_registry = StartedJobRegistry(queue_name, connection=redis_conn)
+        failed_registry = FailedJobRegistry(queue_name, connection=redis_conn)
+        finished_registry = FinishedJobRegistry(queue_name, connection=redis_conn)
+
+        stats = {
+            "Jobs in queue": queue.count,
+            "Running": started_registry.count,
+            "Failed": failed_registry.count,
+            "Completed": finished_registry.count,
+        }
+
+        print("STAT", stats)
+
+        stats_row = dbc.Row([
+            dbc.Col([
+                html.P([html.B("Jobs in queue: "), f"{queue.count}"]),
+                html.P([html.B("Running: "), f"{started_registry.count}"]),
+            ],width=6),
+            dbc.Col([
+                html.P([html.B("Failed: "), f"{failed_registry.count}"]),
+                html.P([html.B("Completed: "), f"{finished_registry.count}"]),
+            ], width=6)
+        ])
+
+        # Fetch job details
+        job_cards = []
+        for job_id in started_registry.get_job_ids():
+            job = queue.fetch_job(job_id)
+            if job:
+                job_cards.append(
+                    dbc.Card(
+                        dbc.CardBody([
+                            html.H6(f"Job ID: {job.id}", className="card-title"),
+                            html.P(f"Function: {job.func_name}", className="card-text"),
+                            html.P(f"Status: Running", className="text-success"),
+                        ]),
+                        style={"maxWidth": "36vw", "backgroundColor": "#d4edda"}, className="mb-2"
+                    )
+                )
+
+        for job_id in failed_registry.get_job_ids():
+            job = queue.fetch_job(job_id)
+            if job:
+                job_cards.append(
+                    dbc.Card(
+                        dbc.CardBody([
+                            html.H6(f"Job ID: {job.id}", className="card-title"),
+                            html.P(f"Function: {job.func_name}", className="card-text"),
+                            html.P(f"Status: Failed", className="text-danger"),
+                        ]),
+                        style={"maxWidth": "36vw", "backgroundColor": "#f8d7da"}, className="mb-2"
+                    )
+                )
+
+        for job_id in finished_registry.get_job_ids():
+            job = queue.fetch_job(job_id)
+            if job:
+                finished_time = job.ended_at.strftime("%Y-%m-%d %H:%M:%S") if job.ended_at else "Unknown"
+                job_cards.append(
+                    dbc.Card(
+                        dbc.CardBody([
+                            html.H6(f"Job ID: {job.id}", className="card-title"),
+                            html.P(f"Function: {job.func_name}", className="card-text"),
+                            html.P(f"Status: Completed", className="text-primary"),
+                            html.P(f"Finished at: {finished_time}", className="text-muted"),
+                        ]),
+                        style={"maxWidth": "36vw", "backgroundColor": "#d1ecf1"}, className="mb-2"
+                    )
+                )
+
+        # Create queue card
+        queue_card = dbc.Col([
+            dbc.Card(
+                [
+                    dbc.CardHeader(html.H5(f"Queue: {queue_name}")),
+                    dbc.CardBody([
+                        stats_row,  # Fixed: Convert dictionary to list
+                        html.Hr(),
+                        *job_cards  # Add job sub-cards
+                    ], style={"maxHeight": "58vh", "overflow-y": "scroll"})
+                ],
+                style={"maxWidth": "36vw", "backgroundColor": "#f8f9fa", "max-height":"60vh"}, className="mb-4"
+            )
+        ])
+
+        queue_cards.append(queue_card)
+
+    container_children = dbc.Row(queue_cards)
+
+    return dbc.Container(container_children, className="mt-4")

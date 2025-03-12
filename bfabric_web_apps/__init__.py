@@ -19,45 +19,33 @@ from .utils.create_app_in_bfabric import create_app_in_bfabric
 from .utils.callbacks import (
     process_url_and_token, 
     submit_bug_report,
-    populate_workunit_details
+    populate_workunit_details,
+    get_redis_queue_layout
 )
 
-from .utils import defaults
+from .utils.config import settings as config
 
 from. utils.run_main_pipeline import run_main_job
 
-from bfabric_web_apps.utils.resource_utilities import create_workunit, create_resource, create_workunits, create_resources
-HOST = os.getenv("HOST", defaults.HOST)
-PORT = int(os.getenv("PORT", defaults.PORT))  # Convert to int since env variables are strings
-DEV = os.getenv("DEV", str(defaults.DEV)).lower() in ["true", "1", "yes"]  # Convert to bool
-CONFIG_FILE_PATH = os.getenv("CONFIG_FILE_PATH", defaults.CONFIG_FILE_PATH)
+from .utils.resource_utilities import (
+    create_workunit, 
+    create_resource, 
+    create_workunits, 
+    create_resources
+)
 
-DEVELOPER_EMAIL_ADDRESS = os.getenv("DEVELOPER_EMAIL_ADDRESS", defaults.DEVELOPER_EMAIL_ADDRESS)
-BUG_REPORT_EMAIL_ADDRESS = os.getenv("BUG_REPORT_EMAIL_ADDRESS", defaults.BUG_REPORT_EMAIL_ADDRESS)
+from .utils.redis_worker_init import run_worker, test_job
+from .utils.redis_queue import q
 
+REDIS_HOST = config.REDIS_HOST
+REDIS_PORT = config.REDIS_PORT
 
-# Define __all__ for controlled imports
-__all__ = [
-    "BfabricInterface",
-    "Logger",
-    "components",
-    "get_static_layout",
-    "create_app",
-    "process_url_and_token",
-    "submit_bug_report",
-    'get_logger',
-    'get_power_user_wrapper',
-    'HOST',
-    'PORT', 
-    'DEV',
-    'CONFIG_FILE_PATH',
-    'DEVELOPER_EMAIL_ADDRESS',
-    'BUG_REPORT_EMAIL_ADDRESS',
-    'create_app_in_bfabric',
-    'create_workunit',
-    'create_resource',
-    'create_workunits',
-    'create_resources',
-    'populate_workunit_details',
-    'run_main_job'
-]
+HOST = config.HOST
+PORT = config.PORT
+DEV = config.DEV
+DEBUG = config.DEBUG
+
+CONFIG_FILE_PATH = config.CONFIG_FILE_PATH
+
+DEVELOPER_EMAIL_ADDRESS = config.DEVELOPER_EMAIL_ADDRESS
+BUG_REPORT_EMAIL_ADDRESS = config.BUG_REPORT_EMAIL_ADDRESS
