@@ -34,8 +34,8 @@ from .utils.resource_utilities import (
     create_resources
 )
 
-from .utils.redis_worker_init import run_worker, test_job
-from .utils.redis_queue import q
+#from .utils.redis_worker_init import run_worker, test_job
+#from .utils.redis_queue import q
 
 REDIS_HOST = config.REDIS_HOST
 REDIS_PORT = config.REDIS_PORT
@@ -49,3 +49,9 @@ CONFIG_FILE_PATH = config.CONFIG_FILE_PATH
 
 DEVELOPER_EMAIL_ADDRESS = config.DEVELOPER_EMAIL_ADDRESS
 BUG_REPORT_EMAIL_ADDRESS = config.BUG_REPORT_EMAIL_ADDRESS
+
+GSTORE_REMOTE_PATH = config.GSTORE_REMOTE_PATH
+SCRATCH_PATH = config.SCRATCH_PATH
+TRX_LOGIN = config.TRX_LOGIN
+TRX_SSH_KEY = config.TRX_SSH_KEY
+URL = config.URL
