@@ -19,18 +19,6 @@ from .resource_utilities import (
 from .config import settings as config
 from datetime import datetime as dt
 
-
-# -----------------------------------------------------------------------------
-#Dev Notes:
-
-
-# Room for Improvement:
-# - Sometimes I use create_workunits, other times create_resource — not consistent.
-# - Clean up create_workunit, etc. in resource_utilities.py.
-# -----------------------------------------------------------------------------
-
-
-
 GSTORE_REMOTE_PATH = config.GSTORE_REMOTE_PATH
 SCRATCH_PATH = config.SCRATCH_PATH
 TRX_LOGIN = config.TRX_LOGIN
