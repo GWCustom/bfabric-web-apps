@@ -35,7 +35,7 @@ from .utils.resource_utilities import (
 )
 
 from .utils.redis_worker_init import run_worker, test_job
-#from .utils.redis_queue import q
+from .utils.redis_queue import q
 
 REDIS_HOST = config.REDIS_HOST
 REDIS_PORT = config.REDIS_PORT
