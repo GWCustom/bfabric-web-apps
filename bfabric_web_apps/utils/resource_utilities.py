@@ -4,7 +4,7 @@ from bfabric_web_apps.utils.get_power_user_wrapper import get_power_user_wrapper
 from bfabric_scripts.bfabric_upload_resource import bfabric_upload_resource
 from pathlib import Path
 
-def create_workunit(token_data, application_name, application_description, application_id, order_id):
+def create_workunit(token_data, application_name, application_description, application_id, container_id):
     """
     Create a single workunit in B-Fabric.
 
@@ -13,7 +13,7 @@ def create_workunit(token_data, application_name, application_description, appli
         application_name (str): Name of the application.
         application_description (str): Description of the application.
         application_id (int): Application ID.
-        order_id (int): Container ID (Order ID).
+        container_id (int): Container ID (Order ID).
     
     Returns:
         obj: Created workunit object or None if creation fails.
@@ -22,10 +22,10 @@ def create_workunit(token_data, application_name, application_description, appli
     wrapper = bfabric_interface.get_wrapper()
 
     workunit_data = {
-        "name": f"{application_name} - Order {order_id}",
-        "description": f"{application_description} for Order {order_id}",
+        "name": f"{application_name} - Order {container_id}",
+        "description": f"{application_description} for Order {container_id}",
         "applicationid": int(application_id),
-        "containerid": order_id, 
+        "containerid": container_id, 
     }
 
     try:
@@ -37,7 +37,7 @@ def create_workunit(token_data, application_name, application_description, appli
             flush_logs=True
         )
         workunit_id = workunit_response[0].get("id")
-        print(f"Created Workunit ID: {workunit_id} for Order ID: {order_id}")
+        print(f"Created Workunit ID: {workunit_id} for Order ID: {container_id}")
 
         # First we get the existing workunit_ids for the current job object: 
         pre_existing_workunit_ids = [elt.get("id") for elt in wrapper.read("job", {"id": token_data.get("jobId")})[0].get("workunit", [])]
@@ -55,15 +55,15 @@ def create_workunit(token_data, application_name, application_description, appli
     except Exception as e:
         L.log_operation(
             "Error",
-            f"Failed to create workunit for Order {order_id}: {e}",
+            f"Failed to create workunit for Order {container_id}: {e}",
             params=None,
             flush_logs=True,
         )
-        print(f"Failed to create workunit for Order {order_id}: {e}")
+        print(f"Failed to create workunit for Order {container_id}: {e}")
         return None
 
 
-def create_workunits(token_data, application_name, application_description, application_id, order_ids):
+def create_workunits(token_data, application_name, application_description, application_id, container_ids):
     """
     Create multiple workunits in B-Fabric.
 
@@ -72,17 +72,17 @@ def create_workunits(token_data, application_name, application_description, appl
         application_name (str): Name of the application.
         application_description (str): Description of the application.
         application_id (int): Application ID.
-        order_ids (list): List of container IDs.
+        container_ids (list): List of container IDs.
     
     Returns:
         list[obj]: List of created workunit objects.
     """
-    if not isinstance(order_ids, list):
-        order_ids = [order_ids]  # Ensure it's a list
+    if not isinstance(container_ids, list):
+        container_ids = [container_ids]  # Ensure it's a list
 
     workunits = [
-        create_workunit(token_data, application_name, application_description, application_id, order_id)
-        for order_id in order_ids
+        create_workunit(token_data, application_name, application_description, application_id, container_id)
+        for container_id in container_ids
     ]
 
     return [wu_id for wu_id in workunits if wu_id is not None]  # Filter out None values

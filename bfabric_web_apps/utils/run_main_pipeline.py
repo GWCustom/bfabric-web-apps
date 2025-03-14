@@ -25,7 +25,6 @@ from datetime import datetime as dt
 
 
 # Room for Improvement:
-# - The attachment_paths dictionary could be reversed.
 # - Sometimes I use create_workunits, other times create_resource — not consistent.
 # - Clean up create_workunit, etc. in resource_utilities.py.
 # -----------------------------------------------------------------------------
@@ -53,7 +52,7 @@ def run_main_job(files_as_byte_strings: dict,
 
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
-    :param resource_paths: dict, {resource_path: order_id}
+    :param resource_paths: dict, {resource_path: container_id}
     :param attachment_paths: Dictionary mapping source file paths to their corresponding file names ({"path/test.txt": "name.txt"})
                              for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
@@ -225,16 +224,16 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
 
     :param token_data: dict with token/auth info
     :param app_data: dict with fields like {"id": <app_id>} or other app info
-    :param resource_paths: Dictionary {file_path: order_id}
+    :param resource_paths: Dictionary {file_path: container_id}
     :param logger: a logger instance
     :return: A dictionary mapping file_paths to workunit objects {file_path: workunit}
     """
     app_id = app_data["id"]  # Extract the application ID
 
     # Extract unique order IDs from resource_paths
-    order_ids = list(set(resource_paths.values()))
+    container_ids = list(set(resource_paths.values()))
 
-    if not order_ids:
+    if not container_ids:
         raise ValueError("No order IDs found in resource_paths; cannot create workunits.")
 
     # Create all workunits in one API call
@@ -243,17 +242,17 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
         application_name="Test Workunit",
         application_description="Workunits for batch processing",
         application_id=app_id,
-        order_ids=order_ids
+        container_ids=container_ids
     )
 
-    if not created_workunits or len(created_workunits) != len(order_ids):
-        raise ValueError(f"Mismatch in workunit creation: Expected {len(order_ids)} workunits, got {len(created_workunits)}.")
+    if not created_workunits or len(created_workunits) != len(container_ids):
+        raise ValueError(f"Mismatch in workunit creation: Expected {len(container_ids)} workunits, got {len(created_workunits)}.")
 
     workunit_map = {
         file_path: wu["id"]
         for wu in created_workunits
-        for file_path, order_id in resource_paths.items()
-        if order_id == wu["container"]["id"]
+        for file_path, container_id in resource_paths.items()
+        if container_id == wu["container"]["id"]
     }
 
     logger.log_operation("Success", f"Total created Workunits: {list(workunit_map.values())}", params=None, flush_logs=True)
