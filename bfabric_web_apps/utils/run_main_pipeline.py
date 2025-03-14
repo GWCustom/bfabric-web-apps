@@ -19,6 +19,20 @@ from .resource_utilities import (
 from .config import settings as config
 
 
+# -----------------------------------------------------------------------------
+#Dev Notes:
+
+# - g_req_copy has no destination path!
+# - contaier_ids should be order_ids
+
+
+# Room for Improvement:
+# - The attachment_paths dictionary could be reversed.
+# - Sometimes I use create_workunits, other times create_resource — not consistent.
+# - Clean up create_workunit, etc. in resource_utilities.py.
+# -----------------------------------------------------------------------------
+
+
 
 GSTORE_REMOTE_PATH = config.GSTORE_REMOTE_PATH
 SCRATCH_PATH = config.SCRATCH_PATH
@@ -297,6 +311,7 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
 # -----------------------------------------------------------------------------
 
 def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths: dict):
+    
 
     """
     Attaches files to a B-Fabric entity by copying them to the FGCZ storage and creating an API link.
@@ -411,3 +426,4 @@ def create_api_link(token_data, logger, entity_class, entity_id, file_name):
         error_msg = f"Failed to create API link for '{file_name}': {e}"
         logger.log_operation("Error", error_msg, params=None, flush_logs=True)
         print(error_msg)
+

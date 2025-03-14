@@ -80,12 +80,12 @@ def create_workunits(token_data, application_name, application_description, appl
     if not isinstance(container_ids, list):
         container_ids = [container_ids]  # Ensure it's a list
 
-    workunit_ids = [
+    workunits = [
         create_workunit(token_data, application_name, application_description, application_id, container_id)
         for container_id in container_ids
     ]
 
-    return [wu_id for wu_id in workunit_ids if wu_id is not None]  # Filter out None values
+    return [wu_id for wu_id in workunits if wu_id is not None]  # Filter out None values
 
 
 from pathlib import Path
@@ -161,9 +161,9 @@ def create_resources(token_data, workunit_id, file_paths):
     if not isinstance(file_paths, list):
         file_paths = [file_paths]  # Ensure it's a list
 
-    resource_ids = [
+    resources = [
         create_resource(token_data, workunit_id, file_path)
         for file_path in file_paths
     ]
 
-    return [res_id for res_id in resource_ids if res_id is not None]  # Filter out None values
+    return [res_id for res_id in resources if res_id is not None]  # Filter out None values
