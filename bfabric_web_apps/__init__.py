@@ -25,6 +25,8 @@ from .utils.callbacks import (
 
 from .utils.config import settings as config
 
+from. utils.run_main_pipeline import run_main_job
+
 from .utils.resource_utilities import (
     create_workunit, 
     create_resource, 
@@ -47,3 +49,9 @@ CONFIG_FILE_PATH = config.CONFIG_FILE_PATH
 
 DEVELOPER_EMAIL_ADDRESS = config.DEVELOPER_EMAIL_ADDRESS
 BUG_REPORT_EMAIL_ADDRESS = config.BUG_REPORT_EMAIL_ADDRESS
+
+GSTORE_REMOTE_PATH = config.GSTORE_REMOTE_PATH
+SCRATCH_PATH = config.SCRATCH_PATH
+TRX_LOGIN = config.TRX_LOGIN
+TRX_SSH_KEY = config.TRX_SSH_KEY
+URL = config.URL

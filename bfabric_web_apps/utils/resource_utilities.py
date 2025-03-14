@@ -16,7 +16,7 @@ def create_workunit(token_data, application_name, application_description, appli
         container_id (int): Container ID (Order ID).
     
     Returns:
-        int: Created workunit ID or None if creation fails.
+        obj: Created workunit object or None if creation fails.
     """
     L = get_logger(token_data)
     wrapper = bfabric_interface.get_wrapper()
@@ -50,7 +50,7 @@ def create_workunit(token_data, application_name, application_description, appli
             params=None,
             flush_logs=True
         )
-        return workunit_id
+        return workunit_response[0]
 
     except Exception as e:
         L.log_operation(
@@ -75,82 +75,95 @@ def create_workunits(token_data, application_name, application_description, appl
         container_ids (list): List of container IDs.
     
     Returns:
-        list: List of created workunit IDs.
+        list[obj]: List of created workunit objects.
     """
     if not isinstance(container_ids, list):
         container_ids = [container_ids]  # Ensure it's a list
 
-    workunit_ids = [
+    workunits = [
         create_workunit(token_data, application_name, application_description, application_id, container_id)
         for container_id in container_ids
     ]
 
-    return [wu_id for wu_id in workunit_ids if wu_id is not None]  # Filter out None values
+    return [wu_id for wu_id in workunits if wu_id is not None]  # Filter out None values
 
 
-def create_resource(token_data, workunit_id, gz_file_path):
+from pathlib import Path
+
+def create_resource(token_data, workunit_id, file_path, storage_id="20"):
     """
-    Upload a single .gz resource to an existing B-Fabric workunit.
+    Attach a single file as a resource to an existing B-Fabric workunit.
 
     Args:
         token_data (dict): Authentication token data.
         workunit_id (int): ID of the workunit to associate the resource with.
-        gz_file_path (str): Full path to the .gz file to upload.
+        file_path (str): Full path to the file to attach.
     
     Returns:
-        int: Resource ID if successful, None otherwise.
+        obj: Resource object if successful, None otherwise.
     """
     L = get_logger(token_data)
     wrapper = get_power_user_wrapper(token_data)
 
     try:
-        file_path = Path(gz_file_path)
-
-        # Upload the resource
-        print("Uploading:", file_path, "to workunit:", workunit_id)
-        result = bfabric_upload_resource(wrapper, file_path, workunit_id)
+        file_path = Path(file_path)
+        
+        # Attaching the resource
+        print(f"Attaching: {file_path.name} to workunit: {workunit_id}")
+        
+        result = wrapper.save(
+            endpoint="resource",
+            obj={
+                "workunitid": str(workunit_id),
+                "name": file_path.name,
+                "description": f"Resource attached to workunit {workunit_id}",
+                "relativepath": file_path.name,
+                "storageid": str(storage_id),
+            }
+        )
 
         if result:
-            print(f"Resource uploaded: {file_path.name}")
+            resource_id = result[0].get("id")
+            print(f"Resource attached: {file_path.name} (ID: {resource_id})")
             L.log_operation(
-                "upload_resource",
-                f"Resource uploaded successfully: {file_path.name}",
+                "Attach_resource",
+                f"Resource attached successfully: {file_path.name}",
                 params=None,
                 flush_logs=True,
             )
-            return result
+            return result[0]
         else:
-            raise ValueError(f"Failed to upload resource: {file_path.name}")
+            raise ValueError(f"Failed to attach resource: {file_path.name}")
 
     except Exception as e:
         L.log_operation(
             "error",
-            f"Failed to upload resource: {e}",
+            f"Failed to attach resource: {e}",
             params=None,
             flush_logs=True,
         )
-        print(f"Failed to upload resource: {e}")
+        print(f"Failed to attach resource: {e}")
         return None
 
 
-def create_resources(token_data, workunit_id, gz_file_paths):
+def create_resources(token_data, workunit_id, file_paths):
     """
-    Upload multiple .gz resources to an existing B-Fabric workunit.
+    Attach multiple files as resources to an existing B-Fabric workunit.
 
     Args:
         token_data (dict): Authentication token data.
         workunit_id (int): ID of the workunit to associate the resources with.
-        gz_file_paths (list): List of full paths to .gz files to upload.
+        file_paths (list): List of full paths to files to attach.
     
     Returns:
-        list: List of successfully uploaded resource IDs.
+        list[obj]: List of successfully attached resource objects.
     """
-    if not isinstance(gz_file_paths, list):
-        gz_file_paths = [gz_file_paths]  # Ensure it's a list
+    if not isinstance(file_paths, list):
+        file_paths = [file_paths]  # Ensure it's a list
 
-    resource_ids = [
-        create_resource(token_data, workunit_id, gz_file_path)
-        for gz_file_path in gz_file_paths
+    resources = [
+        create_resource(token_data, workunit_id, file_path)
+        for file_path in file_paths
     ]
 
-    return [res_id for res_id in resource_ids if res_id is not None]  # Filter out None values
+    return [res_id for res_id in resources if res_id is not None]  # Filter out None values

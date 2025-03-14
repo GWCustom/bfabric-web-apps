@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     DEVELOPER_EMAIL_ADDRESS: EmailStr = "griffin@gwcustom.com"
     BUG_REPORT_EMAIL_ADDRESS: EmailStr = "gwtools@fgcz.system"
 
+    #Run main pipeline config (only FGCZ specific)
+    GSTORE_REMOTE_PATH: str = "/path/to/remote/gstore"
+    SCRATCH_PATH: str = "/scratch/folder"
+    TRX_LOGIN: str = "trxcopy@fgcz-server.uzh.ch" 
+    TRX_SSH_KEY: str = "/home/user/.ssh/your_ssh_key"
+    URL: str = "https:/fgcz/dummy/url"
+
     class Config:
 
         env_file = ".env"  
@@ -28,3 +35,4 @@ class Settings(BaseSettings):
 
 # Instantiate settings
 settings = Settings()
+
