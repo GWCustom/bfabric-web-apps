@@ -34,7 +34,7 @@ from .utils.resource_utilities import (
     create_resources
 )
 
-#from .utils.redis_worker_init import run_worker, test_job
+from .utils.redis_worker_init import run_worker, test_job
 #from .utils.redis_queue import q
 
 REDIS_HOST = config.REDIS_HOST
