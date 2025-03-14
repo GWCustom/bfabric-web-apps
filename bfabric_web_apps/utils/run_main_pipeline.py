@@ -111,7 +111,7 @@ Dev Notes:
 
     # STEP 5: Attach gstore files (logs, reports, etc.) to B-Fabric entity as a Link
     try:
-        #attach_gstore_files_to_entities_as_link(token_data, L, attachment_paths)
+        attach_gstore_files_to_entities_as_link(token_data, L, attachment_paths)
         print("Attachment Paths:", attachment_paths)
     except Exception as e:
         L.log_operation("Error", f"Failed to attach extra files: {e}", params=None, flush_logs=True)
@@ -315,7 +315,7 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
     entity_id = token_data.get("entity_id_data", None)
 
     # Check if we have access to the FGCZ server
-    remote_access = check_remote_access(TRX_LOGIN, TRX_SSH_KEY, GSTORE_REMOTE_PATH)
+    local = local_access(GSTORE_REMOTE_PATH)
 
     # Process each attachment
     for source_path, file_name in attachment_paths.items():
@@ -327,16 +327,21 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
         try:
             # Define entity folder
             entity_folder = f"{entity_class}_{entity_id}" if entity_class and entity_id else "unknown_entity"
-            final_remote_path = f"{GSTORE_REMOTE_PATH}/gwc/{entity_folder}/{file_name}"
+            final_remote_path = f"{GSTORE_REMOTE_PATH}/gwc/{entity_folder}/"
 
-            if not remote_access:  # We have direct access → Copy directly
-                g_req_copy(source_path, file_name)
-            else:  # We don't have direct access → Send to migration folder first
-                remote_tmp_path = f"{SCRATCH_PATH}/{file_name}"
-                scp_copy(source_path, TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path)
+            print("local access:", local)
+            print("source path:", source_path)
+            print("file name:", file_name)
+            print("final remote path:", final_remote_path)
 
-                # Move to final location
-                ssh_move(TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path, final_remote_path)
+            # if local:  # We have direct access → Copy directly
+            #     g_req_copy(source_path, file_name)
+            # else:  # We don't have direct access → Send to migration folder first
+            remote_tmp_path = f"{SCRATCH_PATH}/{file_name}"
+            scp_copy(source_path, TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path)
+
+            # Move to final location
+            ssh_move(TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path, final_remote_path)
 
             # Log success
             success_msg = f"Successfully attached '{file_name}' to {entity_class} (ID={entity_id})"
@@ -351,16 +356,11 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
             logger.log_operation("Error", error_msg, params=None, flush_logs=True)
             print(error_msg)
 
-def check_remote_access(ssh_user, ssh_key, remote_path):
-    """Checks if we have SSH access to the remote FGCZ server."""
-    try:
-        subprocess.run(
-            ["ssh", "-i", ssh_key, ssh_user, f"test -d {remote_path} && echo exists"],
-            capture_output=True, text=True, check=True
-        )
-        return False  # If the SSH check passes, we have direct access
-    except subprocess.CalledProcessError:
-        return True  # If the SSH check fails, we need to use SCP first
+def local_access(remote_path):
+    """Checks if the remote gstore path (i.e. /srv/gstore/projects/) exists locally""" 
+    result = os.path.exists(remote_path)
+    print("Remote Path Exists:", result)
+    return result
 
 
 def scp_copy(source_path, ssh_user, ssh_key, remote_path):
@@ -372,16 +372,19 @@ def scp_copy(source_path, ssh_user, ssh_key, remote_path):
 
 def ssh_move(ssh_user, ssh_key, remote_tmp_path, final_remote_path):
     """Moves a file on the remote server to its final location using SSH."""
-    cmd = ["ssh", "-i", ssh_key, ssh_user, f"g-req copynow {remote_tmp_path} {final_remote_path}"]
+    cmd = ["ssh", "-i", ssh_key, ssh_user, f"/usr/local/ngseq/bin/g-req copynow -f {remote_tmp_path} {final_remote_path}"]
+    # print(" ".join(cmd))
+    # os.system(" ".join(cmd))
+    # subprocess.run(" ".join(cmd))
     subprocess.run(cmd, check=True)
     print(f"Moved {remote_tmp_path} to {final_remote_path}")
 
 
-def g_req_copy(source_path, file_name):
-    """Copies a file using g-req command when direct access is available."""
-    cmd = ["g-req", "copynow", source_path]
-    subprocess.run(cmd, check=True)
-    print(f"Copied {source_path} using g-req")
+# def g_req_copy(source_path, file_name):
+#     """Copies a file using g-req command when direct access is available."""
+#     cmd = ["/usr/local/ngseq/bin/g-req", "copynow", "-f", source_path]
+#     subprocess.run(cmd, check=True)
+#     print(f"Copied {source_path} using g-req")
 
 
 def create_api_link(token_data, logger, entity_class, entity_id, file_name):
