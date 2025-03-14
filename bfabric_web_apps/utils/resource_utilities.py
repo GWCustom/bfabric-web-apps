@@ -90,7 +90,7 @@ def create_workunits(token_data, application_name, application_description, appl
 
 from pathlib import Path
 
-def create_resource(token_data, workunit_id, file_path, storage_id="20"):
+def create_resource(token_data, workunit_id, file_path, storage_id="20"): # GWC Server is storage id 20. 
     """
     Attach a single file as a resource to an existing B-Fabric workunit.
 
