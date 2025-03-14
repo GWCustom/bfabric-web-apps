@@ -23,9 +23,6 @@ from datetime import datetime as dt
 # -----------------------------------------------------------------------------
 #Dev Notes:
 
-# - g_req_copy has no destination path!
-# - contaier_ids should be order_ids
-
 
 # Room for Improvement:
 # - The attachment_paths dictionary could be reversed.
@@ -246,7 +243,7 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
         application_name="Test Workunit",
         application_description="Workunits for batch processing",
         application_id=app_id,
-        container_ids=order_ids
+        order_ids=order_ids
     )
 
     if not created_workunits or len(created_workunits) != len(order_ids):
