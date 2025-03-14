@@ -17,6 +17,7 @@ from .resource_utilities import (
 )
 
 from .config import settings as config
+from datetime import datetime as dt
 
 
 # -----------------------------------------------------------------------------
@@ -342,21 +343,22 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
         try:
             # Define entity folder
             entity_folder = f"{entity_class}_{entity_id}" if entity_class and entity_id else "unknown_entity"
-            final_remote_path = f"{GSTORE_REMOTE_PATH}/gwc/{entity_folder}/"
+            final_remote_path = f"{GSTORE_REMOTE_PATH}/{entity_folder}/"
 
             print("local access:", local)
             print("source path:", source_path)
             print("file name:", file_name)
             print("final remote path:", final_remote_path)
 
-            # if local:  # We have direct access → Copy directly
-            #     g_req_copy(source_path, file_name)
-            # else:  # We don't have direct access → Send to migration folder first
-            remote_tmp_path = f"{SCRATCH_PATH}/{file_name}"
-            scp_copy(source_path, TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path)
+            if local:  # We have direct access → Copy directly
+                g_req_copy(source_path, final_remote_path)
+                
+            else:  # We don't have direct access → Send to migration folder first
+                remote_tmp_path = f"{SCRATCH_PATH}/{file_name}"
+                scp_copy(source_path, TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path)
 
-            # Move to final location
-            ssh_move(TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path, final_remote_path)
+                # Move to final location
+                ssh_move(TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path, final_remote_path)
 
             # Log success
             success_msg = f"Successfully attached '{file_name}' to {entity_class} (ID={entity_id})"
@@ -364,7 +366,7 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
             print(success_msg)
 
             # Step 3: Create API link
-            create_api_link(token_data, logger, entity_class, entity_id, file_name)
+            create_api_link(token_data, logger, entity_class, entity_id, file_name, entity_folder)
 
         except Exception as e:
             error_msg = f"Exception while processing '{file_name}': {e}"
@@ -388,27 +390,26 @@ def scp_copy(source_path, ssh_user, ssh_key, remote_path):
 def ssh_move(ssh_user, ssh_key, remote_tmp_path, final_remote_path):
     """Moves a file on the remote server to its final location using SSH."""
     cmd = ["ssh", "-i", ssh_key, ssh_user, f"/usr/local/ngseq/bin/g-req copynow -f {remote_tmp_path} {final_remote_path}"]
-    # print(" ".join(cmd))
-    # os.system(" ".join(cmd))
-    # subprocess.run(" ".join(cmd))
+
     subprocess.run(cmd, check=True)
     print(f"Moved {remote_tmp_path} to {final_remote_path}")
 
 
-# def g_req_copy(source_path, file_name):
-#     """Copies a file using g-req command when direct access is available."""
-#     cmd = ["/usr/local/ngseq/bin/g-req", "copynow", "-f", source_path]
-#     subprocess.run(cmd, check=True)
-#     print(f"Copied {source_path} using g-req")
+def g_req_copy(source_path, destination_path):
+    """Copies a file using g-req command when direct access is available."""
+    cmd = ["/usr/local/ngseq/bin/g-req", "copynow", "-f", source_path, destination_path]
+    subprocess.run(cmd, check=True)
+    print(f"Copied {source_path} using g-req")
 
 
-def create_api_link(token_data, logger, entity_class, entity_id, file_name):
+def create_api_link(token_data, logger, entity_class, entity_id, file_name, folder_name):
     """Creates an API link in B-Fabric for the attached file."""
     wrapper = get_power_user_wrapper(token_data)
-    url = f"{URL}/{file_name}"
+    url = f"{URL}/{folder_name}/{file_name}"
+    timestamped_filename = f"{dt.now().strftime('%Y-%m-%d_%H:%M:%S')}_{file_name}"
 
     data = {
-        "name": file_name,
+        "name": timestamped_filename,
         "parentclassname": entity_class,
         "parentid": entity_id,
         "url": url
