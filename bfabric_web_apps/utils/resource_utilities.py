@@ -1,7 +1,7 @@
 from bfabric_web_apps.utils.get_logger import get_logger
 from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
 from bfabric_web_apps.utils.get_power_user_wrapper import get_power_user_wrapper
-from bfabric_scripts.bfabric_upload_resource import bfabric_upload_resource
+
 from pathlib import Path
 
 def create_workunit(token_data, application_name, application_description, application_id, container_id):
