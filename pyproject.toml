@@ -1,11 +1,17 @@
 [tool.poetry]
 name = "bfabric-web-apps"
-version = "0.1.3"
+version = "0.1.5"
 description = "A package containing handy boilerplate utilities for developing bfabric web-applications"
 authors = ["Marc Zuber, Griffin White, GWC GmbH"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
+rq = "1.15.1"
+pydantic-settings = "^2.8.1"
+pydantic = {extras = ["email"], version = "^2.10.6"}
+bfabric = "^1.13.23"
+dash = "^3.0.2"
+dash-bootstrap-components = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 
