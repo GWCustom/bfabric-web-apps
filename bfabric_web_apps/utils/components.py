@@ -1,4 +1,5 @@
 from dash import html
+import dash_daq as daq
 
 DEVELOPER_EMAIL = "gwhite@fgcz.ethz.ch"
 
@@ -19,4 +20,9 @@ auth = [html.Div(id="auth-div")]
 no_auth = [
     html.P("You are not currently logged into an active session. Please log into bfabric to continue:"),
     html.A('Login to Bfabric', href='https://fgcz-bfabric.uzh.ch/bfabric/')
+]
+
+charge_switch = [
+    daq.BooleanSwitch(id='charge_run', on=True, label="Charge project for run"),
+    html.Br()
 ]

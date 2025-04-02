@@ -16,6 +16,8 @@ from .resource_utilities import (
     create_resources
 )
 
+from .charging import create_charge
+
 from .config import settings as config
 from datetime import datetime as dt
 
@@ -25,11 +27,14 @@ TRX_LOGIN = config.TRX_LOGIN
 TRX_SSH_KEY = config.TRX_SSH_KEY
 URL = config.URL
 
-def run_main_job(files_as_byte_strings: dict, 
-                 bash_commands: list[str], 
-                 resource_paths: dict,
-                 attachment_paths: list[dict], 
-                 token: str):
+def run_main_job(
+    files_as_byte_strings: dict, 
+    bash_commands: list[str], 
+    resource_paths: dict,
+    attachment_paths: list[dict], 
+    token: str,
+    charges: bool
+):
     """
     Main function to handle:
       1) Save Files on Server
@@ -37,6 +42,7 @@ def run_main_job(files_as_byte_strings: dict,
       3) Create workunits in B-Fabric
       4) Register resources in B-Fabric
       5) Attach additional gstore files (logs/reports/etc.) to entities in B-Fabric
+      6) Automatically charge the container for the service
 
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
@@ -412,3 +418,14 @@ def create_api_link(token_data, logger, entity_class, entity_id, file_name, fold
         logger.log_operation("Error", error_msg, params=None, flush_logs=True)
         print(error_msg)
 
+
+def read_file_as_bytes(file_path, max_size_mb=400):
+    """Reads any file type and stores it as a byte string in a dictionary."""
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)  # Convert bytes to MB
+    if file_size_mb > max_size_mb:
+        raise ValueError(f"File {file_path} exceeds {max_size_mb}MB limit ({file_size_mb:.2f}MB).")
+
+    with open(file_path, "rb") as f:  # Read as bytes
+        file_as_bytes = f.read()
+
+    return file_as_bytes

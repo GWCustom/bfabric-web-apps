@@ -67,7 +67,7 @@ class BfabricInterface( Bfabric ):
 
         validation_url = VALIDATION_URL + token
         res = requests.get(validation_url, headers={"Host": HOST})
-        
+
         if res.status_code != 200:
             res = requests.get(validation_url)
         
