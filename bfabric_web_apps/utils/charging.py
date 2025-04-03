@@ -12,7 +12,7 @@ def create_charge(token_data, container_id, service_id):
         service_id (int): Service ID.
     
     Returns:
-        None
+        list[dict]: List of charge data.
     """
     
     # Get a logger and an api wrapper
