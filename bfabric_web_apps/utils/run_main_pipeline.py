@@ -140,10 +140,10 @@ Dev Notes:
                 print("Error: No container IDs found for charging.")
                 return
             for container_id in container_ids:
-                create_charge(token_data, container_id, service_id)
-                L.log_operation("Success", f"Charge created for container {container_id} with service ID {service_id}",
-                                params=None, flush_logs=True)
-                print(f"Charge created for container {container_id} with service ID {service_id}")
+                charges = create_charge(token_data, container_id, service_id)
+                charge_id = charges[0].get("id")
+                L.log_operation("Success", f"Charge created for container {container_id} with service ID {service_id} and charge id {charge_id}", params=None, flush_logs=True)
+                print(f"Charge created with id {charge_id} for container {container_id} with service ID {service_id}")
     else:
         L.log_operation("Info", "Charge creation skipped.", params=None, flush_logs=True)
         print("Charge creation skipped.")
