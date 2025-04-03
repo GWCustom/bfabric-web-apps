@@ -151,11 +151,8 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
     # First pass: attempt to write all files
     for destination, file_bytes in files_as_byte_strings.items():
         try:
-            # Ensure the directory exists
-            os.makedirs(os.path.dirname(destination), exist_ok=True)
-
             # Write file from byte string
-            with open(destination, "wb") as f:
+            with open(destination, "+wb") as f:
                 f.write(file_bytes)
             logger.log_operation("Files saved", "All files saved successfully.", params=None, flush_logs=True)
             return "All files saved successfully."
