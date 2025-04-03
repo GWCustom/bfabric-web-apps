@@ -148,20 +148,23 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
     """
     results = {}  # Store results: (destination) -> True (if success) or error message (if failure)
 
+    message = "All files saved successfully."
+
     # First pass: attempt to write all files
     for destination, file_bytes in files_as_byte_strings.items():
         try:
             # Write file from byte string
             with open(destination, "+wb") as f:
                 f.write(file_bytes)
-            logger.log_operation("Files saved", "All files saved successfully.", params=None, flush_logs=True)
-            return "All files saved successfully."
+            logger.log_operation(f"File saved", f"File {destination} saved successfully.", params=None, flush_logs=True)
         
         except Exception as e:
             error_msg = f"Error saving file: {destination}, Error: {str(e)}"
             logger.log_operation("Error", error_msg, params=None, flush_logs=True)
             print(error_msg)
-            raise RuntimeError(error_msg)
+            message = f"Error saving some files." 
+
+    return message
 
 
 # -----------------------------------------------------------------------------
