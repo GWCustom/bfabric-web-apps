@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     TRX_SSH_KEY: str = "/home/user/.ssh/your_ssh_key"
     URL: str = "https:/fgcz/dummy/url"
 
+    # Which service id to use for the charge 
+    SERVICE_ID: int = 0
+
     class Config:
 
         env_file = ".env"  

@@ -25,7 +25,7 @@ from .utils.callbacks import (
 
 from .utils.config import settings as config
 
-from. utils.run_main_pipeline import run_main_job
+from. utils.run_main_pipeline import run_main_job, read_file_as_bytes
 
 from .utils.resource_utilities import (
     create_workunit, 
@@ -34,6 +34,7 @@ from .utils.resource_utilities import (
     create_resources
 )
 
+from .utils.charging import create_charge
 from .utils.redis_worker_init import run_worker, test_job
 from .utils.redis_queue import q
 
@@ -55,3 +56,5 @@ SCRATCH_PATH = config.SCRATCH_PATH
 TRX_LOGIN = config.TRX_LOGIN
 TRX_SSH_KEY = config.TRX_SSH_KEY
 URL = config.URL
+
+SERVICE_ID = config.SERVICE_ID

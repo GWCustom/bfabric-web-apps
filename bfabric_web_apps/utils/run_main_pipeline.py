@@ -16,6 +16,8 @@ from .resource_utilities import (
     create_resources
 )
 
+from .charging import create_charge
+
 from .config import settings as config
 from datetime import datetime as dt
 
@@ -25,11 +27,15 @@ TRX_LOGIN = config.TRX_LOGIN
 TRX_SSH_KEY = config.TRX_SSH_KEY
 URL = config.URL
 
-def run_main_job(files_as_byte_strings: dict, 
-                 bash_commands: list[str], 
-                 resource_paths: dict,
-                 attachment_paths: list[dict], 
-                 token: str):
+def run_main_job(
+    files_as_byte_strings: dict, 
+    bash_commands: list[str], 
+    resource_paths: dict,
+    attachment_paths: list[dict], 
+    token: str,
+    service_id: int = 0,
+    charge: bool = False,
+):
     """
     Main function to handle:
       1) Save Files on Server
@@ -37,6 +43,7 @@ def run_main_job(files_as_byte_strings: dict,
       3) Create workunits in B-Fabric
       4) Register resources in B-Fabric
       5) Attach additional gstore files (logs/reports/etc.) to entities in B-Fabric
+      6) Automatically charge the relevant container for the service
 
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
@@ -44,6 +51,8 @@ def run_main_job(files_as_byte_strings: dict,
     :param attachment_paths: Dictionary mapping source file paths to their corresponding file names ({"path/test.txt": "name.txt"})
                              for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
+    :param service_id: ID of the service to charge
+    :param charge: Boolean indicating whether to charge the container for the service
 
     
 Dev Notes:
@@ -75,6 +84,7 @@ Dev Notes:
         summary = save_files_from_bytes(files_as_byte_strings, L)
         L.log_operation("Success", f"File copy summary: {summary}", params=None, flush_logs=True)
         print("Summary:", summary)
+        
     except Exception as e:
         # If something unexpected blows up the entire process
         L.log_operation("Error", f"Failed to copy files: {e}", params=None, flush_logs=True)
@@ -117,6 +127,27 @@ Dev Notes:
         print("Error attaching extra files:", e)
 
 
+    # STEP 6: Charge the container for the service
+    if charge: 
+        
+        if service_id == 0:
+            print("Service ID not provided. Skipping charge creation.")
+            L.log_operation("Info", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
+        else:
+            container_ids = list(set(list(resource_paths.values())))
+            if not container_ids:
+                L.log_operation("Error", "No container IDs found for charging.", params=None, flush_logs=True)
+                print("Error: No container IDs found for charging.")
+                return
+            for container_id in container_ids:
+                charges = create_charge(token_data, container_id, service_id)
+                charge_id = charges[0].get("id")
+                L.log_operation("Success", f"Charge created for container {container_id} with service ID {service_id} and charge id {charge_id}", params=None, flush_logs=False)
+                print(f"Charge created with id {charge_id} for container {container_id} with service ID {service_id}")
+            L.flush_logs()
+    else:
+        L.log_operation("Info", "Charge creation skipped.", params=None, flush_logs=True)
+        print("Charge creation skipped.")
 
 #---------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------
@@ -138,23 +169,23 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
     """
     results = {}  # Store results: (destination) -> True (if success) or error message (if failure)
 
+    message = "All files saved successfully."
+
     # First pass: attempt to write all files
     for destination, file_bytes in files_as_byte_strings.items():
         try:
-            # Ensure the directory exists
-            os.makedirs(os.path.dirname(destination), exist_ok=True)
-
             # Write file from byte string
-            with open(destination, "wb") as f:
+            with open(destination, "+wb") as f:
                 f.write(file_bytes)
-            logger.log_operation("Files saved", "All files saved successfully.", params=None, flush_logs=True)
-            return "All files saved successfully."
+            logger.log_operation(f"File saved", f"File {destination} saved successfully.", params=None, flush_logs=True)
         
         except Exception as e:
             error_msg = f"Error saving file: {destination}, Error: {str(e)}"
             logger.log_operation("Error", error_msg, params=None, flush_logs=True)
             print(error_msg)
-            raise RuntimeError(error_msg)
+            message = f"Error saving some files." 
+
+    return message
 
 
 # -----------------------------------------------------------------------------
@@ -412,3 +443,14 @@ def create_api_link(token_data, logger, entity_class, entity_id, file_name, fold
         logger.log_operation("Error", error_msg, params=None, flush_logs=True)
         print(error_msg)
 
+
+def read_file_as_bytes(file_path, max_size_mb=400):
+    """Reads any file type and stores it as a byte string in a dictionary."""
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)  # Convert bytes to MB
+    if file_size_mb > max_size_mb:
+        raise ValueError(f"File {file_path} exceeds {max_size_mb}MB limit ({file_size_mb:.2f}MB).")
+
+    with open(file_path, "rb") as f:  # Read as bytes
+        file_as_bytes = f.read()
+
+    return file_as_bytes
