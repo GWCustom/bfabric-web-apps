@@ -43,7 +43,7 @@ def run_main_job(
       3) Create workunits in B-Fabric
       4) Register resources in B-Fabric
       5) Attach additional gstore files (logs/reports/etc.) to entities in B-Fabric
-      6) Automatically charge the container for the service
+      6) Automatically charge the relevant container for the service
 
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
@@ -127,6 +127,26 @@ Dev Notes:
         print("Error attaching extra files:", e)
 
 
+    # STEP 6: Charge the container for the service
+    if charge: 
+        
+        if service_id == 0:
+            print("Service ID not provided. Skipping charge creation.")
+            L.log_operation("Info", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
+        else:
+            container_ids = list(set(list(resource_paths.values())))
+            if not container_ids:
+                L.log_operation("Error", "No container IDs found for charging.", params=None, flush_logs=True)
+                print("Error: No container IDs found for charging.")
+                return
+            for container_id in container_ids:
+                create_charge(token_data, container_id, service_id)
+                L.log_operation("Success", f"Charge created for container {container_id} with service ID {service_id}",
+                                params=None, flush_logs=True)
+                print(f"Charge created for container {container_id} with service ID {service_id}")
+    else:
+        L.log_operation("Info", "Charge creation skipped.", params=None, flush_logs=True)
+        print("Charge creation skipped.")
 
 #---------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------
