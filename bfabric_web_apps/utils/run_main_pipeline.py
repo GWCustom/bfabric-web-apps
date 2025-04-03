@@ -33,7 +33,8 @@ def run_main_job(
     resource_paths: dict,
     attachment_paths: list[dict], 
     token: str,
-    charges: bool
+    service_id: int = 0,
+    charge: bool = False,
 ):
     """
     Main function to handle:
@@ -50,6 +51,8 @@ def run_main_job(
     :param attachment_paths: Dictionary mapping source file paths to their corresponding file names ({"path/test.txt": "name.txt"})
                              for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
+    :param service_id: ID of the service to charge
+    :param charge: Boolean indicating whether to charge the container for the service
 
     
 Dev Notes:
@@ -81,6 +84,7 @@ Dev Notes:
         summary = save_files_from_bytes(files_as_byte_strings, L)
         L.log_operation("Success", f"File copy summary: {summary}", params=None, flush_logs=True)
         print("Summary:", summary)
+        
     except Exception as e:
         # If something unexpected blows up the entire process
         L.log_operation("Error", f"Failed to copy files: {e}", params=None, flush_logs=True)
