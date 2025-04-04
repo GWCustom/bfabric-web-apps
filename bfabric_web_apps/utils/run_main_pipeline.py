@@ -272,7 +272,6 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
         if container_id == wu["container"]["id"]
     }
     
-    print("created_workunits", created_workunits)
     workunit_ids = [wu.get("id") for wu in created_workunits]
 
     logger.log_operation("Success | ORIGIN: run_main_job function", f"Total created Workunits: {workunit_ids}", params=None, flush_logs=True)
