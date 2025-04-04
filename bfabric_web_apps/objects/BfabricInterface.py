@@ -152,7 +152,10 @@ class BfabricInterface( Bfabric ):
             "Project": "container",
             "Order": "container",
             "Container": "container",
-            "Plate": "plate"
+            "Plate": "plate",
+            "Workunit": "workunit",
+            "Resource": "resource",
+            "Dataset": "dataset"
         }
 
         if not token_data:
@@ -186,6 +189,7 @@ class BfabricInterface( Bfabric ):
                     "createdby": entity_data_dict.get("createdby"),
                     "created": entity_data_dict.get("created"),
                     "modified": entity_data_dict.get("modified"),
+                    "full_api_response": entity_data_dict,
                 })
                 return json_data
             else:
