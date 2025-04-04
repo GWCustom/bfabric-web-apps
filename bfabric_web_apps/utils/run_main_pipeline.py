@@ -243,8 +243,7 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
 
     # Convert container_ids in resource_paths to integers if they're strings.
     resource_paths = {
-        file_path: int(container_id) if isinstance(container_id, str) else container_id
-        for file_path, container_id in resource_paths.items()
+        file_path: int(container_id) for file_path, container_id in resource_paths.items()
     }
 
     # Extract unique order IDs from resource_paths
