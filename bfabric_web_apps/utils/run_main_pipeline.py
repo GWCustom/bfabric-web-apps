@@ -82,22 +82,22 @@ Dev Notes:
     # Step 1: Save files to the server
     try:
         summary = save_files_from_bytes(files_as_byte_strings, L)
-        L.log_operation("Success", f"File copy summary: {summary}", params=None, flush_logs=True)
+        L.log_operation("Success | ORIGIN: run_main_job function", f"File copy summary: {summary}", params=None, flush_logs=True)
         print("Summary:", summary)
         
     except Exception as e:
         # If something unexpected blows up the entire process
-        L.log_operation("Error", f"Failed to copy files: {e}", params=None, flush_logs=True)
+        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to copy files: {e}", params=None, flush_logs=True)
         print("Error copying files:", e)
 
     
     # STEP 2: Execute bash commands
     try:
-        bash_log = execute_and_log_bash_commands(bash_commands, L)
-        L.log_operation("Success", f"Bash commands executed successfully:\n{bash_log}", 
+        bash_log = execute_and_log_bash_commands(bash_commands)
+        L.log_operation("Success | ORIGIN: run_main_job function", f"Bash commands executed success | origin: run_main_job functionfully:\n{bash_log}", 
                         params=None, flush_logs=True)
     except Exception as e:
-        L.log_operation("Error", f"Failed to execute bash commands: {e}", 
+        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to execute bash commands: {e}", 
                         params=None, flush_logs=True)
         print("Error executing bash commands:", e)
 
@@ -106,7 +106,7 @@ Dev Notes:
     try:
         workunit_map = create_workunits_step(token_data, app_data, resource_paths, L)
     except Exception as e:
-        L.log_operation("Error", f"Failed to create workunits in B-Fabric: {e}", 
+        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create workunits in B-Fabric: {e}", 
                         params=None, flush_logs=True)
         print("Error creating workunits:", e)
         workunit_map = []
@@ -115,7 +115,7 @@ Dev Notes:
     try:
         attach_resources_to_workunits(token_data, L, workunit_map)
     except Exception as e:
-        L.log_operation("Error", f"Failed to register resources: {e}", params=None, flush_logs=True)
+        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to register resources: {e}", params=None, flush_logs=True)
         print("Error registering resources:", e)
 
     # STEP 5: Attach gstore files (logs, reports, etc.) to B-Fabric entity as a Link
@@ -123,7 +123,7 @@ Dev Notes:
         attach_gstore_files_to_entities_as_link(token_data, L, attachment_paths)
         print("Attachment Paths:", attachment_paths)
     except Exception as e:
-        L.log_operation("Error", f"Failed to attach extra files: {e}", params=None, flush_logs=True)
+        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to attach extra files: {e}", params=None, flush_logs=True)
         print("Error attaching extra files:", e)
 
 
@@ -132,21 +132,21 @@ Dev Notes:
         
         if service_id == 0:
             print("Service ID not provided. Skipping charge creation.")
-            L.log_operation("Info", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
+            L.log_operation("Info | ORIGIN: run_main_job function", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
         else:
             container_ids = list(set(list(resource_paths.values())))
             if not container_ids:
-                L.log_operation("Error", "No container IDs found for charging.", params=None, flush_logs=True)
+                L.log_operation("Error | ORIGIN: run_main_job function", "No container IDs found for charging.", params=None, flush_logs=True)
                 print("Error: No container IDs found for charging.")
                 return
             for container_id in container_ids:
                 charges = create_charge(token_data, container_id, service_id)
                 charge_id = charges[0].get("id")
-                L.log_operation("Success", f"Charge created for container {container_id} with service ID {service_id} and charge id {charge_id}", params=None, flush_logs=False)
+                L.log_operation("Success | ORIGIN: run_main_job function", f"Charge created for container {container_id} with service ID {service_id} and charge id {charge_id}", params=None, flush_logs=False)
                 print(f"Charge created with id {charge_id} for container {container_id} with service ID {service_id}")
             L.flush_logs()
     else:
-        L.log_operation("Info", "Charge creation skipped.", params=None, flush_logs=True)
+        L.log_operation("Info | ORIGIN: run_main_job function", "Charge creation skipped.", params=None, flush_logs=True)
         print("Charge creation skipped.")
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -157,8 +157,6 @@ Dev Notes:
 # Step 1: Save Files from bytes
 # -----------------------------------------------------------------------------
 
-import os
-
 def save_files_from_bytes(files_as_byte_strings: dict, logger):
     """
     Saves byte string files to their respective paths.
@@ -167,7 +165,6 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
     :param logger: Logging instance
     :return: Summary indicating how many files succeeded vs. failed
     """
-    results = {}  # Store results: (destination) -> True (if success) or error message (if failure)
 
     message = "All files saved successfully."
 
@@ -177,11 +174,11 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
             # Write file from byte string
             with open(destination, "+wb") as f:
                 f.write(file_bytes)
-            logger.log_operation(f"File saved", f"File {destination} saved successfully.", params=None, flush_logs=True)
+            logger.log_operation("File saved | ORIGIN: run_main_job function", f"File {destination} saved successfully.", params=None, flush_logs=True)
         
         except Exception as e:
             error_msg = f"Error saving file: {destination}, Error: {str(e)}"
-            logger.log_operation("Error", error_msg, params=None, flush_logs=True)
+            logger.log_operation("Error | ORIGIN: run_main_job function", error_msg, params=None, flush_logs=True)
             print(error_msg)
             message = f"Error saving some files." 
 
@@ -192,19 +189,18 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
 # Step 2: Execute Bash Commands
 # -----------------------------------------------------------------------------
 
-def execute_and_log_bash_commands(bash_commands: list[str], logger):
+def execute_and_log_bash_commands(bash_commands: list[str]):
     """
     Executes a list of bash commands locally, logs and returns the output.
 
     :param bash_commands: List of commands to execute
-    :param logger: Logging instance
     :return: A single string containing logs for all commands
     """
     logstring = ""
 
     for cmd in bash_commands:
         logstring += "---------------------------------------------------------\n"
-        logstring += f"Executing Command: {cmd}\n"
+        logstring += f"Executing Command\n"
 
         try:
             # Execute the command and capture both stdout and stderr
@@ -216,19 +212,15 @@ def execute_and_log_bash_commands(bash_commands: list[str], logger):
             if result.returncode == 0:
                 status = "SUCCESS"
                 log_entry = f"Command: {cmd}\nStatus: {status}\nOutput:\n{output}\n"
-                logger.log_operation("Info", log_entry, params=None, flush_logs=True)
             else:
                 status = "FAILURE"
                 log_entry = f"Command: {cmd}\nStatus: {status}\nError Output:\n{error_output}\n"
-                logger.log_operation("Error", log_entry, params=None, flush_logs=True)
 
             logstring += log_entry
             print(log_entry)
 
         except Exception as e:
             logstring += f"Command: {cmd}\nStatus: ERROR\nException: {str(e)}\n"
-            logger.log_operation("Error", f"Command: {cmd} failed with Exception: {str(e)}", 
-                                 params=None, flush_logs=True)
     
     return logstring
 
@@ -248,6 +240,11 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
     :return: A dictionary mapping file_paths to workunit objects {file_path: workunit}
     """
     app_id = app_data["id"]  # Extract the application ID
+
+    # Convert container_ids in resource_paths to integers if they're strings.
+    resource_paths = {
+        file_path: int(container_id) for file_path, container_id in resource_paths.items()
+    }
 
     # Extract unique order IDs from resource_paths
     container_ids = list(set(resource_paths.values()))
@@ -273,9 +270,11 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
         for file_path, container_id in resource_paths.items()
         if container_id == wu["container"]["id"]
     }
+    
+    workunit_ids = [wu.get("id") for wu in created_workunits]
 
-    logger.log_operation("Success", f"Total created Workunits: {list(workunit_map.values())}", params=None, flush_logs=True)
-    print(f"Total created Workunits: {list(workunit_map.values())}")
+    logger.log_operation("Success | ORIGIN: run_main_job function", f"Total created Workunits: {workunit_ids}", params=None, flush_logs=True)
+    print(f"Total created Workunits: {workunit_ids}")
 
     print(workunit_map)
     return workunit_map  # Returning {file_path: workunit}
@@ -297,7 +296,7 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
     :param workunit_map: Dictionary mapping file_path to workunit_id {file_path: workunit_id}
     """
     if not workunit_map:
-        logger.log_operation("Info", "No workunits found, skipping resource registration.",
+        logger.log_operation("Info | ORIGIN: run_main_job function", "No workunits found, skipping resource registration.",
                              params=None, flush_logs=True)
         print("No workunits found, skipping resource registration.")
         return
@@ -312,11 +311,11 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
         print("Resource ID:", resource_id)
 
         if resource_id:
-            logger.log_operation("Success", f"Resource {resource_id} attached to Workunit {workunit_id}",
+            logger.log_operation("Success | ORIGIN: run_main_job function", f"Resource {resource_id} attached to Workunit {workunit_id}",
                                  params=None, flush_logs=True)
             print(f"Resource {resource_id} attached to Workunit {workunit_id}")
         else:
-            logger.log_operation("Error", f"Failed to attach resource {file_path} for Workunit {workunit_id}",
+            logger.log_operation("Error | ORIGIN: run_main_job function", f"Failed to attach resource {file_path} for Workunit {workunit_id}",
                                  params=None, flush_logs=True)
             print(f"Failed to attach resource {file_path} for Workunit {workunit_id}")
 
@@ -351,7 +350,7 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
     # Process each attachment
     for source_path, file_name in attachment_paths.items():
         if not source_path or not file_name:
-            logger.log_operation("Error", f"Missing required attachment details: {source_path} -> {file_name}", params=None, flush_logs=True)
+            logger.log_operation("Error | ORIGIN: run_main_job function", f"Missing required attachment details: {source_path} -> {file_name}", params=None, flush_logs=True)
             print(f"Error: Missing required attachment details: {source_path} -> {file_name}")
             continue
 
@@ -377,15 +376,15 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
 
             # Log success
             success_msg = f"Successfully attached '{file_name}' to {entity_class} (ID={entity_id})"
-            logger.log_operation("Success", success_msg, params=None, flush_logs=True)
+            logger.log_operation("Success | ORIGIN: run_main_job function", success_msg, params=None, flush_logs=True)
             print(success_msg)
 
             # Step 3: Create API link
-            create_api_link(token_data, logger, entity_class, entity_id, file_name, entity_folder)
+            create_attachment_link(token_data, logger, entity_class, entity_id, file_name, entity_folder)
 
         except Exception as e:
             error_msg = f"Exception while processing '{file_name}': {e}"
-            logger.log_operation("Error", error_msg, params=None, flush_logs=True)
+            logger.log_operation("Error | ORIGIN: run_main_job function", error_msg, params=None, flush_logs=True)
             print(error_msg)
 
 def local_access(remote_path):
@@ -417,8 +416,8 @@ def g_req_copy(source_path, destination_path):
     print(f"Copied {source_path} using g-req")
 
 
-def create_api_link(token_data, logger, entity_class, entity_id, file_name, folder_name):
-    """Creates an API link in B-Fabric for the attached file."""
+def create_attachment_link(token_data, logger, entity_class, entity_id, file_name, folder_name):
+    """Creates an attachment link in B-Fabric for the attached file."""
     wrapper = get_power_user_wrapper(token_data)
     url = f"{URL}/{folder_name}/{file_name}"
     timestamped_filename = f"{dt.now().strftime('%Y-%m-%d_%H:%M:%S')}_{file_name}"
@@ -433,14 +432,14 @@ def create_api_link(token_data, logger, entity_class, entity_id, file_name, fold
     try:
         link_result = wrapper.save("link", data)
         if link_result:
-            success_msg = f"API link created for '{file_name}': {url}"
-            logger.log_operation("Success", success_msg, params=None, flush_logs=True)
+            success_msg = f"Attachment link created for '{file_name}': {url}"
+            logger.log_operation("Success | ORIGIN: run_main_job function", success_msg, params=None, flush_logs=True)
             print(success_msg)
         else:
-            raise ValueError("API link creation failed")
+            raise ValueError("Attachment link creation failed")
     except Exception as e:
-        error_msg = f"Failed to create API link for '{file_name}': {e}"
-        logger.log_operation("Error", error_msg, params=None, flush_logs=True)
+        error_msg = f"Failed to create attachment link for '{file_name}': {e}"
+        logger.log_operation("Error | ORIGIN: run_main_job function", error_msg, params=None, flush_logs=True)
         print(error_msg)
 
 

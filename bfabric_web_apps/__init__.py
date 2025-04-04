@@ -2,6 +2,7 @@ import os
 
 # Export objects and classes
 from bfabric_web_apps.objects import BfabricInterface, Logger
+from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
 
 # Export components
 from .utils import components

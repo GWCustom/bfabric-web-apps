@@ -152,7 +152,10 @@ class BfabricInterface( Bfabric ):
             "Project": "container",
             "Order": "container",
             "Container": "container",
-            "Plate": "plate"
+            "Plate": "plate",
+            "Workunit": "workunit",
+            "Resource": "resource",
+            "Dataset": "dataset"
         }
 
         if not token_data:
@@ -176,7 +179,7 @@ class BfabricInterface( Bfabric ):
                 obj={"id": entity_id},
                 max_results=None,
                 params=None,
-                flush_logs=True
+                flush_logs=False
             )[0]
 
             
@@ -186,6 +189,7 @@ class BfabricInterface( Bfabric ):
                     "createdby": entity_data_dict.get("createdby"),
                     "created": entity_data_dict.get("created"),
                     "modified": entity_data_dict.get("modified"),
+                    "full_api_response": entity_data_dict,
                 })
                 return json_data
             else:
@@ -246,7 +250,7 @@ class BfabricInterface( Bfabric ):
             obj={"id": app_id},  # Query using the App ID
             max_results=None,
             params=None,
-            flush_logs=True
+            flush_logs=False
         )
 
         # If API call fails, return empty JSON
