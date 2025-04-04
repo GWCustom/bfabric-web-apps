@@ -176,7 +176,7 @@ class BfabricInterface( Bfabric ):
                 obj={"id": entity_id},
                 max_results=None,
                 params=None,
-                flush_logs=True
+                flush_logs=False
             )[0]
 
             
@@ -246,7 +246,7 @@ class BfabricInterface( Bfabric ):
             obj={"id": app_id},  # Query using the App ID
             max_results=None,
             params=None,
-            flush_logs=True
+            flush_logs=False
         )
 
         # If API call fails, return empty JSON

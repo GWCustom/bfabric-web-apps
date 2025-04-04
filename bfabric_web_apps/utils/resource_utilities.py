@@ -54,7 +54,7 @@ def create_workunit(token_data, application_name, application_description, appli
 
     except Exception as e:
         L.log_operation(
-            "Error",
+            "Error | ORIGIN: run_main_job function",
             f"Failed to create workunit for Order {container_id}: {e}",
             params=None,
             flush_logs=True,
@@ -85,7 +85,7 @@ def create_workunits(token_data, application_name, application_description, appl
         for container_id in container_ids
     ]
 
-    return [wu_id for wu_id in workunits if wu_id is not None]  # Filter out None values
+    return [wu for wu in workunits if wu is not None]  # Filter out None values
 
 
 from pathlib import Path
@@ -126,7 +126,7 @@ def create_resource(token_data, workunit_id, file_path, storage_id="20"): # GWC 
             resource_id = result[0].get("id")
             print(f"Resource attached: {file_path.name} (ID: {resource_id})")
             L.log_operation(
-                "Attach_resource",
+                "Attach_resource | ORIGIN: run_main_job function",
                 f"Resource attached successfully: {file_path.name}",
                 params=None,
                 flush_logs=True,
@@ -137,7 +137,7 @@ def create_resource(token_data, workunit_id, file_path, storage_id="20"): # GWC 
 
     except Exception as e:
         L.log_operation(
-            "error",
+            "error | ORIGIN: run_main_job function",
             f"Failed to attach resource: {e}",
             params=None,
             flush_logs=True,
