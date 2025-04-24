@@ -235,22 +235,31 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
 
     :param token_data: dict with token/auth info
     :param app_data: dict with fields like {"id": <app_id>} or other app info
-    :param resource_paths: Dictionary {file_path: container_id}
+    :param resource_paths: Dictionary {file_path or dir_path: container_id}
     :param logger: a logger instance
     :return: A dictionary mapping file_paths to workunit objects {file_path: workunit}
     """
     app_id = app_data["id"]  # Extract the application ID
 
-    # Convert container_ids in resource_paths to integers if they're strings.
-    resource_paths = {
-        file_path: int(container_id) for file_path, container_id in resource_paths.items()
-    }
+    # Expand any directories into individual files
+    expanded_paths = {}
 
-    # Extract unique order IDs from resource_paths
-    container_ids = list(set(resource_paths.values()))
+    for path_str, container_id in resource_paths.items():
+        path = Path(path_str)
+        if path.is_file():
+            expanded_paths[str(path)] = int(container_id)
+        elif path.is_dir():
+            for file in path.rglob("*"): #is a method that returns all files and folders in the directory and its subdirectories
+                if file.is_file():
+                    expanded_paths[str(file)] = int(container_id)
+        else:
+            logger.log_operation("Warning | ORIGIN: run_main_job function", f"Path {path_str} does not exist.", flush_logs=True)
+            print(f"Warning: Path {path_str} does not exist or is not accessible.")
 
-    if not container_ids:
-        raise ValueError("No order IDs found in resource_paths; cannot create workunits.")
+    if not expanded_paths:
+        raise ValueError("No valid file paths found in resource_paths.")
+
+    container_ids = list(set(expanded_paths.values()))
 
     # Create all workunits in one API call
     created_workunits = create_workunits(
@@ -267,16 +276,15 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
     workunit_map = {
         file_path: wu["id"]
         for wu in created_workunits
-        for file_path, container_id in resource_paths.items()
+        for file_path, container_id in expanded_paths.items()
         if container_id == wu["container"]["id"]
     }
-    
-    workunit_ids = [wu.get("id") for wu in created_workunits]
 
+    workunit_ids = [wu.get("id") for wu in created_workunits]
     logger.log_operation("Success | ORIGIN: run_main_job function", f"Total created Workunits: {workunit_ids}", params=None, flush_logs=True)
     print(f"Total created Workunits: {workunit_ids}")
-
     print(workunit_map)
+
     return workunit_map  # Returning {file_path: workunit}
 
 

@@ -22,7 +22,12 @@ def run_worker(host, port, queue_names):
         port (int): The port to run
         queue_names (list): A list of queue names to listen to
     """
-    conn = redis.Redis(host=host, port=port) 
+    conn = redis.Redis(
+    host=host,
+    port=port,
+    socket_keepalive=True
+)
+
     with Connection(conn): 
         worker = Worker(map(Queue, queue_names)) 
         worker.work()
