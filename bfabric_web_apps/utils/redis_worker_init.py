@@ -13,21 +13,29 @@ def test_job():
     return
 
 
-def run_worker(host, port, queue_names): 
+
+def run_worker(host, port, queue_names):
     """
-    Provides internal interface for running workers on a specified host and port.
+    Starts an RQ (Redis Queue) worker that listens to specified queues and processes jobs.
+
+    This worker is configured to:
+    - Keep the Redis connection alive using TCP keepalive
+    - Actively poll Redis every 60 seconds to prevent idle timeouts (common in cloud environments like Azure)
+    - Optionally support scheduled jobs via `with_scheduler=True`
 
     Args:
-        host (str): The host to run
-        port (int): The port to run
-        queue_names (list): A list of queue names to listen to
+        host (str): The Redis server hostname or IP address.
+        port (int): The Redis server port.
+        queue_names (list): A list of queue names the worker should listen to.
+
     """
     conn = redis.Redis(
-    host=host,
-    port=port,
-    socket_keepalive=True
-)
+        host=host,
+        port=port,
+        socket_keepalive=True
+    )
 
-    with Connection(conn): 
-        worker = Worker(map(Queue, queue_names)) 
-        worker.work()
+    with Connection(conn):
+        worker = Worker(map(Queue, queue_names))
+        # Set job_monitoring_interval to 60 seconds to keep connection active
+        worker.work(with_scheduler=True, logging_level="INFO", job_monitoring_interval=60)
