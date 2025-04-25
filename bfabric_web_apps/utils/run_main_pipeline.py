@@ -52,7 +52,8 @@ def run_main_job(
                              for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
     :param service_id: ID of the service to charge
-    :param charge: Boolean indicating whether to charge the container for the service
+    :param charge: False or a list of container IDs to be charged. If False, skip charging.
+
 
     
 Dev Notes:
@@ -134,7 +135,7 @@ Dev Notes:
             print("Service ID not provided. Skipping charge creation.")
             L.log_operation("Info | ORIGIN: run_main_job function", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
         else:
-            container_ids = list(set(list(resource_paths.values())))
+            container_ids = charge
             if not container_ids:
                 L.log_operation("Error | ORIGIN: run_main_job function", "No container IDs found for charging.", params=None, flush_logs=True)
                 print("Error: No container IDs found for charging.")
@@ -378,9 +379,11 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
             else:  # We don't have direct access → Send to migration folder first
                 remote_tmp_path = f"{SCRATCH_PATH}/{file_name}"
                 scp_copy(source_path, TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path)
+                print("scp copy done:")
 
                 # Move to final location
                 ssh_move(TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path, final_remote_path)
+                print("ssh move done:")
 
             # Log success
             success_msg = f"Successfully attached '{file_name}' to {entity_class} (ID={entity_id})"
@@ -404,8 +407,11 @@ def local_access(remote_path):
 
 def scp_copy(source_path, ssh_user, ssh_key, remote_path):
     """Copies a file to a remote location using SCP with the correct FGCZ server address."""
+    print("SCP Copying...")
     cmd = ["scp", "-i", ssh_key, source_path, f"{ssh_user}:{remote_path}"]
+    print("SCP Command:")
     subprocess.run(cmd, check=True)
+    print("SCP Command Executed:", cmd)
     print(f"Copied {source_path} to {remote_path}")
 
 
