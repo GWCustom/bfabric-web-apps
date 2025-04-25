@@ -34,8 +34,10 @@ def run_main_job(
     attachment_paths: list[dict], 
     token: str,
     service_id: int = 0,
-    charge: bool = False,
+    charge: list[int] = False,
 ):
+
+
     """
     Main function to handle:
       1) Save Files on Server
