@@ -56,7 +56,7 @@ def run_main_job(
 
 
     
-Dev Notes:
+    Dev Notes:
     !!! All exceptions get logged (make sure to log the exception message i.e. "except Exception as e: log(e)") !!!
     !!! If an exception doesn't occur, log that some step ran successfully to the job object !!!
     """
@@ -136,6 +136,7 @@ Dev Notes:
             L.log_operation("Info | ORIGIN: run_main_job function", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
         else:
             container_ids = charge
+            print("Container IDs to charge:", container_ids)
             if not container_ids:
                 L.log_operation("Error | ORIGIN: run_main_job function", "No container IDs found for charging.", params=None, flush_logs=True)
                 print("Error: No container IDs found for charging.")
@@ -149,6 +150,9 @@ Dev Notes:
     else:
         L.log_operation("Info | ORIGIN: run_main_job function", "Charge creation skipped.", params=None, flush_logs=True)
         print("Charge creation skipped.")
+    
+
+    print("All steps completed successfully.")
 
 #---------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------
