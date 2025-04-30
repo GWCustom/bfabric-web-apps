@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+import time
 
 from .get_logger import get_logger
 from .get_power_user_wrapper import get_power_user_wrapper
@@ -34,8 +35,10 @@ def run_main_job(
     attachment_paths: list[dict], 
     token: str,
     service_id: int = 0,
-    charge: bool = False,
+    charge: list[int] = [],
 ):
+
+
     """
     Main function to handle:
       1) Save Files on Server
@@ -52,10 +55,11 @@ def run_main_job(
                              for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
     :param service_id: ID of the service to charge
-    :param charge: Boolean indicating whether to charge the container for the service
+    :param charge: A list of container IDs to be charged.
+
 
     
-Dev Notes:
+    Dev Notes:
     !!! All exceptions get logged (make sure to log the exception message i.e. "except Exception as e: log(e)") !!!
     !!! If an exception doesn't occur, log that some step ran successfully to the job object !!!
     """
@@ -134,7 +138,8 @@ Dev Notes:
             print("Service ID not provided. Skipping charge creation.")
             L.log_operation("Info | ORIGIN: run_main_job function", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
         else:
-            container_ids = list(set(list(resource_paths.values())))
+            container_ids = charge
+            print("Container IDs to charge:", container_ids)
             if not container_ids:
                 L.log_operation("Error | ORIGIN: run_main_job function", "No container IDs found for charging.", params=None, flush_logs=True)
                 print("Error: No container IDs found for charging.")
@@ -148,6 +153,9 @@ Dev Notes:
     else:
         L.log_operation("Info | ORIGIN: run_main_job function", "Charge creation skipped.", params=None, flush_logs=True)
         print("Charge creation skipped.")
+    
+
+    print("All steps completed successfully.")
 
 #---------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------
@@ -235,22 +243,31 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
 
     :param token_data: dict with token/auth info
     :param app_data: dict with fields like {"id": <app_id>} or other app info
-    :param resource_paths: Dictionary {file_path: container_id}
+    :param resource_paths: Dictionary {file_path or dir_path: container_id}
     :param logger: a logger instance
     :return: A dictionary mapping file_paths to workunit objects {file_path: workunit}
     """
     app_id = app_data["id"]  # Extract the application ID
 
-    # Convert container_ids in resource_paths to integers if they're strings.
-    resource_paths = {
-        file_path: int(container_id) for file_path, container_id in resource_paths.items()
-    }
+    # Expand any directories into individual files
+    expanded_paths = {}
 
-    # Extract unique order IDs from resource_paths
-    container_ids = list(set(resource_paths.values()))
+    for path_str, container_id in resource_paths.items():
+        path = Path(path_str)
+        if path.is_file():
+            expanded_paths[str(path)] = int(container_id)
+        elif path.is_dir():
+            for file in path.rglob("*"): #is a method that returns all files and folders in the directory and its subdirectories
+                if file.is_file():
+                    expanded_paths[str(file)] = int(container_id)
+        else:
+            logger.log_operation("Warning | ORIGIN: run_main_job function", f"Path {path_str} does not exist.", flush_logs=True)
+            print(f"Warning: Path {path_str} does not exist or is not accessible.")
 
-    if not container_ids:
-        raise ValueError("No order IDs found in resource_paths; cannot create workunits.")
+    if not expanded_paths:
+        raise ValueError("No valid file paths found in resource_paths.")
+
+    container_ids = list(set(expanded_paths.values()))
 
     # Create all workunits in one API call
     created_workunits = create_workunits(
@@ -267,16 +284,15 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
     workunit_map = {
         file_path: wu["id"]
         for wu in created_workunits
-        for file_path, container_id in resource_paths.items()
+        for file_path, container_id in expanded_paths.items()
         if container_id == wu["container"]["id"]
     }
-    
-    workunit_ids = [wu.get("id") for wu in created_workunits]
 
+    workunit_ids = [wu.get("id") for wu in created_workunits]
     logger.log_operation("Success | ORIGIN: run_main_job function", f"Total created Workunits: {workunit_ids}", params=None, flush_logs=True)
     print(f"Total created Workunits: {workunit_ids}")
-
     print(workunit_map)
+
     return workunit_map  # Returning {file_path: workunit}
 
 
@@ -370,9 +386,11 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
             else:  # We don't have direct access → Send to migration folder first
                 remote_tmp_path = f"{SCRATCH_PATH}/{file_name}"
                 scp_copy(source_path, TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path)
+                print("scp copy done:")
 
                 # Move to final location
                 ssh_move(TRX_LOGIN, TRX_SSH_KEY, remote_tmp_path, final_remote_path)
+                print("ssh move done:")
 
             # Log success
             success_msg = f"Successfully attached '{file_name}' to {entity_class} (ID={entity_id})"
@@ -396,8 +414,11 @@ def local_access(remote_path):
 
 def scp_copy(source_path, ssh_user, ssh_key, remote_path):
     """Copies a file to a remote location using SCP with the correct FGCZ server address."""
+    print("SCP Copying...")
     cmd = ["scp", "-i", ssh_key, source_path, f"{ssh_user}:{remote_path}"]
+    print("SCP Command:")
     subprocess.run(cmd, check=True)
+    print("SCP Command Executed:", cmd)
     print(f"Copied {source_path} to {remote_path}")
 
 
@@ -407,6 +428,9 @@ def ssh_move(ssh_user, ssh_key, remote_tmp_path, final_remote_path):
 
     subprocess.run(cmd, check=True)
     print(f"Moved {remote_tmp_path} to {final_remote_path}")
+    
+    # Wait 10 second before next move
+    time.sleep(10)
 
 
 def g_req_copy(source_path, destination_path):

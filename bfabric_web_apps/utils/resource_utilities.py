@@ -117,7 +117,7 @@ def create_resource(token_data, workunit_id, file_path, storage_id="20"): # GWC 
                 "workunitid": str(workunit_id),
                 "name": file_path.name,
                 "description": f"Resource attached to workunit {workunit_id}",
-                "relativepath": file_path.name,
+                "relativepath": file_path,
                 "storageid": str(storage_id),
             }
         )
