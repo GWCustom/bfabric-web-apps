@@ -35,7 +35,7 @@ def run_main_job(
     attachment_paths: list[dict], 
     token: str,
     service_id: int = 0,
-    charge: bool | list[int] = False,
+    charge: list[int] = [],
 ):
 
 
@@ -55,7 +55,7 @@ def run_main_job(
                              for attachment to a B-Fabric entity (e.g., logs, final reports, etc.)
     :param token: Authentication token
     :param service_id: ID of the service to charge
-    :param charge: False or a list of container IDs to be charged. If False, skip charging.
+    :param charge: A list of container IDs to be charged.
 
 
     
