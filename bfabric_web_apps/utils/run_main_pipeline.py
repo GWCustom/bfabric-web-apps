@@ -35,7 +35,7 @@ def run_main_job(
     attachment_paths: list[dict], 
     token: str,
     service_id: int = 0,
-    charge: list[int] = False,
+    charge: bool | list[int] = False,
 ):
 
 
