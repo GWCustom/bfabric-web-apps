@@ -35,4 +35,4 @@ def run_worker(host, port, queue_names):
 
     with Connection(conn):
         worker = Worker(map(Queue, queue_names))
-        worker.work(with_scheduler=True, logging_level="INFO")
+        worker.work(logging_level="INFO")
