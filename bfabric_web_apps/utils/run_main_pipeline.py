@@ -428,14 +428,6 @@ def ssh_move(ssh_user, ssh_key, remote_tmp_path, final_remote_path):
 
     subprocess.run(cmd, check=True)
     print(f"Moved {remote_tmp_path} to {final_remote_path}")
-
-
-def ssh_move(ssh_user, ssh_key, remote_tmp_path, final_remote_path):
-    """Moves a file on the remote server to its final location using SSH."""
-    cmd = ["ssh", "-i", ssh_key, ssh_user, f"/usr/local/ngseq/bin/g-req copynow -f {remote_tmp_path} {final_remote_path}"]
-
-    subprocess.run(cmd, check=True)
-    print(f"Moved {remote_tmp_path} to {final_remote_path}")
     
     # Wait 10 second before next move
     time.sleep(10)
