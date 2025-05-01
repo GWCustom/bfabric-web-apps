@@ -5,6 +5,7 @@ import shutil
 import subprocess
 from pathlib import Path
 import time
+from collections import defaultdict
 
 from .get_logger import get_logger
 from .get_power_user_wrapper import get_power_user_wrapper
@@ -154,7 +155,8 @@ def run_main_job(
         L.log_operation("Info | ORIGIN: run_main_job function", "Charge creation skipped.", params=None, flush_logs=True)
         print("Charge creation skipped.")
     
-
+    # Final log message
+    L.log_operation("Success | ORIGIN: run_main_job function", "All steps completed successfully.", params=None, flush_logs=True)
     print("All steps completed successfully.")
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -316,24 +318,36 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
                              params=None, flush_logs=True)
         print("No workunits found, skipping resource registration.")
         return
-    
+
     print("Workunit Map:", workunit_map)
 
+    # Dictionary to count successfully created resources per workunit
+    # defaultdict(int) automatically starts each new key with a value of 0
+    workunit_resource_count = defaultdict(int)
+
     for file_path, workunit_id in workunit_map.items():
-        print(f"Processing file: {file_path}, Workunit ID: {workunit_id}")  # Corrected print statement
+        print(f"Processing file: {file_path}, Workunit ID: {workunit_id}")
         # Upload the file as a resource
         resource = create_resource(token_data, workunit_id, file_path)
         resource_id = resource.get("id")
         print("Resource ID:", resource_id)
-
         if resource_id:
-            logger.log_operation("Success | ORIGIN: run_main_job function", f"Resource {resource_id} attached to Workunit {workunit_id}",
-                                 params=None, flush_logs=True)
+            workunit_resource_count[workunit_id] += 1
             print(f"Resource {resource_id} attached to Workunit {workunit_id}")
         else:
             logger.log_operation("Error | ORIGIN: run_main_job function", f"Failed to attach resource {file_path} for Workunit {workunit_id}",
                                  params=None, flush_logs=True)
             print(f"Failed to attach resource {file_path} for Workunit {workunit_id}")
+
+    # Log a summary per workunit
+    for workunit_id, count in workunit_resource_count.items():
+        logger.log_operation(
+            "Success | ORIGIN: run_main_job function",
+            f"Created {count} resource(s) for Workunit ID {workunit_id}",
+            params=None,
+            flush_logs=True
+        )
+        print(f"Created {count} resource(s) for Workunit ID {workunit_id}")
 
 
 
