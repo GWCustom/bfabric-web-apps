@@ -408,7 +408,6 @@ def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths
 
             # Log success
             success_msg = f"Successfully attached '{file_name}' to {entity_class} (ID={entity_id})"
-            logger.log_operation("Success | ORIGIN: run_main_job function", success_msg, params=None, flush_logs=True)
             print(success_msg)
 
             # Step 3: Create API link
