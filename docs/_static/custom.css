@@ -76,3 +76,9 @@ html[data-theme="dark"] code {
         padding-left: 1.2rem; /* Keep it balanced on mobile */
     }
 }
+
+.logo__image {
+    height: 35px;
+    max-height: 35px;
+    width: auto;
+}
