@@ -11,7 +11,7 @@ def get_user_input():
             "2": "Proteomics",
             "4": "Metabolomics / Biophysics",
             "6": "General",
-            "10": "New Tech"
+            "10": "Bioinformatics"
         },
         "PRODUCTION": {
             "1": "Genomics / Transcriptomics",
