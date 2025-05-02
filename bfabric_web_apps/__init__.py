@@ -15,6 +15,10 @@ from .utils.app_init import create_app
 from .utils.get_logger import get_logger
 from .utils.get_power_user_wrapper import get_power_user_wrapper
 from .utils.create_app_in_bfabric import create_app_in_bfabric
+from .utils.dataset_utils import (
+    dataset_to_dictionary, 
+    dictionary_to_dataset
+)
 
 # Export callbacks
 from .utils.callbacks import (
@@ -59,3 +63,4 @@ TRX_SSH_KEY = config.TRX_SSH_KEY
 URL = config.URL
 
 SERVICE_ID = config.SERVICE_ID
+DATASET_TEMPLATE_ID = config.DATASET_TEMPLATE_ID
