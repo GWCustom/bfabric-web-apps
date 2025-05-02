@@ -125,12 +125,6 @@ def create_resource(token_data, workunit_id, file_path, storage_id="20"): # GWC 
         if result:
             resource_id = result[0].get("id")
             print(f"Resource attached: {file_path.name} (ID: {resource_id})")
-            L.log_operation(
-                "Attach_resource | ORIGIN: run_main_job function",
-                f"Resource attached successfully: {file_path.name}",
-                params=None,
-                flush_logs=True,
-            )
             return result[0]
         else:
             raise ValueError(f"Failed to attach resource: {file_path.name}")

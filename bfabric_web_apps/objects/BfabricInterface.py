@@ -104,9 +104,17 @@ class BfabricInterface( Bfabric ):
                 userWsPassword = userinfo['userWsPassword'],
                 jobId = userinfo['jobId']
             )
-
             # Initialize the wrapper right after validating the token
             self._initialize_wrapper(token_data)
+
+            # Log the token validation process
+            L = get_logger(token_data)
+            L.log_operation(
+                    operation="Authentication Process",
+                    message=f"Token validated successfully. User {token_data.get('user_data')} authenticated.",
+                    params=None,
+                    flush_logs=True
+                )
 
             return json.dumps(token_data)
         
