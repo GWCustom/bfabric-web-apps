@@ -22,8 +22,8 @@ def create_workunit(token_data, application_name, application_description, appli
     wrapper = bfabric_interface.get_wrapper()
 
     workunit_data = {
-        "name": f"{application_name} - Order {container_id}",
-        "description": f"{application_description} for Order {container_id}",
+        "name": f"Workunit - {application_name} - Container {container_id}",
+        "description": f"{application_description} for Container {container_id}",
         "applicationid": int(application_id),
         "containerid": container_id, 
     }

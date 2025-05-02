@@ -83,11 +83,9 @@ class BfabricInterface( Bfabric ):
             userinfo = json.loads(res.text)
             expiry_time = userinfo['expiryDateTime']
             current_time = datetime.datetime.now()
-            five_minutes_later = current_time + datetime.timedelta(minutes=5)
-
             # Comparing the parsed expiry time with the five minutes later time
 
-            if not five_minutes_later <= datetime.datetime.strptime(expiry_time, "%Y-%m-%d %H:%M:%S"):
+            if current_time > datetime.datetime.strptime(expiry_time, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(days=7):
                 return "EXPIRED"
             
             environment_dict = {"Production":"https://fgcz-bfabric.uzh.ch/bfabric","Test":"https://fgcz-bfabric-test.uzh.ch/bfabric"}
