@@ -17,6 +17,10 @@ from .resource_utilities import (
     create_workunits, 
     create_resources
 )
+from .dataset_utils import (
+    dataset_to_dictionary,
+    dictionary_to_dataset
+)
 
 from .charging import create_charge
 
@@ -28,6 +32,7 @@ SCRATCH_PATH = config.SCRATCH_PATH
 TRX_LOGIN = config.TRX_LOGIN
 TRX_SSH_KEY = config.TRX_SSH_KEY
 URL = config.URL
+DATASET_TEMPLATE_ID = config.DATASET_TEMPLATE_ID
 
 def run_main_job(
     files_as_byte_strings: dict, 
@@ -37,6 +42,7 @@ def run_main_job(
     token: str,
     service_id: int = 0,
     charge: list[int] = [],
+    dataset_dict: dict = {}
 ):
 
 
@@ -45,9 +51,10 @@ def run_main_job(
       1) Save Files on Server
       2) Execute local bash commands
       3) Create workunits in B-Fabric
-      4) Register resources in B-Fabric
-      5) Attach additional gstore files (logs/reports/etc.) to entities in B-Fabric
-      6) Automatically charge the relevant container for the service
+      4) Create Dataset in B-Fabric
+      5) Register resources in B-Fabric
+      6) Attach additional gstore files (logs/reports/etc.) to entities in B-Fabric
+      7) Automatically charge the relevant container for the service
 
     :param files_as_byte_strings: {destination_path: file as byte strings}
     :param bash_commands: List of bash commands to execute
@@ -57,6 +64,7 @@ def run_main_job(
     :param token: Authentication token
     :param service_id: ID of the service to charge
     :param charge: A list of container IDs to be charged.
+    :param dataset_dict: A dictionary to create a dataset in B-Fabric. keys are container IDs and values are dictionaries whose keys are field names and values are lists of values.
 
 
     
@@ -109,21 +117,42 @@ def run_main_job(
 
     # STEP 3: Create Workunits
     try:
-        workunit_map = create_workunits_step(token_data, app_data, resource_paths, L)
+        workunit_map, workunit_container_map = create_workunits_step(token_data, app_data, resource_paths, L)
     except Exception as e:
         L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create workunits in B-Fabric: {e}", 
                         params=None, flush_logs=True)
         print("Error creating workunits:", e)
         workunit_map = []
 
-    # STEP 4: Register Resources (Refactored)
+
+    # STEP 4: Create Dataset
+    if dataset_dict:
+        for container_id, dataset_data in dataset_dict.items():
+
+            dataset_name = f'Dataset - {str(app_data.get("name", "Unknown App"))} - Container {container_id}'
+            linked_workunit_id = workunit_container_map.get(str(container_id), None)
+
+            try:
+                dataset = dictionary_to_dataset(dataset_data, dataset_name, container_id, DATASET_TEMPLATE_ID, linked_workunit_id)
+                dataset = create_dataset(token_data, dataset)
+                L.log_operation("Success | ORIGIN: run_main_job function", f'Dataset {dataset.get("id", "Null")} created successfully for container {container_id}', params=None, flush_logs=True)
+                print(f"Dataset created successfully for container {container_id}")
+            except Exception as e:
+                L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create dataset for container {container_id}: {e}", params=None, flush_logs=True)
+                print(f"Error creating dataset for container {container_id}:", e)
+    else:
+        L.log_operation("Info | ORIGIN: run_main_job function", "No dataset creation requested.", params=None, flush_logs=True)
+        print("No dataset creation requested.")
+
+
+    # STEP 5: Register Resources (Refactored)
     try:
         attach_resources_to_workunits(token_data, L, workunit_map)
     except Exception as e:
         L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to register resources: {e}", params=None, flush_logs=True)
         print("Error registering resources:", e)
 
-    # STEP 5: Attach gstore files (logs, reports, etc.) to B-Fabric entity as a Link
+    # STEP 6: Attach gstore files (logs, reports, etc.) to B-Fabric entity as a Link
     try:
         attach_gstore_files_to_entities_as_link(token_data, L, attachment_paths)
         print("Attachment Paths:", attachment_paths)
@@ -132,7 +161,7 @@ def run_main_job(
         print("Error attaching extra files:", e)
 
 
-    # STEP 6: Charge the container for the service
+    # STEP 7: Charge the container for the service
     if charge: 
         
         if service_id == 0:
@@ -247,7 +276,9 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
     :param app_data: dict with fields like {"id": <app_id>} or other app info
     :param resource_paths: Dictionary {file_path or dir_path: container_id}
     :param logger: a logger instance
-    :return: A dictionary mapping file_paths to workunit objects {file_path: workunit}
+    :return: A tuple containing: 
+        A dictionary mapping file_paths to workunit objects {file_path: workunit_id}
+        A dictionary mapping container_ids to workunit objects {container_id: workunit_id}
     """
     app_id = app_data["id"]  # Extract the application ID
 
@@ -290,17 +321,41 @@ def create_workunits_step(token_data, app_data, resource_paths, logger):
         if container_id == wu["container"]["id"]
     }
 
+    workunit_container_map = {
+        str(wu["container"]["id"]): wu["id"]
+        for wu in created_workunits
+    }
+
     workunit_ids = [wu.get("id") for wu in created_workunits]
     logger.log_operation("Success | ORIGIN: run_main_job function", f"Total created Workunits: {workunit_ids}", params=None, flush_logs=True)
     print(f"Total created Workunits: {workunit_ids}")
     print(workunit_map)
 
-    return workunit_map  # Returning {file_path: workunit}
+    return workunit_map, workunit_container_map  # Returning {file_path: workunit}
 
 
 
 # -----------------------------------------------------------------------------
-# Step 4: Attach Resources in B-Fabric
+# Step 4: Create Dataset in B-Fabric
+# -----------------------------------------------------------------------------
+def create_dataset(token_data, dataset_data): 
+
+    """
+    Creates a dataset in B-Fabric using the provided dataset data.
+    :param dataset_data: Dictionary containing dataset information
+    :param token_data: B-Fabric token data
+    :return: The created dataset object
+    """
+
+    wrapper = get_power_user_wrapper(token_data) 
+    dataset = wrapper.save("dataset", dataset_data)  # Save the dataset
+
+    return dataset[0]
+
+
+
+# -----------------------------------------------------------------------------
+# Step 5: Attach Resources in B-Fabric
 # -----------------------------------------------------------------------------
 
 def attach_resources_to_workunits(token_data, logger, workunit_map):
@@ -352,7 +407,7 @@ def attach_resources_to_workunits(token_data, logger, workunit_map):
 
 
 # -----------------------------------------------------------------------------
-# Step 5: Attachments of gstore in B-Fabric as a Link
+# Step 6: Attachments of gstore in B-Fabric as a Link
 # -----------------------------------------------------------------------------
 
 def attach_gstore_files_to_entities_as_link(token_data, logger, attachment_paths: dict):

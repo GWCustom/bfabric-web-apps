@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     # Which service id to use for the charge 
     SERVICE_ID: int = 0
 
+    # Which dataset template id to use for dataset creation
+    DATASET_TEMPLATE_ID: int = 0
+
     class Config:
 
         env_file = ".env"  
