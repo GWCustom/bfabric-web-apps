@@ -1,6 +1,6 @@
-# Full-Featured Template - index.py
+# Full-Featured Template
 
-This chapter provides a step-by-step breakdown of the **index.py** script. It explains key functions and their roles in setting up a feature-rich B-Fabric web application.
+This chapter provides a step-by-step breakdown of the **index_large.py** script. It explains key functions and their roles in setting up a feature-rich B-Fabric web application.
 
 ---
 
@@ -46,8 +46,8 @@ This section covers the **necessary imports** that make the template functional.
 from dash import Input, Output, State, html, dcc
 import dash_bootstrap_components as dbc
 import bfabric_web_apps
-import generic_bfabric
-from generic_bfabric import app
+from generic.callbacks import app
+from generic.components import no_auth
 ```
 
 ### Explanation  
@@ -62,17 +62,17 @@ from generic_bfabric import app
 3. **bfabric_web_apps**  
    - Contains **utilities and configurations** for seamless integration with B-Fabric.  
 
-4. **Generic B-Fabric**  
-   - `generic_bfabric`: This file provides **generalized functions** that the template relies on.
-
-5. **Generic B-Fabric app Import**  
+4. **Generic Callbacks B-Fabric app Import**  
    - `app`: The **Dash instance** that initializes and runs the web app.
+
+5. **Generic B-Fabric no_auth Import**  
+   - `no_auth`: Message displayed in the UI to users who are not authenticated.
 
 ---
 
 > **Important:**  
 > - **`generic_bfabric.py`** is a **core system file** and **must not be modified**. Any changes to this file may break authentication or system integration.  
-> - **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index.py` or `index_basic.py`**.  
+> - **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index_large.py`, `index_redis.py` or `index_basic.py`**.  
 
 ---
 
@@ -80,11 +80,10 @@ from generic_bfabric import app
 
 The application uses **global variables** in bfabric_web_apps to define important **default configuration values**.  
 
-
 ```python
 bfabric_web_apps.CONFIG_FILE_PATH = "~/.bfabricpy.yml"
-bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "marc@gwcustom.com"
-bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "marc@gwcustom.com"
+bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "griffin@gwcustom.com"
+bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "gwtools@fgcz.system"
 ```
 
 ### Explanation
@@ -105,40 +104,104 @@ For more details, refer to the **[Global Configuration Variables](bfabric_web_ap
 The **sidebar** serves as the **left-hand panel** of the application, providing interactive elements for user input. It includes a **slider, dropdown menu, text input field, and a submit button**, allowing users to configure values before submitting data.  
 
 ```python
-sidebar = [
-    html.P(id="sidebar_text", children="Select a Value"),  # Sidebar header text.
-    dcc.Slider(0, 20, 5, value=10, id='example-slider'),  # Slider for selecting a numeric value.
+
+# Predefine dropdown options / values
+dropdown_options = ['Genomics (project 2220)', 'Proteomics (project 3000)', 'Metabolomics (project 31230)']
+dropdown_values = ['2220', '3000', '31230']
+
+sidebar = bfabric_web_apps.components.charge_switch + [
+    html.P(id="sidebar_text", children="How Many Resources to Create?"),  # Sidebar header text.
+    dcc.Slider(0, 10, 1, value=4, id='example-slider'),  # Slider for selecting a numeric value.
     html.Br(),
+    html.P(id="sidebar_text_2", children="For Which Internal Unit?"),
     dcc.Dropdown(
-        ['Genomics', 'Proteomics', 'Metabolomics'],  # Dropdown options.
-        'Genomics',  # Default value.
+        options=[{'label': option, 'value': value} for option, value in zip(dropdown_options, dropdown_values)],
+        value=dropdown_options[0],
         id='example-dropdown'  # Dropdown ID for callback integration.
     ),
     html.Br(),
-    dbc.Input(value='Enter Some Text', id='example-input'),  # Text input field.
+    dbc.Input(value='Content of Resources', id='example-input'),  # Text input field.
     html.Br(),
     dbc.Button('Submit', id='example-button'),  # Button for user submission.
 ]
+
 ```
 
 ### Explanation  
-The **sidebar** provides an intuitive interface for user interaction, consisting of:  
-- **Text Header (`html.P`)** – Displays **instructions or labels** for users.  
-- **Slider (`dcc.Slider`)** – Allows users to **select numeric values** within a defined range.  
-- **Dropdown (`dcc.Dropdown`)** – Lets users **choose a category** from a predefined list.  
-- **Text Input (`dbc.Input`)** – Provides a **field for manual data entry**.  
-- **Submit Button (`dbc.Button`)** – Triggers an **action based on user input**.  
+The **sidebar** is the left-hand panel of the app that allows users to configure job parameters before submitting. It includes:  
+- **Charge Switch (`bfabric_web_apps.components.charge_switch`)** – Toggles whether a job is billable or not.  
+- **Text Header (`html.P`)** – Displays a prompt for the number of resources to create.  
+- **Slider (`dcc.Slider`)** – Selects a numeric value (e.g. number of resources) between 0 and 10.  
+- **Second Text Header (`html.P`)** – Prompts the user to choose an internal unit or project.  
+- **Dropdown (`dcc.Dropdown`)** – Lets the user choose from a list of predefined project options.  
+- **Text Input (`dbc.Input`)** – Allows free-text entry (e.g. for naming or describing resources).  
+- **Submit Button (`dbc.Button`)** – Opens a modal window where the actual submission button is located
+
+---
+
+## Defining the Modal Confirmation Window  
+
+The **modal** provides a **confirmation step** before executing critical actions, such running a pipeline. It appears when the user clicks the **Submit button** in the sidebar.
+
+```python
+# Here we define the modal that will pop up when the user clicks the submit button.
+modal = html.Div([
+    dbc.Modal([
+        dbc.ModalHeader(dbc.ModalTitle("Ready to Prepare Create Workunits?")),  # Modal title.
+        dbc.ModalBody("Are you sure you're ready to create workunits?"),  # Confirmation message.
+        dbc.ModalFooter(
+            dbc.Button("Yes!", id="Submit", className="ms-auto", n_clicks=0)  # Final confirmation button.
+        ),
+    ],
+    id="modal-confirmation",  # Modal component ID for callback control.
+    is_open=False),  # Initially hidden until triggered.
+])
+```
+
+### Explanation  
+The **modal** is a pop-up confirmation dialog triggered by the **Submit button** in the sidebar. It consists of:  
+- **Modal Header (`dbc.ModalHeader`)** – Displays the title at the top of the modal.  
+- **Modal Body (`dbc.ModalBody`)** – Shows a message asking for user confirmation.  
+- **Modal Footer (`dbc.ModalFooter`)** – Contains a confirmation button labeled **"Yes!"** to proceed with job creation.  
+- **`is_open=False`** – The modal is **initially closed** and only appears in response to user interaction.
+
+---
+
+## Defining the Alert Messages  
+
+The **alerts** notify the user whether the **workunit creation process succeeded or failed**, providing immediate visual feedback.
+
+```python
+# Here are the alerts which will pop up when the user creates workunits 
+alerts = html.Div(
+    [
+        dbc.Alert("Success: Workunit created!", color="success", id="alert-fade-success", dismissable=True, is_open=False),
+        dbc.Alert("Error: Workunit creation failed!", color="danger", id="alert-fade-fail", dismissable=True, is_open=False),
+    ],
+    style={"margin": "20px"}
+)
+```
+
+### Explanation  
+The **alerts** are used to display **success or error messages** based on job outcome.  
+Each alert includes:  
+- **Message (`dbc.Alert`)** – Informs the user of a success or failure event.  
+- **Color** – Green for success (`"success"`), red for error (`"danger"`).  
+- **Dismissable** – Alerts can be manually closed by the user.  
+- **`is_open=False`** – Both alerts are hidden by default and displayed dynamically after job submission.
 
 ---
 
 ## Defining the Application Layout  
 
-The **application layout** organizes the **sidebar and main content area** into a structured, two-column design. The **left column** houses interactive elements for user input, while the **right column** displays content dynamically based on authentication and user selections.  
+The **application layout** organizes the **sidebar and main content area** into a structured, two-column design. The **left column** houses interactive elements for user input, while the **right column** displays content dynamically based on authentication and user selections.
 
 ```python
 app_specific_layout = dbc.Row(
     id="page-content-main",
     children=[
+        dcc.Loading(alerts), 
+        modal,  # Modal defined earlier.
         dbc.Col(
             html.Div(
                 id="sidebar",
@@ -184,18 +247,25 @@ The **documentation section** provides users with an introduction to the **B-Fab
 
 ```python
 documentation_content = [
-    html.H2("Welcome to B-Fabric App Template"),
+    html.H2("Welcome to Bfabric App Template"),
     html.P(
         [
-            "This app serves as the user interface for B-Fabric App Template, "
+            "This app serves as the user-interface for Bfabric App Template, "
             "a versatile tool designed to help build and customize new applications."
         ]
     ),
     html.Br(),
     html.P(
         [
+            "It is a simple application which allows you to bulk-create resources, "
+            "workunits, and demonstrates how to use the bfabric-web-apps library."
+        ]
+    ),
+    html.Br(),
+    html.P(
+        [
             "Please check out the official documentation of ",
-            html.A("B-Fabric Web Apps", href="https://pypi.org/project/bfabric-web-apps/", target="_blank"),
+            html.A("Bfabric Web Apps", href="https://bfabric-docs.gwc-solutions.ch/index.html"),
             "."
         ]
     )
@@ -224,10 +294,11 @@ app_title = "B-Fabric App Template"
 The `app.layout` function **establishes the final structure** of the application by integrating the **title, main content, and documentation** into a cohesive layout. This ensures a **consistent user experience** across all pages.  
 
 ```python
-app.layout = bfabric_web_apps.get_static_layout(  # The function from bfabric_web_apps that sets up the app layout.
-    app_title,  # The app title we defined previously.
-    app_specific_layout,  # The main content for the app defined earlier.
-    documentation_content  # Documentation content for the app.
+app.layout = bfabric_web_apps.get_static_layout(
+    base_title=app_title,
+    main_content=app_specific_layout,
+    documentation_content=documentation_content,
+    layout_config={"workunits": True, "queue": False, "bug": True}
 )
 ```
 
@@ -235,10 +306,40 @@ app.layout = bfabric_web_apps.get_static_layout(  # The function from bfabric_we
 - Uses **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a **consistent page structure** throughout the application.  
 - **`app_title`** – Defines the **main heading** of the application.  
 - **`app_specific_layout`** – Contains the **sidebar and main content area**.  
-- **`documentation_content`** – Displays **informational resources** for users.  
+- **`documentation_content`** – Displays **informational resources** for users.
+- **`layout_config`** –  Configuration settings for the layout
 
 ---
 
+## Defining the Modal Toggle Callback  
+
+This **callback function** controls the visibility of the **confirmation modal**. It listens for clicks on both the **sidebar Submit button** and the **modal confirmation button**, toggling the modal open or closed accordingly.
+
+```python
+# This callback is necessary for the modal to pop up when the user clicks the submit button.
+@app.callback(
+    Output("modal-confirmation", "is_open"),
+    [Input("example-button", "n_clicks"), Input("Submit", "n_clicks")],
+    [State("modal-confirmation", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+```
+
+### Explanation  
+This **Dash callback** manages the open/close behavior of the confirmation modal:  
+- **Inputs (`Input`)**:  
+  - `example-button` – The sidebar button that **triggers the modal to open**.  
+  - `Submit` – The confirmation button inside the modal, also used to **close the modal** after confirmation.  
+- **State (`State`)**:  
+  - Tracks the current state of the modal (`is_open`).  
+- **Logic**:  
+  - If either button is clicked, the modal **toggles its visibility** (open if closed, closed if open).  
+  - If neither button is clicked, the modal **remains in its current state**.
+
+---
 ## Callback for UI Updates 
 
 This callback **dynamically updates the UI** based on user interactions and authentication status. It manages sidebar behavior, displays entity-related data, and logs user actions.  

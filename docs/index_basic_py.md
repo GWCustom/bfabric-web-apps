@@ -1,4 +1,4 @@
-# Minimal Template - index_basic.py
+# Minimal Template
 
 This chapter provides a step-by-step breakdown of the **index_basic.py** script. It explains key functions and their roles in setting up a **basic B-Fabric web application**.
 
