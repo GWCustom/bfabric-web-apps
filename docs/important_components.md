@@ -51,43 +51,50 @@ token_data = {
     'webbase_data': 'https://fgcz-bfabric-test.uzh.ch/bfabric',
     'application_params_data': {},
     'application_data': '543',
-    'userWsPassword': 'bdab8b2413c2b2dc2d7bc2fb994dd080',
+    'userWsPassword': 'dummypassword',
     'jobId': '2010'
 }
 ```
 
 ---
 
+Here's the updated **Charge Switch** section you can seamlessly integrate into your **Important Components** chapter. This detailed description clearly explains the charge switch's purpose, its UI implementation, and the related backend functionality:
+
+---
+
 ## Charge Switch
 
-The charge switch is used to assign costs for running applications to specific containers and services in B-Fabric.
+The **Charge Switch** is a UI component that allows users or developers to control whether a B-Fabric application run should be charged to a specific project or container. When enabled, costs associated with running the application are automatically allocated to the selected B-Fabric project or container.
 
-Example implementation:
+### Sidebar UI Implementation
+
+To easily integrate the charge switch into your Dash application's sidebar, use the following predefined component from the `bfabric_web_apps` library:
+
 ```python
-from bfabric_web_apps.utils.get_logger import get_logger
-from bfabric_web_apps.utils.get_power_user_wrapper import get_power_user_wrapper
+from bfabric_web_apps.components import charge_switch
 
-def create_charge(token_data, container_id, service_id):
-    L = get_logger(token_data)
-    wrapper = get_power_user_wrapper(token_data)
-    usr_id = wrapper.read("user", {"login": token_data.get("user_data")})[0]['id']
-
-    charge_data = {
-        "serviceid": service_id,
-        "containerid": container_id,
-        "chargerid": usr_id
-    }
-
-    charge = L.logthis(
-        api_call=wrapper.save,
-        endpoint="charge",
-        obj=charge_data,
-        params=None,
-        flush_logs=True
-    )
-
-    return charge
+sidebar = charge_switch + [
+    html.P("Select Lane:"),
+    dcc.Dropdown(
+        id="lane-dropdown",
+        options=[],  # Populate dynamically
+        value=None,
+    ),
+    html.Br(),
+    html.P("Submit job to which queue?"),
+    dcc.Dropdown(
+        options=[
+            {'label': 'light', 'value': 'light'},
+            {'label': 'heavy', 'value': 'heavy'}
+        ],
+        value='light',
+        id='queue'
+    ),
+    html.Br(),
+    dbc.Button('Submit', id='example-button'),
+]
 ```
+
 
 ---
 

@@ -4,6 +4,15 @@ This chapter provides a step-by-step guide for deploying **bfabric-web-app-templ
 
 ---
 
+```{note}
+**Version Compatibility Notice**  
+To ensure proper functionality, the `bfabric_web_apps` library and the `bfabric_web_app_template` must have the **same version**. For example, if `bfabric_web_apps` is version `0.1.3`, then `bfabric_web_app_template` must also be `0.1.3`.  
+
+Please verify and update the versions accordingly before running the application.
+```
+
+---
+
 ## Dependencies
 Before installing **bfabric_web_apps**, ensure you have the following dependencies installed on your system. These are the dependencies required to install **bfabric_web_apps**; additional packages (such as Dash and Flask) will be installed later with a single command during deployment.
 

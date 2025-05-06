@@ -4,7 +4,16 @@ This chapter provides a step-by-step breakdown of the **index_basic.py** script.
 
 ---
 
-## View the Demo  
+```{note}
+**Version Compatibility Notice**  
+To ensure proper functionality, the `bfabric_web_apps` library and the `bfabric_web_app_template` must have the **same version**. For example, if `bfabric_web_apps` is version `0.1.3`, then `bfabric_web_app_template` must also be `0.1.3`.  
+
+Please verify and update the versions accordingly before running the application.
+```
+
+---
+
+# View the Demo  
 
 Before diving into the details, you can preview a **live demo** of this template:
 

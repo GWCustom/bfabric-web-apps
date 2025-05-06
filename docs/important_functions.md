@@ -438,7 +438,108 @@ L.flush_logs()
 
 ---
 
-## 5. B-Fabric Power User Access
+# 5. B-Fabric Wrapper
+
+This chapter provides detailed documentation on obtaining and using the **B-Fabric Wrapper**, a crucial component in the B-Fabric application environment, designed for seamless interactions with the B-Fabric API.
+
+---
+
+## Overview
+
+The B-Fabric Wrapper is an authenticated object providing a convenient and secure way to perform API calls to B-Fabric, such as reading data or saving resources. It encapsulates authentication credentials and configurations needed to interact with the B-Fabric system.
+
+The wrapper must be initialized by validating an authentication token before it can be retrieved and used for subsequent operations.
+
+---
+
+## Wrapper Initialization
+
+The wrapper initialization is handled internally by the system upon successful token validation. Users do not need to manually initialize the wrapper but must ensure that the authentication token has been validated first.
+
+---
+
+## Retrieving the B-Fabric Wrapper
+
+### `get_wrapper()`
+
+The `get_wrapper()` method returns the initialized B-Fabric wrapper. This method ensures that the wrapper is correctly configured and ready to use after token validation.
+
+If the wrapper has not been initialized (due to the absence of prior token validation), the method will raise an error.
+
+#### Method Definition
+
+```python
+def get_wrapper(self):
+    if self._wrapper is None:
+        raise RuntimeError("Bfabric wrapper is not initialized. Token validation must run first.")
+    return self._wrapper
+```
+
+---
+
+### Exception Handling
+
+* **RuntimeError:** If the wrapper is requested before token validation, indicating that the wrapper has not yet been initialized.
+
+---
+
+### Usage Example
+
+Here's how you can easily obtain and utilize the B-Fabric wrapper:
+
+#### Importing the B-Fabric Interface
+
+```python
+from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
+```
+
+#### Getting the Wrapper
+
+```python
+# Retrieve the B-Fabric wrapper after successful token validation
+wrapper = bfabric_interface.get_wrapper()
+```
+
+### Important Considerations
+
+* The wrapper object is **essential** for interacting with the B-Fabric API, and operations such as data queries (`read`) and submissions (`save`) rely on this wrapper.
+* Always ensure the wrapper is initialized by validating the authentication token beforehand. The token validation process happens automatically when using the provided B-Fabric workflow (`process_url_and_token`).
+
+---
+
+
+#### Example:
+
+```python
+from bfabric_web_apps.utils.callbacks import process_url_and_token
+from bfabric_web_apps.objects.BfabricInterface import bfabric_interface
+
+# Validate token first (internally initializes wrapper)
+token, token_data, _, _, _, _, _ = process_url_and_token(url_params)
+
+# Get the wrapper object
+wrapper = bfabric_interface.get_wrapper()
+
+# Example API call using the wrapper
+results = wrapper.read("sample", {"id": "1234"})
+```
+
+---
+
+### Practical Usage Tips
+
+* Always handle potential exceptions by using try-except blocks when retrieving the wrapper, especially in scenarios where token validation status may be uncertain.
+
+---
+
+
+
+
+
+
+
+
+## 6. B-Fabric Power User Access
 
 ### Power User Overview
 - **Username**: **gfeeder**
@@ -483,7 +584,7 @@ power_user_wrapper = get_power_user_wrapper(token_data)
 ```
 
 ---
-## 6. Bug Reports
+## 7. Bug Reports
 
 ### Overview
 
@@ -555,7 +656,7 @@ def generic_handle_bug_report(n_clicks, bug_description, token, entity_data):
 ```
 
 ---
-# 7. Remote Creation of Web Applications
+# 8. Remote Creation of Web Applications
 
 ## Overview
 
@@ -626,3 +727,168 @@ create_web_app()
    - Enter a **short description** of the web application.
 
 Once all inputs are provided, the function submits the data to B-Fabric and confirms successful creation.
+
+# 9. Main Job Execution (run\_main\_job)
+
+---
+
+## Overview
+
+The `run_main_job` function provides a generalized approach to executing pipeline tasks. It orchestrates critical operations including file handling, command execution, resource management, attachment handling, and automatic charging in B-Fabric. This function extensively logs operations to ensure transparency, facilitate debugging, and maintain accountability.
+
+---
+
+### Function Signature
+
+```python
+run_main_job(
+    files_as_byte_strings: dict, 
+    bash_commands: list[str], 
+    resource_paths: dict,
+    attachment_paths: dict, 
+    token: str,
+    service_id: int = 0,
+    charge: list[int] = [],
+)
+```
+
+---
+
+### Arguments Explained
+
+* **files\_as\_byte\_strings** (`dict`):
+
+  * Used when the `run_main_job` function is executed on an external server (e.g., via Redis queue). It maps destination file paths to their file contents represented as byte strings, enabling file transfer and subsequent use within the pipeline execution.
+
+* **bash\_commands** (`list[str]`):
+
+  * List of bash commands executed sequentially.
+
+* **resource\_paths** (`dict`):
+
+  * Maps local file paths or directories to B-Fabric container IDs.
+
+* **attachment\_paths** (`dict`):
+
+  * Maps file paths (logs, reports) to their filenames for attachment as links in B-Fabric.
+
+* **token** (`str`):
+
+  * Authentication token from B-Fabric.
+
+* **service\_id** (`int`, optional):
+
+  * B-Fabric service ID to charge against. Defaults to `0` (no charging).
+
+* **charge** (`list[int]`, optional):
+
+  * List of B-Fabric container IDs to charge for the service. Defaults to empty (no charging).
+
+---
+
+### Function Steps & Behavior
+
+#### Step 1: Saving Files
+
+* Saves provided byte string files to specified server locations.
+* Logs each file operation (success or failure).
+
+#### Step 2: Bash Command Execution
+
+* Executes provided bash commands sequentially.
+* Logs detailed output and errors from each command.
+
+#### Step 3: Creating Workunits
+
+* Creates workunits in B-Fabric based on container IDs.
+* Logs created workunit IDs or errors.
+
+#### Step 4: Resource Registration
+
+* Registers server files as resources associated with created workunits.
+* Logs each successful resource registration or failure.
+
+#### Step 5: Attachment as Links
+
+* Copies files to remote storage (FGCZ storage).
+* Creates B-Fabric links to attached files.
+* Logs success or failures of each file attachment.
+
+#### Step 6: Automatic Charging
+
+* Automatically charges specified containers for provided services.
+* Logs charges and handles cases without provided service IDs.
+
+---
+
+### Return Value
+
+* **None**
+* All activities are logged for debugging and traceability.
+
+---
+
+### Example Usage (Callback Integration)
+
+To effectively use the `run_main_job` function, you must prepare appropriate arguments as follows:
+
+1. **Prepare files as byte strings**: When executing remotely (via Redis queue), read the necessary files and encode them as byte strings:
+
+```python
+files_as_byte_strings = {}
+files_to_send = ["./pipeline_samplesheet.csv", "./NFC_DMX.config"]
+
+for file_path in files_to_send:
+    with open(file_path, "rb") as file:
+        files_as_byte_strings[file_path] = file.read()
+```
+
+2. **Construct bash commands**:
+
+```python
+bash_commands = [
+    "rm -rf /path/to/workdir",
+    "nextflow run nf-core/pipeline -profile docker --input ./pipeline_samplesheet.csv --outdir /output/dir"
+]
+```
+
+3. **Define resource paths**:
+
+```python
+resource_paths = {"/output/results/": container_id}
+```
+
+4. **Specify attachment paths**:
+
+```python
+attachment_paths = {"/output/results/report.html": "report.html"}
+```
+
+5. **Queue the job execution**:
+
+```python
+from rq import Queue
+from redis import Redis
+
+redis_queue = Queue(queue, connection=Redis())
+redis_queue.enqueue(run_main_job, kwargs={
+    "files_as_byte_strings": files_as_byte_strings,
+    "bash_commands": bash_commands,
+    "resource_paths": resource_paths,
+    "attachment_paths": attachment_paths,
+    "token": url_params,
+    "charge": [container_id],
+    "service_id": service_id
+})
+```
+
+---
+
+### Best Practices
+
+* Ensure the provided file paths and commands are thoroughly tested before integration.
+* Utilize extensive logging to monitor and debug job execution.
+* Handle all exceptions gracefully and log meaningful messages.
+* Regularly monitor B-Fabric logs for operations initiated via this function.
+
+---

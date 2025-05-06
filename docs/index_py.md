@@ -4,6 +4,16 @@ This chapter provides a step-by-step breakdown of the **index_large.py** script.
 
 ---
 
+```{note}
+**Version Compatibility Notice**  
+To ensure proper functionality, the `bfabric_web_apps` library and the `bfabric_web_app_template` must have the **same version**. For example, if `bfabric_web_apps` is version `0.1.3`, then `bfabric_web_app_template` must also be `0.1.3`.  
+
+Please verify and update the versions accordingly before running the application.
+```
+
+---
+
+
 ## View the Demo
 
 Before diving into the details, you can preview a **live demo** of this template:  
@@ -32,7 +42,7 @@ To execute the template:
 
 1. Run the following command in your terminal:  
    ```sh
-   python index.py
+   python index_large.py
    ```
 2. Open your browser and go to **localhost**.
 
@@ -340,180 +350,274 @@ This **Dash callback** manages the open/close behavior of the confirmation modal
   - If neither button is clicked, the modal **remains in its current state**.
 
 ---
-## Callback for UI Updates 
 
-This callback **dynamically updates the UI** based on user interactions and authentication status. It manages sidebar behavior, displays entity-related data, and logs user actions.  
+## Callback for UI Updates
 
-For more details on Dash callbacks, see: **[Dash Callbacks Documentation](https://dash.plotly.com/basic-callbacks)**  
+This callback function **dynamically updates the user interface** based on user interactions and the authentication status. It manages the sidebar behavior, displays entity-related data, and provides informative feedback to the user.
+
+For additional details on Dash callbacks, refer to the [Dash Callbacks Documentation](https://dash.plotly.com/basic-callbacks).
 
 ---
 
 ### Callback Definition
 
-The callback function listens for **user input changes** and modifies the UI accordingly.  
+The callback listens for **changes in user input and authentication data**, updating the interface components accordingly.
 
 ```python
 @app.callback(
     [
-        Output('sidebar_text', 'hidden'),  # Controls sidebar text visibility.
-        Output('example-slider', 'disabled'),  # Disables slider when needed.
-        Output('example-dropdown', 'disabled'),  # Disables dropdown when needed.
-        Output('example-input', 'disabled'),  # Disables input field when needed.
-        Output('example-button', 'disabled'),  # Disables submit button when needed.
-        Output('auth-div', 'children'),  # Updates authentication UI.
+        Output('sidebar_text', 'hidden'),
+        Output('example-slider', 'disabled'),
+        Output('example-dropdown', 'disabled'),
+        Output('example-input', 'disabled'),
+        Output('sidebar-button', 'disabled'),
+        Output('submit-bug-report', 'disabled'),
+        Output('Submit', 'disabled'),
+        Output('auth-div', 'children'),
     ],
     [
-        Input('example-slider', 'value'),  # Listens to slider value changes.
-        Input('example-dropdown', 'value'),  # Listens to dropdown selection changes.
-        Input('example-input', 'value'),  # Listens to text input changes.
-        Input('example-button', 'n_clicks'),  # Tracks button clicks.
-        Input('token_data', 'data'),  # Tracks authentication token updates.
+        Input('example-slider', 'value'),
+        Input('example-dropdown', 'value'),
+        Input('example-input', 'value'),
+        Input('token_data', 'data'),
     ],
-    [State('entity', 'data')]  # Retrieves stored entity data for authentication.
+    [State('entity', 'data')]
+)
+def update_ui(slider_val, dropdown_val, input_val, token_data, entity_data):
+
+    # Determine sidebar and input states based on authentication status.
+    if token_data is None:
+        sidebar_state = (True, True, True, True, True, True, True)
+    else:
+        sidebar_state = (False, False, False, False, False, False, False)
+
+    # Handle UI based on the authentication and entity data.
+    if not entity_data or not token_data:
+        auth_div_content = html.Div(children=no_auth)
+    else:
+        try:
+            component_data = [
+                html.H1("Component Data:"),
+                html.P(f"Number of Resources to Create: {slider_val}"),
+                html.P(f"Create workunit inside project: {dropdown_val}"),
+                html.P(f"Resource Content: {input_val}")
+            ]
+            entity_details = [
+                html.H1("Entity Data:"),
+                html.P(f"Entity Class: {token_data['entityClass_data']}"),
+                html.P(f"Entity ID: {token_data['entity_id_data']}"),
+                html.P(f"Created By: {entity_data['createdby']}"),
+                html.P(f"Created: {entity_data['created']}"),
+                html.P(f"Modified: {entity_data['modified']}")
+            ]
+            auth_div_content = dbc.Row([dbc.Col(component_data), dbc.Col(entity_details)])
+
+        except Exception as e:
+            auth_div_content = html.P(f"Error Logging into B-Fabric: {str(e)}")
+
+    return (*sidebar_state, auth_div_content)
+```
+
+### Explanation
+
+* **Outputs:**
+
+  * Manages the visibility and enabled/disabled state of sidebar UI elements.
+  * Updates the content in the `auth-div` element based on authentication data.
+
+* **Inputs:**
+
+  * Tracks the slider, dropdown, text input, and token data for changes to update UI dynamically.
+
+* **State:**
+
+  * Accesses stored entity information to personalize user experience and UI content.
+
+---
+
+### UI Behavior Based on Authentication
+
+* If the user **is not authenticated** (`token_data is None`), the sidebar elements are **disabled**, preventing unauthorized interactions.
+* If the user **is authenticated**, the sidebar elements become **interactive** and functional.
+
+---
+
+### Handling Authentication and Displaying Entity Data
+
+* Displays a **login prompt** if the user is not authenticated.
+* Upon authentication, displays:
+
+  * Details of the current session's entity (class, ID, creator, timestamps).
+  * User-selected input parameters (resource count, project, resource content).
+
+---
+
+### Final Return
+
+Returns the sidebar state (enabled/disabled components) along with the dynamically generated authentication information.
+
+```python
+return (*sidebar_state, auth_div_content)
+```
+
+---
+
+### Function Definition Details
+
+#### Args:
+
+* **`slider_val` (int):** Current slider value representing resource count.
+* **`dropdown_val` (str):** Selected project identifier from dropdown.
+* **`input_val` (str):** User-provided text input describing resources.
+* **`token_data` (dict or None):** Authentication session data.
+* **`entity_data` (dict or None):** Data about the currently authenticated entity.
+
+#### Returns:
+
+* A tuple containing the sidebar state settings and updated authentication UI.
+
+#### Return Type:
+
+* **`tuple`**
+
+---
+
+
+## Submit run_main_job Function
+
+This callback function initiates the **workunit creation** process when the user confirms their input in the confirmation modal. It handles job submission logic, including file attachments, resource creation, and error handling.
+
+---
+
+### Callback Definition
+
+```python
+@app.callback(
+    [
+        Output("alert-fade-success", "is_open"),
+        Output("alert-fade-fail", "is_open"),
+        Output("alert-fade-fail", "children"),
+        Output("refresh-workunits", "children")
+    ],
+    [Input("Submit", "n_clicks")],
+    [
+        State("example-slider", "value"),
+        State("example-dropdown", "value"),
+        State("example-input", "value"),
+        State("token_data", "data"),
+        State("charge_run", "on"),
+        State('url', 'search')
+    ],
+    prevent_initial_call=True
 )
 ```
 
 ### Explanation
-- **Outputs:**  
-  - Controls the sidebar’s elements (hiding text, disabling inputs).  
-  - Updates the `auth-div` element to show authentication details.  
-- **Inputs:**  
-  - Tracks changes in the sidebar elements and authentication status.  
-- **State:**  
-  - Retrieves stored **entity data** to determine user-specific behavior.  
+
+* **Outputs:**
+
+  * Success alert visibility (`alert-fade-success`)
+  * Error alert visibility (`alert-fade-fail`)
+  * Error message content
+  * Workunits refresh trigger (`refresh-workunits`)
+
+* **Inputs:**
+
+  * Clicks on the confirmation button (`Submit`)
+
+* **States:**
+
+  * User-defined parameters: slider value, dropdown selection, text input, token data, charge toggle, URL token
 
 ---
 
-### Handling Sidebar Behavior
+### Submission Logic
 
-The function determines whether to enable or disable sidebar elements based on authentication status.  
+This function processes the user's request to create new workunits and resources within the selected B-Fabric container.
 
 ```python
-def update_ui(slider_val, dropdown_val, input_val, n_clicks, token_data, entity_data):
-    
-    if token_data is None:
-        sidebar_state = (True, True, True, True, True)  # Disable all elements if no token.
-    elif not bfabric_web_apps.DEV:
-        sidebar_state = (False, False, False, False, False)  # Enable elements in production mode.
-    else:
-        sidebar_state = (True, True, True, True, True)  # Disable elements in development mode.
+def submission(n_clicks, slider_val, dropdown_val, input_val, token_data, charge_run, raw_token):
+
+    app_id = token_data.get("application_data", None)
+
+    if dropdown_val is None:
+        return False, True, "Error: Please select a container Id", html.Div()
+
+    container_id = int(dropdown_val)
+
+    if n_clicks:
+        try:
+            # Define attachments for the job
+            attachment1_content = b"<html><body><h1>Hello World</h1></body></html>"
+            attachment1_name = "attachment_1.html"
+
+            attachment2_content = b"<html><body><h1>Hello World a second time!!</h1></body></html>"
+            attachment2_name = "attachment_2.html"
+
+            files_as_byte_strings = {
+                attachment1_name: attachment1_content,
+                attachment2_name: attachment2_content
+            }
+
+            # Generate resource creation commands
+            bash_commands = [f"echo '{input_val}' > resource_{i+1}.txt" for i in range(slider_val)]
+
+            project_id = "2220"
+            charge_run = [project_id] if charge_run and project_id else []
+
+            # Define file paths
+            attachment_paths = {attachment1_name: attachment1_name, attachment2_name: attachment2_name}
+            resource_paths = {f"resource_{i+1}.txt": container_id for i in range(slider_val)}
+
+            # Construct dataset information
+            dataset_info = {
+                str(container_id): {
+                    "resource_name": [f"resource_{i+1}" for i in range(slider_val)],
+                    "resource_description": [f"Resource {i+1} created by Bfabric Web Apps" for i in range(slider_val)],
+                    "resource_type": ["text/plain"] * slider_val,
+                    "resource_size": [len(bash_commands[i]) for i in range(slider_val)],
+                    "resource_path": [f"resource_{i+1}.txt" for i in range(slider_val)]
+                }
+            }
+
+            arguments = {
+                "files_as_byte_strings": files_as_byte_strings,
+                "bash_commands": bash_commands,
+                "resource_paths": resource_paths,
+                "attachment_paths": attachment_paths,
+                "token": raw_token,
+                "service_id": bfabric_web_apps.SERVICE_ID,
+                "charge": charge_run,
+                "dataset_dict": dataset_info
+            }
+
+            # Execute job
+            bfabric_web_apps.run_main_job(**arguments)
+
+            return True, False, None, html.Div()
+
+        except Exception as e:
+            return False, True, f"Error: Workunit creation failed: {str(e)}", html.Div()
 ```
 
-### Explanation  
-- If the user is not authenticated (`token_data is None`), all sidebar elements are disabled.  
-- If running in production (`bfabric_web_apps.DEV is False`), all elements remain enabled.  
-- If in development mode, the elements are disabled by default.
+### Explanation
 
----
-
-### Handling Authentication and Entity Data
-
-If authentication is valid, the function updates the UI to display user-related data.  
-
-```python
-    if not entity_data or not token_data:
-        auth_div_content = html.Div(children=generic_bfabric.no_auth)  # Shows login prompt if unauthorized.
-    else:
-        component_data = [
-            html.H1("Component Data:"),
-            html.P(f"Slider Value: {slider_val}"),
-            html.P(f"Dropdown Value: {dropdown_val}"),
-            html.P(f"Input Value: {input_val}"),
-            html.P(f"Button Clicks: {n_clicks}")
-        ]
-        entity_details = [
-            html.H1("Entity Data:"),
-            html.P(f"Entity Class: {token_data['entityClass_data']}"),
-            html.P(f"Entity ID: {token_data['entity_id_data']}"),
-            html.P(f"Created By: {entity_data['createdby']}"),
-            html.P(f"Created: {entity_data['created']}"),
-            html.P(f"Modified: {entity_data['modified']}")
-        ]
-        auth_div_content = dbc.Row([dbc.Col(component_data), dbc.Col(entity_details)])
-```
-
-### Explanation  
-- If no authentication data exists, it prompts the user to **log in**.  
-- If authenticated, it **displays user-related data**, including:  
-  - The entity class, ID, creator, and modification details.  
-  - Sidebar input values (slider, dropdown, text input, button clicks).  
-
----
-
-### Integrating Power User Wrapper  
-
-The **Power User Wrapper** provides **advanced functionalities** for authorized users.  
-
-```python
-        power_user_wrapper = bfabric_web_apps.get_power_user_wrapper(token_data) 
-```
-
-For more details, refer to: **[Power User Wrapper](bfabric_web_apps_functions.md#get-power-user-wrapper)**  
-
----
-
-### Logging User Activity  
-
-User interactions are logged to track authentication and system events.  
-
-```python
-        L = bfabric_web_apps.get_logger(token_data)  # Initializes logger with token data.
-
-        L.log_operation(
-            "Example Log",  # Log operation title.
-            "This is an example of how to use the log_operation method.",  # Log message.
-            params=None,  # (Optional) Additional log parameters.
-            flush_logs=True  # Ensures logs are stored immediately.
-        )
-```
-
-For more details, refer to: **[Logging Functions](bfabric_web_apps_functions.md#get-logger)**  
-
----
-
-### Final Return Statement  
-
-The function returns:  
-- **Sidebar state settings** (enabled/disabled components).  
-- **Authentication UI content** (updated authentication UI).  
-
-```python
-    return (*sidebar_state, auth_div_content)
-```
-
----
-
-### Function Definition  
-
-#### **Args:**  
-- **`slider_val` (int)** – The value of the slider.  
-- **`dropdown_val` (str)** – The selected dropdown option.  
-- **`input_val` (str)** – The text input value.  
-- **`n_clicks` (int)** – Number of times the button was clicked.  
-- **`token_data` (dict or None)** – Authentication token data.  
-- **`entity_data` (dict or None)** – Entity information linked to the user.  
-
----
-
-#### Returns:  
-- Contains sidebar state settings and updated authentication UI.  
-
----
-
-#### Return Type: 
-- **`tuple`**  
+* **Attachments:** Files provided as byte strings.
+* **Resources:** Generated via shell commands based on user input.
+* **Charging Logic:** Determines whether the created workunits are billable.
+* **Error Handling:** Displays error alert with exception details in case of failure.
 
 ---
 
 ## Running the Application
 
-This section ensures the app **runs on the correct server settings**.
+The following section ensures the application executes on the specified host and port configuration.
 
 ```python
 if __name__ == "__main__":
-    app.run_server(debug=False, port=bfabric_web_apps.PORT, host=bfabric_web_apps.HOST)
+    app.run(debug=False, port=bfabric_web_apps.PORT, host=bfabric_web_apps.HOST)
 ```
----
 
 ### Explanation
-- Runs the **Dash server** with the specified **host** and **port** settings.
+
+* Runs the Dash server, respecting settings defined by the global configuration (`bfabric_web_apps.PORT`, `bfabric_web_apps.HOST`).

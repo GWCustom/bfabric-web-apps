@@ -1,12 +1,15 @@
-# Redis Template
+# Documentation for `index_redis.py`
 
-This chapter provides a step-by-step breakdown of the **index_redis.py** script. It demonstrates how to use Redis queues to submit background jobs and bulk-create resources within a B-Fabric web application.
+This chapter provides a comprehensive breakdown of the **index\_redis.py** script, detailing the setup and use of Redis queues for handling job submissions within a B-Fabric web application.
 
 ---
 
-## Overview and Version Check
+```{note}
+**Version Compatibility Notice**  
+To ensure proper functionality, the `bfabric_web_apps` library and the `bfabric_web_app_template` must have the **same version**. For example, if `bfabric_web_apps` is version `0.1.3`, then `bfabric_web_app_template` must also be `0.1.3`.  
 
-Before running this application, ensure that the versions of `bfabric_web_apps` and `bfabric_web_app_template` match exactly. For example, if one is version `0.1.3`, the other must also be `0.1.3`. This avoids compatibility issues.
+Please verify and update the versions accordingly before running the application.
+```
 
 ---
 
@@ -21,14 +24,18 @@ from generic.components import no_auth
 from pathlib import Path
 ```
 
-This script imports required modules for:
-- UI layout (`dash`, `dash_bootstrap_components`)
-- B-Fabric support (`bfabric_web_apps`)
-- Core components and callbacks shared across templates
+### Explanation
+
+* **Dash:** Used for UI components and interactions.
+* **Dash Bootstrap Components:** Provides pre-styled UI elements.
+* **bfabric\_web\_apps:** Utilities for integrating the app with B-Fabric.
+* **generic.callbacks:** Initializes the Dash application instance.
+* **generic.components:** Contains default components for unauthorized access messages.
+* **Pathlib:** Assists in managing file paths.
 
 ---
 
-## Global Configuration
+## Setting Up Default Configuration
 
 ```python
 bfabric_web_apps.CONFIG_FILE_PATH = "~/.bfabricpy.yml"
@@ -36,147 +43,175 @@ bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "griffin@gwcustom.com"
 bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "gwtools@fgcz.system"
 ```
 
-Customizes app-wide global settings like config path and email contacts.
+### Explanation
+
+* Sets global configuration values required for running the application.
 
 ---
 
-## Sidebar Layout
-
-Defines the interactive UI components, including a **charge switch**, **slider**, **dropdowns**, and **input field**:
+## Sidebar Configuration
 
 ```python
-sidebar = bfabric_web_apps.components.charge_switch + [...]
+sidebar = bfabric_web_apps.components.charge_switch + [
+    html.P(id="sidebar_text", children="How Many Resources to Create?"),
+    dcc.Slider(0, 10, 1, value=4, id='example-slider'),
+    html.Br(),
+    html.P(id="sidebar_text_2", children="For Which Internal Unit?"),
+    dcc.Dropdown(
+        options=[{'label': option, 'value': value} for option, value in zip(dropdown_options, dropdown_values)],
+        value=dropdown_options[0],
+        id='example-dropdown'
+    ),
+    html.Br(),
+    html.P(id="sidebar_text_3", children="Submit job to which queue?"),
+    dcc.Dropdown(
+        options=[{'label': 'light', 'value': 'light'}, {'label': 'heavy', 'value': 'heavy'}],
+        value='light',
+        id='queue'
+    ),
+    html.Br(),
+    dbc.Input(value='Content of Resources', id='example-input'),
+    html.Br(),
+    dbc.Button('Submit', id='sidebar-button'),
+]
 ```
 
-Notable elements include:
-- **Charge switch** – Toggles whether the job should be charged
-- **Slider** – Specifies how many resources to create
-- **Dropdowns** – Choose target project and job queue
-- **Text Input** – Content to write to the resource
-- **Submit Button** – Opens confirmation modal
+### Explanation
+
+* The sidebar allows user interaction to specify resource details and choose a processing queue.
 
 ---
 
-## Modal Confirmation
-
-Displays a confirmation popup before triggering resource creation.
+## Modal Confirmation Window
 
 ```python
-modal = dbc.Modal([...], id="modal-confirmation", is_open=False)
+modal = html.Div([
+    dbc.Modal([
+        dbc.ModalHeader(dbc.ModalTitle("Ready to Prepare Create Workunits?")),
+        dbc.ModalBody("Are you sure you're ready to create workunits?"),
+        dbc.ModalFooter(dbc.Button("Yes!", id="Submit", className="ms-auto", n_clicks=0)),],
+    id="modal-confirmation",
+    is_open=False,),
+])
 ```
+
+### Explanation
+
+* Provides a confirmation step before proceeding with job creation to prevent unintended submissions.
 
 ---
 
-## Alert System
-
-Displays success or error alerts based on job submission outcome.
+## Alert Messages
 
 ```python
-alerts = dbc.Alert(...)
+alerts = html.Div([
+    dbc.Alert("Success: Workunit created!", color="success", id="alert-fade-success", dismissable=True, is_open=False),
+    dbc.Alert("Error: Workunit creation failed!", color="danger", id="alert-fade-fail", dismissable=True, is_open=False),
+], style={"margin": "20px"})
 ```
+
+### Explanation
+
+* Alerts provide immediate feedback on job submission outcomes.
 
 ---
 
-## Main Application Layout
-
-Combines the sidebar and main content area in a 2-column responsive layout.
+## Application Layout
 
 ```python
-app_specific_layout = dbc.Row([...])
+app_specific_layout = dbc.Row(
+    id="page-content-main",
+    children=[
+        dcc.Loading(alerts), 
+        modal,
+        dbc.Col(
+            html.Div(
+                id="sidebar",
+                children=sidebar,
+                style={
+                    "border-right": "2px solid #d4d7d9",
+                    "height": "100%",
+                    "padding": "20px",
+                    "font-size": "20px",
+                    "overflow-y":"scroll",
+                    "overflow-x":"hidden",
+                    "max-height":"65vh"
+                }
+            ),
+            width=3,
+        ),
+        dbc.Col(
+            html.Div(
+                id="page-content",
+                children=[html.Div(id="auth-div")],
+                style={
+                    "margin-top": "20vh",
+                    "margin-left": "2vw",
+                    "font-size": "20px",
+                    "overflow-y":"scroll",
+                    "overflow-x":"hidden",
+                    "max-height":"65vh"
+                }
+            ),
+            width=9,
+        ),
+    ],
+    style={"margin-top": "0px", "min-height": "40vh"}
+)
 ```
+
+### Explanation
+
+* Two-column layout with sidebar for inputs and main content area displaying authentication and resource details.
 
 ---
 
-## Documentation Section
-
-Provides users with an overview of the template and links to official documentation.
+## Redis Queue Job Submission Callback
 
 ```python
-documentation_content = [html.H2(...), html.P(...)]
+@app.callback(
+    [
+        Output("alert-fade-success", "is_open"), 
+        Output("alert-fade-fail", "is_open"), 
+        Output("alert-fade-fail", "children"),
+        Output("refresh-workunits", "children")
+    ],
+    [Input("Submit", "n_clicks")],
+    [
+        State("example-slider", "value"),
+        State("example-dropdown", "value"),
+        State("example-input", "value"),
+        State("token_data", "data"),
+        State("queue", "value"),
+        State("charge_run", "on"),
+        State('url', 'search')
+    ],
+    prevent_initial_call=True
+)
+def submission(n_clicks, slider_val, dropdown_val, input_val, token_data, queue, charge_run, raw_token):
+    try:
+        arguments = {
+            "files_as_byte_strings": {
+                "attachment_1.html": b"<html><body><h1>Hello World</h1></body></html>",
+                "attachment_2.html": b"<html><body><h1>Hello World a second time!!</h1></body></html>"
+            },
+            "bash_commands": [f"echo '{input_val}' > resource_{i+1}.txt" for i in range(slider_val)],
+            "resource_paths": {f"resource_{i+1}.txt": int(dropdown_val) for i in range(slider_val)},
+            "attachment_paths": {"attachment_1.html": "attachment_1.html", "attachment_2.html": "attachment_2.html"},
+            "token": raw_token,
+            "service_id": bfabric_web_apps.SERVICE_ID,
+            "charge": ["2220"] if charge_run else []
+        }
+        bfabric_web_apps.q(queue).enqueue(bfabric_web_apps.run_main_job, kwargs=arguments)
+        return True, False, None, html.Div()
+    except Exception as e:
+        return False, True, f"Error: Workunit creation failed: {str(e)}", html.Div()
 ```
 
----
+### Explanation
 
-## Static Layout Initialization
-
-Assembles the final app layout using `get_static_layout()`:
-
-```python
-app.layout = bfabric_web_apps.get_static_layout(...)
-```
-
-Also configures layout features like the **workunit tab**, **queue selection**, and **bug reporting**.
+* Manages job submission using Redis queues.
+* Prepares files, resources, and commands based on user input.
+* Handles exceptions gracefully, providing error feedback.
 
 ---
-
-## Modal Trigger Callback
-
-```python
-@app.callback(...)
-def toggle_modal(...):
-    if n1 or n2:
-        return not is_open
-```
-
-Toggles the confirmation modal when the submit button is clicked.
-
----
-
-## Sidebar UI Activation Logic
-
-```python
-@app.callback(...)
-def update_ui(...):
-    ...
-    if not entity_data or not token_data:
-        auth_div_content = html.Div(children=no_auth)
-    else:
-        auth_div_content = dbc.Row([...])
-```
-
-Disables components for unauthenticated users and shows entity-specific data if available.
-
----
-
-## Job Submission with Redis Queue
-
-Handles workunit and resource creation, then enqueues the job to Redis.
-
-```python
-@app.callback(...)
-def submission(...):
-    ...
-    bfabric_web_apps.q(queue).enqueue(
-        bfabric_web_apps.run_main_job,
-        kwargs=arguments
-    )
-```
-
-Includes:
-- File attachments
-- Resource file creation using bash
-- Target queue submission
-- Charge control
-
----
-
-## Running the Application
-
-```python
-if __name__ == "__main__":
-    app.run(debug=..., port=..., host=...)
-```
-
----
-
-## Summary
-
-This template is ideal for applications that:
-- Perform **batch processing**
-- Need **background execution** via Redis
-- Create **multiple workunits/resources** from UI input
-- Require **charge tracking** and **job logging**
-
----
-
-For Redis setup and worker execution, refer to the **[deployment guide](installation_template.md)**.
