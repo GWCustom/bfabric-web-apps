@@ -1,5 +1,13 @@
 # RNA-seq Use Case
 
+```{note}
+**Use Case in Progress**  
+This use case is still under construction. Please check back later to learn how to use `bfabric_web_apps` to build beautiful and functional applications quickly within the B-Fabric ecosystem.
+```
+
+```{comment}
+
+
 This use case showcases how the RNA-seq application is architected using the `bfabric_web_apps` framework to run the NF-Core RNA-seq pipeline through a scalable and modular Dash-based interface.
 
 ---
@@ -112,3 +120,4 @@ Once the job is completed, users can expect the following:
 ---
 
 By following this structured approach, users can run RNA-seq pipelines reproducibly, monitor job progress, and trace results directly within B-Fabric—all from an interactive and simplified Dash web interface.
+```

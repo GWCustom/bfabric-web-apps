@@ -92,25 +92,7 @@ For detailed guidance on implementing and structuring layouts, please refer to t
 
 ### Overview
 
-The B-Fabric authentication flow is designed to be straightforward and seamless for users of the `bfabric_web_app` library. While the underlying processes are abstracted, the following provides an overview of how the authentication and token handling works.
-
-![Authentication Token Flow](_images/Authentication_Token_Flow.png)
-
-#### Steps Explained:
-
-1. **Token Sent to FGCZ Application Server**  
-   When a user clicks a link in B-Fabric, they are redirected to the web application's page. The authentication token is included as a parameter in the URL.  
-   Example URL:  
-   `https://some.webapp/param1?token=xyabcdefg1234561234234234asdf`
-
-2. **Token Validation**  
-   The web application sends the token to a dedicated REST endpoint hosted on `fgcz-bfabric.uzh.ch`.
-
-3. **Token Decryption**  
-   If the token is valid, B-Fabric responds with a JSON payload containing essential authentication details, such as the username, web service password, and entity class information.
-
-4. **Authenticated API Calls**  
-    Now that the web application has authenticated the user, it can use the username and web service password obtained from the token auth endpoint to authenticate subsequent calls to the B-Fabric web service.
+The B-Fabric authentication flow is designed to be straightforward and seamless for users of the `bfabric_web_apps` library. For a deeper theoretical explanation of the authentication and token handling process, along with a detailed look at the function output, refer to the chapter **[Important Components](important_components.md#authentication--token-handling)**. While the underlying logic is abstracted away from the user, the following section provides an overview of how authentication and token processing works in practice.
 
 ---
 
@@ -460,7 +442,7 @@ The wrapper initialization is handled internally by the system upon successful t
 
 ## Retrieving the B-Fabric Wrapper
 
-### `get_wrapper()`
+### get_wrapper()
 
 The `get_wrapper()` method returns the initialized B-Fabric wrapper. This method ensures that the wrapper is correctly configured and ready to use after token validation.
 
@@ -728,17 +710,30 @@ create_web_app()
 
 Once all inputs are provided, the function submits the data to B-Fabric and confirms successful creation.
 
-# 9. Main Job Execution (run\_main\_job)
+Here's a cleaned-up and professional documentation chapter based on your draft. It preserves your structure while improving grammar, clarity, and formatting. I've expanded the explanations and polished the style for easier understanding.
+
+---
+
+# 9. Main Job Execution
 
 ---
 
 ## Overview
 
-The `run_main_job` function provides a generalized approach to executing pipeline tasks. It orchestrates critical operations including file handling, command execution, resource management, attachment handling, and automatic charging in B-Fabric. This function extensively logs operations to ensure transparency, facilitate debugging, and maintain accountability.
+The `run_main_job` function is a general-purpose wrapper for executing arbitrary Bash commands in a pipeline workflow. It provides a standardized method for orchestrating common execution tasks, including:
+
+* Saving files (locally or remotely)
+* Bash command execution
+* Workunit creation in B-Fabric
+* Resource registration
+* Attaching result files as links
+* Automatic service charging in B-Fabric
+
+This function also includes comprehensive logging to facilitate debugging, transparency, and traceability throughout the workflow.
 
 ---
 
-### Function Signature
+## run_main_job()
 
 ```python
 run_main_job(
@@ -754,70 +749,171 @@ run_main_job(
 
 ---
 
-### Arguments Explained
-
-* **files\_as\_byte\_strings** (`dict`):
-
-  * Used when the `run_main_job` function is executed on an external server (e.g., via Redis queue). It maps destination file paths to their file contents represented as byte strings, enabling file transfer and subsequent use within the pipeline execution.
-
-* **bash\_commands** (`list[str]`):
-
-  * List of bash commands executed sequentially.
-
-* **resource\_paths** (`dict`):
-
-  * Maps local file paths or directories to B-Fabric container IDs.
-
-* **attachment\_paths** (`dict`):
-
-  * Maps file paths (logs, reports) to their filenames for attachment as links in B-Fabric.
-
-* **token** (`str`):
-
-  * Authentication token from B-Fabric.
-
-* **service\_id** (`int`, optional):
-
-  * B-Fabric service ID to charge against. Defaults to `0` (no charging).
-
-* **charge** (`list[int]`, optional):
-
-  * List of B-Fabric container IDs to charge for the service. Defaults to empty (no charging).
+## Arguments
 
 ---
 
-### Function Steps & Behavior
+### **files_as_byte_strings** (dict)
 
-#### Step 1: Saving Files
+A dictionary mapping destination file paths (on the external computation server) to their byte-encoded contents. This is used for transferring files to a remote server when the job is enqueued via Redis. If the function is executed locally, this can be left empty.
 
-* Saves provided byte string files to specified server locations.
-* Logs each file operation (success or failure).
+> **Note:**
+> All files must be provided as **byte strings**!
 
-#### Step 2: Bash Command Execution
+**Example:**
 
-* Executes provided bash commands sequentially.
-* Logs detailed output and errors from each command.
+```python
+files_as_byte_strings = {
+    "./samplesheet.csv": read_file_as_bytes("./samplesheet.csv"),
+    "./NFC_RNA.config": read_file_as_bytes("./NFC_RNA.config")
+}
+```
 
-#### Step 3: Creating Workunits
+In this example, the sample sheet and config file are read as byte strings and prepared for transfer to the external server.
 
-* Creates workunits in B-Fabric based on container IDs.
-* Logs created workunit IDs or errors.
+---
 
-#### Step 4: Resource Registration
+### **bash_commands** (list[str])
 
-* Registers server files as resources associated with created workunits.
-* Logs each successful resource registration or failure.
+A list of Bash commands that will be executed sequentially on the computation server. Standard output and errors from each command are captured and logged.
 
-#### Step 5: Attachment as Links
+**Example:**
 
-* Copies files to remote storage (FGCZ storage).
-* Creates B-Fabric links to attached files.
-* Logs success or failures of each file attachment.
+```python
+bash_commands = [
+    "rm -Rf /STORAGE/temp_rnaseq_run/work",
+    "mkdir /STORAGE/OUTPUT_rnaseq_2025-05-08_12-00-00",
+    "/home/nfc/.local/bin/nextflow run nf-core/rnaseq --input /STORAGE/temp_rnaseq_run/samplesheet.csv ..."
+]
+```
 
-#### Step 6: Automatic Charging
+These commands clean up the previous working directory, create a new output folder, and execute the pipeline.
 
-* Automatically charges specified containers for provided services.
-* Logs charges and handles cases without provided service IDs.
+---
+
+### **resource_paths** (dict)
+
+A mapping of output **files or directories** (generated by the pipeline) to B-Fabric container IDs. All listed resources will be registered in B-Fabric under the corresponding container.
+
+If a folder path is provided, **all files in that folder and its subdirectories** will be recursively registered as individual B-Fabric resources.
+
+**Example:**
+
+```python
+resource_paths = {
+    "/STORAGE/OUTPUT_rnaseq_2025-05-08_12-00-00": 37767
+}
+```
+
+This registers all output files from the specified directory under container ID `37767`.
+
+---
+
+### **attachment_paths** (dict)
+
+A dictionary mapping output file paths to human-readable filenames. These files will be attached as download links in the B-Fabric web interface, typically for QC reports, logs, or summaries.
+
+**Example:**
+
+```python
+attachment_paths = {
+    "/STORAGE/OUTPUT_rnaseq_2025-05-08_12-00-00/multiqc/star_salmon/multiqc_report.html": "multiqc_report.html",
+    "/STORAGE/OUTPUT_rnaseq_2025-05-08_12-00-00/star_salmon/deseq2_qc/deseq2.plots.pdf": "deseq2.plots.pdf"
+}
+```
+
+These attachments allow end users to quickly view or download important result files via B-Fabric.
+
+---
+
+### **toke`** (str)
+
+The B-Fabric authentication token (a raw URL token). This token is required for interacting with the B-Fabric API, such as creating workunits, registering files, and adding download links.
+
+**Example:**
+
+```python
+token = url_params  # Passed from the frontend or callback context
+```
+
+---
+
+### **service_id** (int, optional)
+
+The ID of the B-Fabric service to which the job execution should be billed. If no billing is required, use the default value of `0`.
+
+**Example:**
+
+```python
+service_id = bfabric_web_apps.SERVICE_ID  # e.g., 59 for RNA-seq
+```
+
+---
+
+### **charge** (list[int], optional)
+
+A list of container IDs to be billed for executing the job. This allows the system to attribute computational costs to specific project containers.
+
+If you are using the integrated charge switch from the `bfabric_web_apps` components, the `charge` list should be derived from the switch state.
+
+For more details, see the chapter **[Important Components](important_components.md#charge-switch)**.
+
+To convert the boolean switch to a valid list of container IDs, use the following pattern:
+
+```python
+# Update charge_run based on its value
+if charge_run and project_id:
+    charge_run = [project_id]
+else:
+    charge_run = []
+```
+
+**Example:**
+
+```python
+charge = [37767]  # Charge container ID 37767
+```
+
+If no charging is required, this can be an empty list (`[]`).
+
+---
+
+## Function Steps & Behavior
+
+### Step 1: Saving Files
+
+* If the function is executed on an external computation server (via Redis), the files provided as byte strings are saved to their specified destination paths as normal files.
+* Each file write operation is logged, and any errors during the write process are recorded.
+
+### Step 2: Bash Command Execution
+
+* Executes each Bash command using `subprocess` (or similar).
+* Output and errors from each command are logged in detail for traceability.
+* Commands are executed in the order provided.
+
+### Step 3: Workunit Creation
+
+* For each container ID in the `resource_paths`, a new workunit is created in B-Fabric.
+* Workunit IDs are logged for future tracking.
+* If a workunit creation fails, an error is logged.
+
+### Step 4: Resource Registration
+
+* Files or directories specified in `resource_paths` are registered in B-Fabric as output resources.
+* The system associates each output with the corresponding workunit.
+* Success and failure of each resource registration is logged.
+
+### Step 5: Attachment as Links
+
+* Files specified in `attachment_paths` are copied to shared storage (e.g., FGCZ shared space).
+* These files are then linked in B-Fabric under the given filenames.
+* Each attachment link creation is logged.
+
+### Step 6: Automatic Charging
+
+* If a `service_id` and `charge` list are provided, the corresponding containers are charged automatically for the service.
+* If no `service_id` is provided, this step is skipped.
+* Charging operations are logged.
 
 ---
 
@@ -828,67 +924,51 @@ run_main_job(
 
 ---
 
-### Example Usage (Callback Integration)
+## Example Usage
 
-To effectively use the `run_main_job` function, you must prepare appropriate arguments as follows:
+### 5.1 Local Execution
 
-1. **Prepare files as byte strings**: When executing remotely (via Redis queue), read the necessary files and encode them as byte strings:
+For smaller jobs or when running the job directly on the same server:
 
 ```python
-files_as_byte_strings = {}
-files_to_send = ["./pipeline_samplesheet.csv", "./NFC_DMX.config"]
-
-for file_path in files_to_send:
-    with open(file_path, "rb") as file:
-        files_as_byte_strings[file_path] = file.read()
+run_main_job(
+    files_as_byte_strings={},
+    bash_commands=[bash_command],
+    resource_paths={},
+    attachment_paths={},
+    token=url,
+    service_id=bfabric_web_apps.SERVICE_ID,
+    charge=charge_run
+)
 ```
 
-2. **Construct bash commands**:
+* No file transfer is required; paths are assumed to exist locally.
+* Suitable for quick, lightweight operations.
+
+---
+
+### 5.2 Remote Execution via Redis Queue
+
+For larger workflows, offload job execution to a computational server using Redis:
 
 ```python
-bash_commands = [
-    "rm -rf /path/to/workdir",
-    "nextflow run nf-core/pipeline -profile docker --input ./pipeline_samplesheet.csv --outdir /output/dir"
-]
-```
+from bfabric_web_apps.utils.redis_queue import q
 
-3. **Define resource paths**:
-
-```python
-resource_paths = {"/output/results/": container_id}
-```
-
-4. **Specify attachment paths**:
-
-```python
-attachment_paths = {"/output/results/report.html": "report.html"}
-```
-
-5. **Queue the job execution**:
-
-```python
-from rq import Queue
-from redis import Redis
-
-redis_queue = Queue(queue, connection=Redis())
-redis_queue.enqueue(run_main_job, kwargs={
+q(queue).enqueue(run_main_job, kwargs={
     "files_as_byte_strings": files_as_byte_strings,
     "bash_commands": bash_commands,
     "resource_paths": resource_paths,
     "attachment_paths": attachment_paths,
     "token": url_params,
-    "charge": [container_id],
-    "service_id": service_id
+    "service_id": bfabric_web_apps.SERVICE_ID,
+    "charge": charge_run
 })
 ```
 
----
-
-### Best Practices
-
-* Ensure the provided file paths and commands are thoroughly tested before integration.
-* Utilize extensive logging to monitor and debug job execution.
-* Handle all exceptions gracefully and log meaningful messages.
-* Regularly monitor B-Fabric logs for operations initiated via this function.
+* All necessary files are serialized as byte strings and sent over the queue.
+* Job runs asynchronously on a remote worker.
+* Ideal for heavy computational pipelines (e.g., RNA-seq, proteomics, etc.).
 
 ---
+
+Would you like me to help create diagrams or flowcharts to visualize this process?

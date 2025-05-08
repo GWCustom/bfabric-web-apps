@@ -14,23 +14,24 @@ This chapter explains how to modify these variables and where they are stored.
 
 The following global variables can be modified in B-Fabric Web Apps:
 
-| Variable                   | Default Value                     | Description                                                                 |
-|----------------------------|-----------------------------------|-----------------------------------------------------------------------------|
-| CONFIG_FILE_PATH           | "~/.bfabricpy.yml"                | Path to the configuration file used by the application.                     |
-| DEVELOPER_EMAIL_ADDRESS    | "griffin@gwcustom.com"            | Email address for development-related inquiries.                            |
-| BUG_REPORT_EMAIL_ADDRESS   | "gwtools@fgcz.system"             | Email address for submitting bug reports.                                   |
-| HOST                       | "127.0.0.1"                        | The IP address where the Dash app is hosted.                                |
-| PORT                       | 8050                              | The port number used by the Dash server.                                    |
-| DEV                        | False                             | Indicates whether the application is running in development mode.           |
-| DEBUG                      | False                             | Enables verbose logging for debugging purposes.                             |
-| REDIS_HOST                 | "localhost"                       | Hostname for the Redis server used by the application.                      |
-| REDIS_PORT                 | 6379                              | Port number for the Redis server.                                           |
-| GSTORE_REMOTE_PATH         | "/path/to/remote/gstore"          | Path to the remote gstore location (FGCZ-specific).                         |
-| SCRATCH_PATH               | "/scratch/folder"                 | Path to the scratch directory (FGCZ-specific).                              |
-| TRX_LOGIN                  | "trxcopy@fgcz-server.uzh.ch"      | SSH login used for transferring files (FGCZ-specific).                      |
-| TRX_SSH_KEY                | "/home/user/.ssh/your_ssh_key"    | Path to the SSH key used for secure file transfer (FGCZ-specific).         |
-| URL                        | "https:/fgcz/dummy/url"           | Base URL for internal services or pipelines.                                |
-| SERVICE_ID                 | 0                                 | Default service ID used for billing or internal tracking purposes.          |
+| Variable                    | Default Value                                                     | Description                                                        |
+| --------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |
+| REDIS\_HOST                 | "localhost"                                                       | Hostname for the Redis server used by the application.             |
+| REDIS\_PORT                 | 6379                                                              | Port number for the Redis server.                                  |
+| CONFIG\_FILE\_PATH          | "\~/.bfabricpy.yml"                                               | Path to the configuration file used by the application.            |
+| HOST                        | "127.0.0.1"                                                       | The IP address where the Dash app is hosted.                       |
+| PORT                        | 8050                                                              | The port number used by the Dash server.                           |
+| DEV                         | False                                                             | Indicates whether the application is running in development mode.  |
+| DEBUG                       | False                                                             | Enables verbose logging for debugging purposes.                    |
+| DEVELOPER\_EMAIL\_ADDRESS   | "[griffin@gwcustom.com](mailto:griffin@gwcustom.com)"             | Email address for development-related inquiries.                   |
+| BUG\_REPORT\_EMAIL\_ADDRESS | "[gwtools@fgcz.system](mailto:gwtools@fgcz.system)"               | Email address for submitting bug reports.                          |
+| GSTORE\_REMOTE\_PATH        | "/path/to/remote/gstore"                                          | Path to the remote gstore location (FGCZ-specific).                |
+| SCRATCH\_PATH               | "/scratch/folder"                                                 | Path to the scratch directory (FGCZ-specific).                     |
+| TRX\_LOGIN                  | "[trxcopy@fgcz-server.uzh.ch](mailto:trxcopy@fgcz-server.uzh.ch)" | SSH login used for transferring files (FGCZ-specific).             |
+| TRX\_SSH\_KEY               | "/home/user/.ssh/your\_ssh\_key"                                  | Path to the SSH key used for secure file transfer (FGCZ-specific). |
+| URL                         | "https\:/fgcz/dummy/url"                                          | Base URL for internal services or pipelines.                       |
+| SERVICE\_ID                 | 0                                                                 | Default service ID used for billing or internal tracking purposes. |
+| DATASET\_TEMPLATE\_ID       | 0                                                                 | Default dataset template ID used for dataset creation.             |
 
 ---
 
@@ -38,22 +39,17 @@ The following global variables can be modified in B-Fabric Web Apps:
 
 You can modify these global variables within your script before initializing the application.
 
+#### Customize Redis Settings
+
+```python
+bfabric_web_apps.REDIS_HOST = "redis-server"
+bfabric_web_apps.REDIS_PORT = 6380
+```
+
 #### Change the Configuration File Path
 
 ```python
 bfabric_web_apps.CONFIG_FILE_PATH = "~/custom_config.yml"
-```
-
-#### Update Developer Email Address
-
-```python
-bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "support@mydomain.com"
-```
-
-#### Update Bug Report Email Address
-
-```python
-bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "bugs@mydomain.com"
 ```
 
 #### Change Host and Port Settings
@@ -70,11 +66,16 @@ bfabric_web_apps.DEV = True
 bfabric_web_apps.DEBUG = True
 ```
 
-#### Customize Redis Settings
+#### Update Developer Email Address
 
 ```python
-bfabric_web_apps.REDIS_HOST = "redis-server"
-bfabric_web_apps.REDIS_PORT = 6380
+bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "support@mydomain.com"
+```
+
+#### Update Bug Report Email Address
+
+```python
+bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "bugs@mydomain.com"
 ```
 
 #### Update FGCZ-specific Settings
@@ -93,6 +94,8 @@ bfabric_web_apps.URL = "https://new.url/path"
 bfabric_web_apps.SERVICE_ID = 123
 ```
 
----
+#### Change the Dataset Template ID
 
-These settings allow customization of the application behavior to fit different use cases, such as development, testing, or production environments.
+```python
+bfabric_web_apps.DATASET_TEMPLATE_ID = 5
+```

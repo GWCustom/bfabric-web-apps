@@ -8,15 +8,25 @@
 
 Built to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** simplifies the development of web applications that interact with B-Fabric. Using a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending B-Fabric with satellite applications.
 
+Thanks! Here's the revised section with your intent more clearly reflected:
+
+---
+
 ### Key Features
 
-- **Seamless B-Fabric Integration**  
-  - **Token Management** – Securely handle authentication tokens for API access.  
-  - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
-  - **Integrated Logging** – Track API calls, application events, and errors for debugging and auditing.
+* **Seamless B-Fabric Integration**
 
-- **Prebuilt UI Components & Layouts**  
-  - Utilize **predefined Dash components, layouts, and callbacks** to accelerate development, maintain consistency, and enhance user experience.
+  * **Token Management** – Securely handle authentication tokens for API access.
+  * **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.
+  * **Integrated Logging** – Track API calls, application events, and errors for debugging and auditing.
+
+* **Prebuilt UI Components & Layouts**
+
+  * Utilize **predefined Dash components, layouts, and callbacks** to accelerate development, maintain consistency, and enhance user experience.
+
+* **Pipeline Execution Support**
+
+  * **run\_main\_job()** – Generic helper to run pipelines, manage logging, and register output in B-Fabric.
 
 ---
 
@@ -43,40 +53,22 @@ Developers can hit the ground running with the **[bfabric_web_app_template](http
 > Alternatively, if you want to get started quickly, you can find a simple template example here:  
 > **[Basic Usage Example](https://github.com/GWCustom/bfabric-web-apps/blob/main/README.md#Basic-Usage-Example)**
 
----
-
-## Redis Integration
-
-**Redis** is used in bfabric_web_apps to support **job queuing** and **decoupled server architecture**. This allows resource-intensive or asynchronous jobs to be executed in background workers, improving performance and reliability of B-Fabric applications.
-
-You can try out a working implementation in the **[Redis Template](index_redis.md)**, which demonstrates:
-
-- How to enqueue background jobs  
-- How to transfer files and parameters to job runners  
-- How to scale the app with worker processes  
-
-For more details, refer to the [Redis official documentation](https://redis.io/docs/latest/).
 
 ---
 
-## Application Types
-
-bfabric_web_apps supports different categories of applications:
-
-- **One-off helper apps** – Small tools such as barcode generators or project-specific utilities.  
-- **Big-data apps** – Robust applications that execute pipelines like **nf-core RNA-seq** or **SUSHI-based** workflows, requiring queueing and scalable backend processing.
-
-These app types can be mixed and matched depending on user needs and computing resources.
-
----
 
 ## Use Cases
 
-The library has been successfully used for a wide variety of use cases at the **Functional Genomics Center Zurich (FGCZ)** and beyond:
+The bfabric_web_apps library has been successfully used to build multiple proof-of-concept applications. The following chapters provide detailed examples of how bfabric_web_apps can be used in practice:
 
-- **SUSHI apps** – Particularly useful for **big-data pipelines**, such as genome alignments or expression quantification workflows.  
-- **Data annotation** – Tools for updating metadata or attaching analysis outputs to B-Fabric entities.  
-- **Resource and sample management** – Apps for bulk-creating, modifying, or validating datasets.  
+```{note}
+**Work in Progress**  
+The following use case chapters are currently under construction and not yet complete. Content will be added and refined continuously to better showcase real-world applications of the bfabric_web_apps framework.
+```
+
+* **[RNA-seq](rna_seq_use_case.md)** – Demonstrates how to run a large-scale pipeline like RNA-seq via a fully integrated Dash interface using bfabric_web_apps.
+* **[Demultiplex](demultiplex_use_case.md)** – A web application designed to run the nf-core pipeline for BCL to FASTQ demultiplexing, providing a streamlined interface for initiating and monitoring demultiplexing jobs.
+* **[SUSHI Apps](sushi_use_case.md)** – Showcases an application wrapper for Sushi applications via B-Fabric that enables flexible job configuration and execution through the Sushi backend.
 
 ---
 

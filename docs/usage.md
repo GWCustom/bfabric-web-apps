@@ -13,6 +13,55 @@ Please verify and update the versions accordingly before running the application
 
 ---
 
+
+## bfabric_web_apps Application Structure
+
+B-Fabric web applications built with the `bfabric_web_apps` library follow a modular design that ensures clarity, maintainability, and flexibility. Each app typically implements the following three core components:
+
+### 1. **Collect User Data**
+
+This step provides a user-friendly Dash interface where users can configure parameters such as CPU, RAM, reference files, email address, and Charge Switch settings. It also allows users to review and edit sample metadata before submitting a job.
+
+### 2. **Collect B-Fabric Data**
+
+This component manages interactions with the B-Fabric API. It retrieves relevant project, dataset, and sample metadata needed for job execution. The collected data is typically used to generate sample sheets or other input files for the workflow.
+
+### 3. **Invoke Application**
+
+This part contains the core logic for executing the computational workflow. It builds execution commands (e.g., for Nextflow), converts input files, configures output paths, queues the job via Redis, and optionally charges the selected B-Fabric container.
+
+---
+
+This architecture highlights the modularity and extensibility of the `bfabric_web_apps` library, enabling developers to rapidly build robust applications that integrate seamlessly with the B-Fabric ecosystem.
+
+---
+
+
+## Application Types
+
+bfabric_web_apps supports different categories of applications:
+
+- **One-off helper apps** – Small tools such as barcode generators or project-specific utilities.  
+- **Big-data apps** – Robust applications that execute pipelines like **nf-core RNA-seq** or **SUSHI-based** workflows, requiring queueing and scalable backend processing.
+
+These app types can be mixed and matched depending on user needs and computing resources.
+
+
+---
+
+## Redis Integration
+
+**Redis** is used in bfabric_web_apps to support **job queuing** and **decoupled server architecture**. This allows resource-intensive or asynchronous jobs to be executed in background workers, improving performance and reliability of B-Fabric applications.
+
+You can try out a working implementation in the **[Redis Template](index_redis.md)**, which demonstrates:
+
+- How to enqueue background jobs  
+- How to transfer files and parameters to job runners  
+
+For more details, refer to the [Redis official documentation](https://redis.io/docs/latest/).
+
+---
+
 ## Overview
 
 The **bfabric\_web\_app\_template** provides three ready-to-use starting points:
@@ -32,25 +81,6 @@ This structure ensures a modular and reusable approach to web application develo
 
 ---
 
-## Modular Structure
-
-B-Fabric web applications built with the **bfabric_web_app** framework generally follow the same modular structure to ensure clarity, maintainability, and flexibility:
-
-### 1. **B-Fabric Integration**
-
-The **GetDataFromBfabric.py** module handles all API interactions with B-Fabric. It retrieves necessary metadata, sample information, and creates the input files (samplesheets) required to execute pipelines or workflows.
-
-### 2. **User Interface**
-
-The **GetDataFromUser.py** module provides a clear, interactive interface where users can view, edit, and manage samplesheets or input data. This component allows users to modify entries, verify details, and ensure data correctness before executing the pipeline.
-
-### 3. **Execution of the Main Job**
-
-The **ExecuteRunMainJob.py** module contains logic and helper functions that manage the execution of the primary computational workflow. It includes managing command-line executions (e.g., bash commands), creating resource paths, handling charges via the **Charge Switch**, and queuing jobs asynchronously using Redis.
-
-Together, these three parts demonstrate the modularity, extensibility, and robustness of the B-Fabric web-app development approach, allowing developers to quickly adapt the general architecture to new applications and use cases.
-
----
 
 ## Choosing the Right Template
 

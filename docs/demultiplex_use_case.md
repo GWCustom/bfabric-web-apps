@@ -1,4 +1,4 @@
-# Sushi Use Case
+# Demultiplex Use Case
 
 ```{note}
 **Use Case in Progress**  
