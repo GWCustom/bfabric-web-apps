@@ -559,13 +559,13 @@ This callback is triggered when the user clicks the **Submit** button inside the
 
 * `alert-fade-success`: Shows success alert when job is submitted.
 * `alert-fade-fail`: Shows error message if submission fails.
-* `refresh-workunits`: Trigger to update workunits.
+* `refresh-workunits`: Dummy trigger to update workunits.
 
 ---
 
 ### Submission Logic and Redis Execution
 
-Each step of the job submission is explained below. For full details about `run_main_job`, see the **[library documentation](important_functions.md#9-main-job-execution)**.
+Each step of the job submission is explained below. For full details about `run_main_job`, see the **[library documentation](important_functions.md#main-job-execution)**.
 
 ---
 
@@ -636,7 +636,11 @@ Generates a list of Bash commands. Each command writes the user’s input into a
 
 ```python
 project_id = "2220"
-charge_run = [project_id] if charge_run and project_id else []
+
+if charge_run and project_id:
+    charge_run = [project_id]
+else:
+    charge_run = []
 ```
 
 If charging is enabled and a valid project ID exists, it’s added to the `charge` list. This list tells B-Fabric which container should be billed.
@@ -702,7 +706,7 @@ Sends the job to the Redis queue (`light` or `heavy`). The background worker wil
 
 This allows the web app to remain responsive while the job is executed asynchronously.
 
-For more details on the `run_main_job()` function, refer to the **[Library Documentation](important_functions.md#9-main-job-execution)**.
+For more details on the `run_main_job()` function, refer to the **[Library Documentation](important_functions.md#main-job-execution)**.
 
 ---
 

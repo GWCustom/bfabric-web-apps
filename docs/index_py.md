@@ -668,7 +668,12 @@ This simulates what more complex pipelines (e.g., Nextflow, R scripts) would do.
 
 ```python
 project_id = "2220"
-charge_run = [project_id] if charge_run and project_id else []
+
+if charge_run and project_id:
+    charge_run = [project_id]
+else:
+    charge_run = []
+    
 ```
 
 **Explanation:**
