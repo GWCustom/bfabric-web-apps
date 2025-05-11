@@ -66,7 +66,7 @@ For more details, refer to the [Redis official documentation](https://redis.io/d
 
 The **bfabric\_web\_app\_template** provides three ready-to-use starting points:
 
-* **`index.py`** – A full-featured template for complex applications.
+* **`index_large.py`** – A full-featured template for complex applications.
 * **`index_basic.py`** – A minimal template for simple apps.
 * **`index_redis.py`** – A template specifically designed for using Redis queues.
 
@@ -74,21 +74,21 @@ All templates are designed to be **modified and extended** by users, serving as 
 
 Additionally, within the **bfabric\_web\_app\_template**, the following files are available:
 
-* **`generic_bfabric.py`** – All templates **import** and **rely** on `generic_bfabric.py` for core functionality.
+ * **`generic` folder** – All templates **import** and **rely** on modules within the `generic` folder for core functionality.
 * **`bfabric_apps_auto_registration.py`** – Calls the [`create_web_app()`](bfabric_web_apps_functions.md#remote-creation-of-web-applications) function to remotely create a B-Fabric web application.
 
-This structure ensures a modular and reusable approach to web application development within B-Fabric.
+Unlike the index files, these files are not intended to be modified and are meant to remain untouched. This structure ensures a modular and reusable approach to web application development within B-Fabric.
 
 ---
 
 
 ## Choosing the Right Template
 
-This section helps you decide between the **Minimal Template (`index_basic.py`)** and the **Full-Featured Template (`index.py`)** based on your use case. If your application utilizes Redis for asynchronous job execution, consider using the **Redis Template (`index_redis.py`)**.
+This section helps you decide between the **Minimal Template (`index_basic.py`)** and the **Full-Featured Template (`index_large.py`)** based on your use case. If your application utilizes Redis for asynchronous job execution, consider using the **Redis Template (`index_redis.py`)**.
 
 ### Core Integration
 
-Both templates **import** and **rely** on `generic_bfabric.py`, which provides essential functions such as:
+Both templates **import** and **rely** on teh **`generic` folder**, which provides essential functions such as:
 ✔ **Authentication Handling** via B-Fabric tokens
 ✔ **Session Management** and user entity tracking
 ✔ **Bug Reporting System** for issue tracking
@@ -96,9 +96,9 @@ Both templates **import** and **rely** on `generic_bfabric.py`, which provides e
 
 These functionalities are **built-in** to both templates, so they work out of the box with B-Fabric.
 
-| Feature                             | **Minimal Template (`index_basic.py`)** | **Full-Featured Template (`index.py`)**                     |
+| Feature                             | **Minimal Template (`index_basic.py`)** | **Full-Featured Template (`index_large.py`)**                     |
 | ----------------------------------- | --------------------------------------- | ----------------------------------------------------------- |
-| **Integrates `generic_bfabric.py`** | ✅ Yes                                   | ✅ Yes                                                       |
+| **Integrates `generic` folder**     | ✅ Yes                                   | ✅ Yes                                                       |
 | **Logging**                         | ✅ Minimal (only login events)           | ✅ Extensive (logs multiple actions)                         |
 | **Dynamic Variable Configuration**  | ❌ No                                    | ✅ Yes (sets default variables like config paths and emails) |
 | **Sidebar UI**                      | ❌ No                                    | ✅ Yes (includes dropdowns, sliders, and text input)         |
@@ -108,10 +108,11 @@ These functionalities are **built-in** to both templates, so they work out of th
 
 ---
 
-> **Important:**
->
-> * **`generic_bfabric.py`** is a **core system file** and **must not be modified**. Any changes to this file may break authentication or system integration.
-> * **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index.py`, `index_basic.py`, or `index_redis.py`**.
+
+```{Important}
+ * **`generic` folder** contains **core system file** and **must not be modified**. Any changes to this folder may break authentication or system integration.
+ * **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index_large.py`, `index_basic.py`, or `index_redis.py`**.
+```
 
 ---
 
@@ -120,6 +121,6 @@ These functionalities are **built-in** to both templates, so they work out of th
 Now that you understand the structure, the next sections will explore:
 
 1. **[Template Deployment Guide](installation_template.md)**
-2. **[Full-Featured Template (`index.py`)](index_py.md)**
+2. **[Full-Featured Template (`index_large.py`)](index_py.md)**
 3. **[Minimal Template (`index_basic.py`)](index_basic_py.md)**
 4. **[Redis Template (`index_redis.py`)](index_redis.md)**

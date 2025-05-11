@@ -1,6 +1,6 @@
 # Full-Featured Template
 
-This chapter provides a step-by-step breakdown of the **index_large.py** script. It explains key functions and their roles in setting up a feature-rich B-Fabric web application.
+This chapter provides a step-by-step breakdown of the **index_large.py** script. It explains key functions and their roles in setting up a B-Fabric web application.
 
 ---
 
@@ -80,9 +80,10 @@ from generic.components import no_auth
 
 ---
 
-> **Important:**  
-> - **`generic_bfabric.py`** is a **core system file** and **must not be modified**. Any changes to this file may break authentication or system integration.  
-> - **All customization** (for example, adding UI components, callbacks, or logging) should be done in **`index_large.py`, `index_redis.py` or `index_basic.py`**.  
+```{Important}
+* The **`generic`** folder is a **core system component** and **must not be modified**. It contains shared files that handle authentication, layout, and integration with B-Fabric. Any changes may break app functionality or system compatibility.
+* **All customization** should be done in **`index_large.py`**, **`index_redis.py`**, or **`index_basic.py`**.
+```
 
 ---
 
@@ -139,7 +140,7 @@ sidebar = bfabric_web_apps.components.charge_switch + [
 
 ### Explanation  
 The **sidebar** is the left-hand panel of the app that allows users to configure job parameters before submitting. It includes:  
-- **Charge Switch (`bfabric_web_apps.components.charge_switch`)** – Toggles whether a job is billable or not.  
+- **Charge Switch (`bfabric_web_apps.components.charge_switch`)** – Toggles whether a job is billable or not. For additional details, see the [Charge Switch section](important_components.md#charge-switch).
 - **Text Header (`html.P`)** – Displays a prompt for the number of resources to create.  
 - **Slider (`dcc.Slider`)** – Selects a numeric value (e.g. number of resources) between 0 and 10.  
 - **Second Text Header (`html.P`)** – Prompts the user to choose an internal unit or project.  
@@ -172,7 +173,7 @@ modal = html.Div([
 The **modal** is a pop-up confirmation dialog triggered by the **Submit button** in the sidebar. It consists of:  
 - **Modal Header (`dbc.ModalHeader`)** – Displays the title at the top of the modal.  
 - **Modal Body (`dbc.ModalBody`)** – Shows a message asking for user confirmation.  
-- **Modal Footer (`dbc.ModalFooter`)** – Contains a confirmation button labeled **"Yes!"** to proceed with job creation.  
+- **Modal Footer (`dbc.ModalFooter`)** – Contains a confirmation button labeled **"Yes!"**, which initiates the execution of `run_main_job`.
 - **`is_open=False`** – The modal is **initially closed** and only appears in response to user interaction.
 
 ---
@@ -313,7 +314,7 @@ app.layout = bfabric_web_apps.get_static_layout(
 ```
 
 ### Explanation  
-- Uses **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a **consistent page structure** throughout the application.  
+- Uses **[`get_static_layout`](important_functions.md#get-static-layout)** to maintain a **consistent page structure** throughout the application.  
 - **`app_title`** – Defines the **main heading** of the application.  
 - **`app_specific_layout`** – Contains the **sidebar and main content area**.  
 - **`documentation_content`** – Displays **informational resources** for users.
@@ -349,19 +350,21 @@ This **Dash callback** manages the open/close behavior of the confirmation modal
   - If either button is clicked, the modal **toggles its visibility** (open if closed, closed if open).  
   - If neither button is clicked, the modal **remains in its current state**.
 
+This adds a safeguard confirmation step before executing any job.
+
 ---
 
-## Callback for UI Updates
+## Callback: Authentication & Sidebar State Management
 
-This callback function **dynamically updates the user interface** based on user interactions and the authentication status. It manages the sidebar behavior, displays entity-related data, and provides informative feedback to the user.
+This callback dynamically adjusts the state of the user interface based on authentication and session context. It ensures that unauthenticated users are restricted from interaction, and authenticated users receive personalized data and context-aware controls.
 
-For additional details on Dash callbacks, refer to the [Dash Callbacks Documentation](https://dash.plotly.com/basic-callbacks).
+For general information on Dash callbacks, refer to the [Dash Callback Documentation](https://dash.plotly.com/basic-callbacks).
 
 ---
 
 ### Callback Definition
 
-The callback listens for **changes in user input and authentication data**, updating the interface components accordingly.
+This callback is triggered when any of the following inputs change:
 
 ```python
 @app.callback(
@@ -383,109 +386,137 @@ The callback listens for **changes in user input and authentication data**, upda
     ],
     [State('entity', 'data')]
 )
-def update_ui(slider_val, dropdown_val, input_val, token_data, entity_data):
-
-    # Determine sidebar and input states based on authentication status.
-    if token_data is None:
-        sidebar_state = (True, True, True, True, True, True, True)
-    else:
-        sidebar_state = (False, False, False, False, False, False, False)
-
-    # Handle UI based on the authentication and entity data.
-    if not entity_data or not token_data:
-        auth_div_content = html.Div(children=no_auth)
-    else:
-        try:
-            component_data = [
-                html.H1("Component Data:"),
-                html.P(f"Number of Resources to Create: {slider_val}"),
-                html.P(f"Create workunit inside project: {dropdown_val}"),
-                html.P(f"Resource Content: {input_val}")
-            ]
-            entity_details = [
-                html.H1("Entity Data:"),
-                html.P(f"Entity Class: {token_data['entityClass_data']}"),
-                html.P(f"Entity ID: {token_data['entity_id_data']}"),
-                html.P(f"Created By: {entity_data['createdby']}"),
-                html.P(f"Created: {entity_data['created']}"),
-                html.P(f"Modified: {entity_data['modified']}")
-            ]
-            auth_div_content = dbc.Row([dbc.Col(component_data), dbc.Col(entity_details)])
-
-        except Exception as e:
-            auth_div_content = html.P(f"Error Logging into B-Fabric: {str(e)}")
-
-    return (*sidebar_state, auth_div_content)
 ```
 
-### Explanation
+#### Explanation:
 
-* **Outputs:**
+* **Outputs**: This callback modifies the state (visibility or enable/disable) of sidebar components and updates the `auth-div` content.
+* **Inputs**: Changes to the user-selected slider, dropdown, text input, or token data trigger the callback.
+* **State**: Reads the current `entity` data from memory to personalize the UI.
 
-  * Manages the visibility and enabled/disabled state of sidebar UI elements.
-  * Updates the content in the `auth-div` element based on authentication data.
-
-* **Inputs:**
-
-  * Tracks the slider, dropdown, text input, and token data for changes to update UI dynamically.
-
-* **State:**
-
-  * Accesses stored entity information to personalize user experience and UI content.
+For more details about `token_data` and `entity_data`, see the chapter:
+**[Important Components → Extracted Key Dictionaries](important_components.md#extracted-key-dictionaries)**.
 
 ---
 
-### UI Behavior Based on Authentication
+### Function Definition
 
-* If the user **is not authenticated** (`token_data is None`), the sidebar elements are **disabled**, preventing unauthorized interactions.
-* If the user **is authenticated**, the sidebar elements become **interactive** and functional.
+```python
+def update_ui(slider_val, dropdown_val, input_val, token_data, entity_data):
+```
 
----
-
-### Handling Authentication and Displaying Entity Data
-
-* Displays a **login prompt** if the user is not authenticated.
-* Upon authentication, displays:
-
-  * Details of the current session's entity (class, ID, creator, timestamps).
-  * User-selected input parameters (resource count, project, resource content).
+This function receives user inputs and authentication data, then determines how to update the UI accordingly.
 
 ---
 
-### Final Return
+### Step 1 – Toggle UI Elements Based on Authentication
 
-Returns the sidebar state (enabled/disabled components) along with the dynamically generated authentication information.
+```python
+if token_data is None:
+    sidebar_state = (True, True, True, True, True, True, True)
+else:
+    sidebar_state = (False, False, False, False, False, False, False)
+```
+
+If the user is **not authenticated** (`token_data is None`), all interactive elements in the sidebar are **disabled** by setting them to `True`.
+If the user is authenticated, all elements remain **enabled** (`False`).
+
+
+---
+
+### Step 2 – Display Message If User is Not Authenticated
+
+```python
+if not entity_data or not token_data:
+    auth_div_content = html.Div(children=no_auth)
+```
+
+If either `token_data` or `entity_data` is missing or invalid, the UI will show a predefined message (`no_auth`) instructing the user to log in via B-Fabric.
+
+---
+
+### Step 3 – Build UI Content for Authenticated Users
+
+```python
+else:
+    try:
+        component_data = [
+            html.H1("Component Data:"),
+            html.P(f"Number of Resources to Create: {slider_val}"),
+            html.P(f"Create workunit inside project: {dropdown_val}"),
+            html.P(f"Resource Content: {input_val}")
+        ]
+```
+
+In the `else` block, the user is authenticated. The `component_data` list shows the current input values:
+
+* Number of resources (from the slider)
+* Selected container/project ID
+* Entered text content
+
+This forms the **left column** of the authenticated view.
+
+---
+
+```python
+        entity_details = [
+            html.H1("Entity Data:"),
+            html.P(f"Entity Class: {token_data['entityClass_data']}"),
+            html.P(f"Entity ID: {token_data['entity_id_data']}"),
+            html.P(f"Created By: {entity_data['createdby']}"),
+            html.P(f"Created: {entity_data['created']}"),
+            html.P(f"Modified: {entity_data['modified']}")
+        ]
+```
+
+The `entity_details` list shows key metadata associated with the current entity. These fields come from the token and entity data and provide:
+
+* Entity type (e.g., Dataset, Analysis, Workunit)
+* Entity ID
+* Creation and modification metadata
+
+This forms the **right column** of the authenticated view.
+
+---
+
+```python
+        auth_div_content = dbc.Row([dbc.Col(component_data), dbc.Col(entity_details)])
+```
+
+The two columns (`component_data` and `entity_details`) are wrapped in a Bootstrap `Row`, allowing them to be displayed side-by-side in the `auth-div` section of the layout.
+
+---
+
+### Step 4 – Error Handling
+
+```python
+    except Exception as e:
+        return (*sidebar_state, html.P(f"Error Logging into B-Fabric: {str(e)}"))
+```
+
+If something goes wrong while accessing the token or entity data (e.g., a missing key), the callback returns an error message.
+This ensures the app fails gracefully and provides helpful feedback.
+
+---
+
+### Step 5 – Return Updated UI State and Content
 
 ```python
 return (*sidebar_state, auth_div_content)
 ```
 
----
+The final return provides:
 
-### Function Definition Details
+1. The enabled/disabled state of sidebar components (`sidebar_state`)
+2. The content to display in the authentication div (`auth_div_content`)
 
-#### Args:
-
-* **`slider_val` (int):** Current slider value representing resource count.
-* **`dropdown_val` (str):** Selected project identifier from dropdown.
-* **`input_val` (str):** User-provided text input describing resources.
-* **`token_data` (dict or None):** Authentication session data.
-* **`entity_data` (dict or None):** Data about the currently authenticated entity.
-
-#### Returns:
-
-* A tuple containing the sidebar state settings and updated authentication UI.
-
-#### Return Type:
-
-* **`tuple`**
+This return structure ensures the entire UI updates reactively based on user context.
 
 ---
 
+## Submitting run_main_job
 
-## Submit run_main_job Function
-
-This callback function initiates the **workunit creation** process when the user confirms their input in the confirmation modal. It handles job submission logic, including file attachments, resource creation, and error handling.
+This callback function is triggered when the user confirms their input by clicking the **"Yes!"** button in the modal. It initiates the execution of the `run_main_job` method, which submits the job, attaches files, creates resources, and handles both success and error cases.
 
 ---
 
@@ -512,102 +543,242 @@ This callback function initiates the **workunit creation** process when the user
 )
 ```
 
-### Explanation
+---
 
-* **Outputs:**
+### Explanation of Arguments
 
-  * Success alert visibility (`alert-fade-success`)
-  * Error alert visibility (`alert-fade-fail`)
-  * Error message content
-  * Workunits refresh trigger (`refresh-workunits`)
+#### **Inputs**
 
-* **Inputs:**
+These values trigger the callback.
 
-  * Clicks on the confirmation button (`Submit`)
+* **`Input("Submit", "n_clicks")`**
+  The callback is executed when the user clicks the confirmation button inside the modal. This acts as a signal to begin job submission.
 
-* **States:**
+#### **States**
 
-  * User-defined parameters: slider value, dropdown selection, text input, token data, charge toggle, URL token
+These values are **read** during the callback execution but **do not** trigger it.
+
+* **`State("example-slider", "value")`**
+  Represents the number of resources the user wants to create. It's an integer ranging from 0 to 10.
+
+* **`State("example-dropdown", "value")`**
+  The selected project or container ID (e.g., `"2220"`). Determines the B-Fabric container where the resources will be stored.
+
+* **`State("example-input", "value")`**
+  Free-text input provided by the user. This content is written into each created resource file.
+
+* **`State("token_data", "data")`**
+  A dictionary containing authentication and session information such as `application_data`, `entity_id_data`, and authorization token.
+
+* **`State("charge_run", "on")`**
+  A boolean flag indicating whether the job should be marked as **billable** in B-Fabric. This is controlled via the **charge switch** component.
+
+* **`State("url", "search")`**
+  The full search string from the app URL. It is passed along to `run_main_job` as a token for authorization.
+
+---
+
+### Explanation of Outputs
+
+These values are updated by the callback and affect the UI:
+
+* **`Output("alert-fade-success", "is_open")`**
+  A boolean value that controls the **success alert** visibility. Set to `True` if the job runs successfully.
+
+* **`Output("alert-fade-fail", "is_open")`**
+  Controls the **error alert** visibility. Set to `True` if the job fails (e.g., due to missing dropdown selection or a runtime error).
+
+* **`Output("alert-fade-fail", "children")`**
+  Provides the **content of the error message** shown in the alert. Includes exception details to help users understand what went wrong.
+
+* **`Output("refresh-workunits", "children")`**
+  This dummy output is used to **trigger a refresh** of the workunit section, allowing updates without user interaction. While it's set to an empty `html.Div()`, it can later be extended to update live data.
 
 ---
 
 ### Submission Logic
 
-This function processes the user's request to create new workunits and resources within the selected B-Fabric container.
+This function prepares and triggers the job submission process. It collects user input, creates temporary resource definitions, and calls `run_main_job()` a general-purpose utility that handles:
 
-```python
-def submission(n_clicks, slider_val, dropdown_val, input_val, token_data, charge_run, raw_token):
+* File saving (as byte strings)
+* Bash command execution
+* Resource registration
+* Workunit creation
+* Download link attachments
+* Optional project-based charging in B-Fabric
 
-    app_id = token_data.get("application_data", None)
+Let's walk through each step with code and explanation.
 
-    if dropdown_val is None:
-        return False, True, "Error: Please select a container Id", html.Div()
-
-    container_id = int(dropdown_val)
-
-    if n_clicks:
-        try:
-            # Define attachments for the job
-            attachment1_content = b"<html><body><h1>Hello World</h1></body></html>"
-            attachment1_name = "attachment_1.html"
-
-            attachment2_content = b"<html><body><h1>Hello World a second time!!</h1></body></html>"
-            attachment2_name = "attachment_2.html"
-
-            files_as_byte_strings = {
-                attachment1_name: attachment1_content,
-                attachment2_name: attachment2_content
-            }
-
-            # Generate resource creation commands
-            bash_commands = [f"echo '{input_val}' > resource_{i+1}.txt" for i in range(slider_val)]
-
-            project_id = "2220"
-            charge_run = [project_id] if charge_run and project_id else []
-
-            # Define file paths
-            attachment_paths = {attachment1_name: attachment1_name, attachment2_name: attachment2_name}
-            resource_paths = {f"resource_{i+1}.txt": container_id for i in range(slider_val)}
-
-            # Construct dataset information
-            dataset_info = {
-                str(container_id): {
-                    "resource_name": [f"resource_{i+1}" for i in range(slider_val)],
-                    "resource_description": [f"Resource {i+1} created by Bfabric Web Apps" for i in range(slider_val)],
-                    "resource_type": ["text/plain"] * slider_val,
-                    "resource_size": [len(bash_commands[i]) for i in range(slider_val)],
-                    "resource_path": [f"resource_{i+1}.txt" for i in range(slider_val)]
-                }
-            }
-
-            arguments = {
-                "files_as_byte_strings": files_as_byte_strings,
-                "bash_commands": bash_commands,
-                "resource_paths": resource_paths,
-                "attachment_paths": attachment_paths,
-                "token": raw_token,
-                "service_id": bfabric_web_apps.SERVICE_ID,
-                "charge": charge_run,
-                "dataset_dict": dataset_info
-            }
-
-            # Execute job
-            bfabric_web_apps.run_main_job(**arguments)
-
-            return True, False, None, html.Div()
-
-        except Exception as e:
-            return False, True, f"Error: Workunit creation failed: {str(e)}", html.Div()
-```
-
-### Explanation
-
-* **Attachments:** Files provided as byte strings.
-* **Resources:** Generated via shell commands based on user input.
-* **Charging Logic:** Determines whether the created workunits are billable.
-* **Error Handling:** Displays error alert with exception details in case of failure.
+For more details, please refer to the [**run_main_job function**](important_functions.md#9-main-job-execution) in the library documentation.
 
 ---
+
+#### Step 1 – Validate Input and Extract Container ID
+
+```python
+if dropdown_val is None:
+    return False, True, "Error: Please select a container Id", html.Div()
+
+container_id = int(dropdown_val)
+```
+
+**Explanation:**
+The function first ensures that the user selected a valid container (`dropdown_val`). If not, it immediately returns an error alert.
+
+---
+
+#### Step 2 – Define Attachments
+
+```python
+attachment1_content = b"<html><body><h1>Hello World</h1></body></html>"
+attachment1_name = "attachment_1.html"
+
+attachment2_content = b"<html><body><h1>Hello World a second time!!</h1></body></html>"
+attachment2_name = "attachment_2.html"
+
+files_as_byte_strings = {
+    attachment1_name: attachment1_content,
+    attachment2_name: attachment2_content
+}
+```
+
+**Explanation:**
+These attachments are passed to `run_main_job` as `files_as_byte_strings`.
+This mimics a common use case in B-Fabric, where reports or logs (e.g., `multiqc_report.html`) are attached and made downloadable after the job.
+
+Attachments are stored in `attachment_paths` for linking them in the UI (see Step 5).
+
+---
+
+#### Step 3 – Generate Bash Commands
+
+```python
+bash_commands = [f"echo '{input_val}' > resource_{i+1}.txt" for i in range(slider_val)]
+```
+
+**Explanation:**
+Each command creates a file named `resource_X.txt` containing the user’s input (`input_val`).
+These Bash commands will be run sequentially via `run_main_job`, and their logs will be captured.
+
+This simulates what more complex pipelines (e.g., Nextflow, R scripts) would do.
+
+---
+
+#### Step 4 – Determine Charge Containers
+
+```python
+project_id = "2220"
+charge_run = [project_id] if charge_run and project_id else []
+```
+
+**Explanation:**
+If the charge switch (`charge_run`) is enabled, the project ID is included in the `charge` argument.
+This enables automatic billing in B-Fabric and logs the activity under the correct container.
+If charging is off, this list remains empty (`[]`).
+
+---
+
+#### Step 5 – Define Resource and Attachment Paths
+
+```python
+attachment_paths = {
+    attachment1_name: attachment1_name,
+    attachment2_name: attachment2_name
+}
+
+resource_paths = {
+    f"resource_{i+1}.txt": container_id for i in range(slider_val)
+}
+```
+
+**Explanation:**
+These paths tell `run_main_job`:
+
+* Where the output files should be registered (`resource_paths`)
+* Which files should appear as downloadable links (`attachment_paths`)
+
+All files listed in `resource_paths` will be registered in B-Fabric under the specified container.
+
+---
+
+#### Step 6 – Build the Dataset Dictionary
+
+```python
+dataset_info = {
+    str(container_id): {
+        "resource_name": [f"resource_{i+1}" for i in range(slider_val)],
+        "resource_description": [f"Resource {i+1} created by Bfabric Web Apps" for i in range(slider_val)],
+        "resource_type": ["text/plain"] * slider_val,
+        "resource_size": [len(bash_commands[i]) for i in range(slider_val)],
+        "resource_path": [f"resource_{i+1}.txt" for i in range(slider_val)]
+    }
+}
+```
+
+**Explanation:**
+This structure mirrors how B-Fabric stores resource metadata:
+
+* **`resource_name`** – Human-readable name
+* **`resource_description`** – Optional context
+* **`resource_type`** – MIME type
+* **`resource_size`** – Useful for display and quota checking
+* **`resource_path`** – Where to find the file after job completion
+
+`run_main_job` uses this dictionary to create and register resources in the container.
+
+---
+
+#### Step 7 – Call run_main_job()
+
+```python
+arguments = {
+    "files_as_byte_strings": files_as_byte_strings,
+    "bash_commands": bash_commands,
+    "resource_paths": resource_paths,
+    "attachment_paths": attachment_paths,
+    "token": raw_token,
+    "service_id": bfabric_web_apps.SERVICE_ID,
+    "charge": charge_run,
+    "dataset_dict": dataset_info
+}
+
+bfabric_web_apps.run_main_job(**arguments)
+```
+
+**Explanation:**
+Here, all components are passed to the central function `run_main_job()`:
+
+* Transfers files via `files_as_byte_strings`
+* Executes Bash commands
+* Registers output files as resources
+* Creates workunits automatically
+* Attaches download links
+* Charges the project container if `charge` is set
+
+Behind the scenes, logs are written, errors are captured, and all job metadata is stored in B-Fabric.
+
+---
+
+#### Step 8 – Handle Success or Failure
+
+```python
+return True, False, None, html.Div()
+```
+
+**Explanation:**
+If everything runs successfully, this opens the success alert and clears the error message.
+
+If anything fails (e.g., exception during job execution), an error message is returned:
+
+```python
+except Exception as e:
+    return False, True, f"Error: Workunit creation failed: {str(e)}", html.Div()
+```
+
+All exceptions are caught and shown in the UI for better debugging.
+
+---
+
 
 ## Running the Application
 

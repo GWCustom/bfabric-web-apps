@@ -28,13 +28,13 @@ The B-Fabric authentication system ensures secure access to web applications and
 
 ---
 
-The **[`process_url_and_token`](important_functions.md#authentication-token-handling)** function is a central utility used in almost every app built with `bfabric_web_apps`. It extracts the token from the URL and transforms the backend response into structured dictionaries that are reused across callbacks.
+The **[`process_url_and_token()`](important_functions.md#authentication-token-handling)** function is a central utility used in almost every app built with `bfabric_web_apps`. It extracts the token from the URL and transforms the backend response into structured dictionaries that are reused across callbacks.
 
 ```python
 process_url_and_token(url_params)
 ```
 
-The function returns a tuple with the following elements:
+The function returns the following elements:
 
 ```python
 (token, token_data, entity_data, app_data, page_title, session_details, job_link)
@@ -53,9 +53,12 @@ App data contains metadata related to the specific B-Fabric application currentl
 
 **Structure Overview:**
 
-* `id`: App ID in B-Fabric
-* `name`: App name
-* `description`: A brief explanation of the app’s purpose
+| Key           | Description                              |
+| ------------- | ---------------------------------------- |
+| `id`          | App ID in B-Fabric                       |
+| `name`        | App name                                 |
+| `description` | A brief explanation of the app’s purpose |
+
 
 **Example:**
 
@@ -154,16 +157,20 @@ Token data includes session-specific metadata like the authenticated user, app I
 
 **Structure Overview:**
 
-* `environment`: Deployment environment (e.g., Test, Production)
-* `user_data`: Username associated with the token
-* `token_expires`: Expiry timestamp of the session token
-* `entity_id_data`: ID of the selected entity (usually a dataset)
-* `entityClass_data`: Type of the entity (e.g., `Dataset`)
-* `webbase_data`: Base URL of the B-Fabric server
-* `application_data`: App ID
-* `application_params_data`: Optional app parameters
-* `userWsPassword`: Web service password (for programmatic access)
-* `jobId`: Linked job ID, if any
+| Key                       | Description                                     |
+| ------------------------- | ----------------------------------------------- |
+| `environment`             | Deployment environment (e.g., Test, Production) |
+| `user_data`               | Username associated with the token              |
+| `token_expires`           | Expiry timestamp of the session token           |
+| `entity_id_data`          | ID of the selected entity (usually a dataset)   |
+| `entityClass_data`        | Type of the entity (e.g., `Dataset`)            |
+| `webbase_data`            | Base URL of the B-Fabric server                 |
+| `application_data`        | App ID                                          |
+| `application_params_data` | Optional app parameters                         |
+| `userWsPassword`          | Web service password (for programmatic access)  |
+| `jobId`                   | Linked job ID, if any                           |
+
+
 
 **Example:**
 
@@ -188,7 +195,7 @@ token_data = {
 
 ### What Is It?
 
-The **Charge Switch** is a predefined UI component that allows users to control whether the cost of running a job should be charged to a specific B-Fabric container (e.g., project, dataset). It integrates seamlessly into your Dash app and connects with the `run_main_job` function to enable or disable automatic service charging.
+The **Charge Switch** is a predefined UI component that allows users to control whether the cost of running a job should be charged to a specific B-Fabric container. It integrates seamlessly into your Dash app and connects with the `run_main_job` function to enable or disable automatic service charging.
 
 This is especially useful in shared computing environments where resource usage must be tracked and billed to the correct entity.
 
@@ -262,7 +269,9 @@ This list is then passed to the `run_main_job` function as the `charge` paramete
 
 ---
 
-### Example: Passing the Charge Parameter to `run_main_job` via Redis
+### Example
+
+Passing the Charge Parameter to run_main_job() via Redis.
 
 ```python
 q(queue).enqueue(run_main_job, kwargs={
@@ -277,6 +286,12 @@ q(queue).enqueue(run_main_job, kwargs={
 ```
 
 If the switch is off, `charge` will be an empty list (`[]`), and no billing occurs. If the switch is on and a valid `project_id` is available, the execution will be billed accordingly.
+
+---
+
+### Reference Projects
+
+To see and understand how the charge switch can be easily implemented into your project, please refer to the **[Full-Featured Template](index_py.md)** or the **[Redis Template](index_redis.md)**.
 
 ---
 

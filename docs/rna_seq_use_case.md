@@ -8,7 +8,7 @@ This use case is still under construction. Please check back later to learn how 
 ```{comment}
 
 
-This use case showcases how the RNA-seq application is architected using the `bfabric_web_apps` framework to run the NF-Core RNA-seq pipeline through a scalable and modular Dash-based interface.
+This use case showcases how the RNA-seq application is architected using the `bfabric_web_apps` library to run the NF-Core RNA-seq pipeline through a scalable and modular Dash-based interface.
 
 ---
 
@@ -16,7 +16,7 @@ This use case showcases how the RNA-seq application is architected using the `bf
 
 The RNA-seq app is a **proof-of-concept application** for transcriptomic analysis within the B-Fabric ecosystem. It demonstrates how to combine B-Fabric metadata, a user-friendly Dash interface, and NF-Core RNA-seq pipelines in a single web application.
 
-The app is built using the `bfabric_web_apps` framework and follows the `redis_index.py` template, enabling asynchronous job execution via a Redis queue system.
+The app is built using the `bfabric_web_apps` library and follows the `redis_index.py` template, enabling asynchronous job execution via a Redis queue system.
 
 ---
 

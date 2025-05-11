@@ -1,6 +1,6 @@
 # Template Deployment Guide
 
-This chapter provides a step-by-step guide for deploying **bfabric-web-app-template**, templates built with the **bfabric_web_apps** framework that serve as entry points for custom B-Fabric web applications.
+This chapter provides a step-by-step guide for deploying **bfabric-web-app-template**, templates built with the **bfabric_web_apps** library that serve as entry points for custom B-Fabric web applications.
 
 ---
 
@@ -86,7 +86,7 @@ pip install -r requirements.txt
 
 The **.bfabricpy.yml** file is **essential for power users**. It provides credentials needed for interacting with the **B-Fabric API** and enables key functionalities like authentication, logging, and API access. 
 
-> **Note:** By default, the application expects the configuration file to be located at `~/.bfabricpy.yml`. However, this default location can be changed. For details on how to modify the configuration path, see the [How to Modify Global Variables](bfabric_web_apps_functions.md#how-to-modify-global-variables) section.
+> **Note:** By default, the application expects the configuration file to be located at `~/.bfabricpy.yml`. However, this default location can be changed. For details on how to modify the configuration path, see the [How to Modify Global Variables](global_variables.md) section.
 
 
 Create a **.bfabricpy.yml** file in your home directory (e.g., **~/.bfabricpy.yml**) and format it as follows:

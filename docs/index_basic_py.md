@@ -13,7 +13,7 @@ Please verify and update the versions accordingly before running the application
 
 ---
 
-# View the Demo  
+## View the Demo  
 
 Before diving into the details, you can preview a **live demo** of this template:
 
@@ -64,8 +64,8 @@ import dash_bootstrap_components as dbc
    - `app`: The **Dash instance** that runs the web app.  
 
 3. **bfabric_web_apps Imports**  
-   - **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)**: Provides a **consistent page layout**.  
-   - **[`get_logger`](bfabric_web_apps_functions.md#get-logger)**: Handles **logging of user actions**.  
+   - **[`get_static_layout`](important_functions.md#get-static-layout)**: Provides a **consistent page layout**.  
+   - **[`get_logger`](important_functions.md#get-logger)**: Handles **logging of user actions**.  
    - **HOST & PORT**: Define **server configurations** (imported from `bfabric_web_apps`).
 
 4. **Dash Bootstrap Components (DBC)**  
@@ -82,7 +82,7 @@ app_title = "My B-Fabric App (Basic)"
 ```
 
 ### Explanation  
-- This title is used inside **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a consistent UI.  
+- This title is used inside **[`get_static_layout`](important_functions.md#get-static-layout)** to maintain a consistent UI.  
 
 ---
 
@@ -142,7 +142,7 @@ app.layout = get_static_layout(
 ```
 
 ### Explanation  
-- Uses **[`get_static_layout`](bfabric_web_apps_functions.md#get-static-layout)** to maintain a **consistent page structure** throughout the application.  
+- Uses **[`get_static_layout`](important_functions.md#get-static-layout)** to maintain a **consistent page structure** throughout the application.  
 - **app_title** – Defines the **main heading** of the application.  
 - **app_specific_layout** – Contains the **sidebar and main content area**.  
 - **documentation_content** – Displays **informational resources** for users.  
@@ -207,8 +207,8 @@ def update_user_display(token_data, app_data):
 ```
 
 ### Explanation
-- The **['get_logger'](bfabric_web_apps_functions.md#get-logger)** method is used to capture user actions.  
-- The **[`log_operation`](bfabric_web_apps_functions.mdl#log-operation)** method records a **“User Login”** event in the logs.
+- The **['get_logger'](important_functions.md#get-logger)** method is used to capture user actions.  
+- The **[`log_operation`](important_functions.mdl#log-operation)** method records a **“User Login”** event in the logs.
 
 ---
 
@@ -246,4 +246,4 @@ if __name__ == "__main__":
 
 ### Explanation
 - **`PORT` and `HOST`** define the server’s **address and port number**.
-- These values are **imported by default from the `bfabric_web_apps` module**. If you want to modify them, refer to the **[Global Configuration Variables](bfabric_web_apps_functions.md#dynamic-variable-configuration)** chapter for more information.
+- These values are **imported by default from the `bfabric_web_apps` module**. If you want to modify them, refer to the **[Global Configuration Variables](global_variables.md)** chapter for more information.

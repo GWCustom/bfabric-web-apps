@@ -1,6 +1,6 @@
 # Library Documentation
 
-The Library Documentation is structured into three main chapters: Global Variables, Important Components, and B-Fabric Web Apps Functions.
+The bfabric_web_apps library documentation is structured into three main chapters: Global Variables, Important Components, and Important Functions.
 
 ---
 
@@ -33,7 +33,7 @@ See the full chapter **[here](important_components.md)**
 
 ---
 
-## 3. B-Fabric Web Apps Functions
+## 3. Important Functions
 
 The final chapter documents the **core utility functions** in the `bfabric_web_apps` library, including:
 
@@ -44,6 +44,6 @@ The final chapter documents the **core utility functions** in the `bfabric_web_a
 * Accessing B-Fabric as a power user
 * Sending bug reports and registering apps remotely
 
-This section is especially useful for developers who want to extend or integrate the framework into new Dash apps. Each function is accompanied by usage examples and links to the GitHub source.
+This section is especially useful for developers who want to extend or integrate the library into new Dash apps. Each function is accompanied by usage examples and links to the GitHub source.
 
 See the full chapter **[here](important_functions.md)**

@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide walks you through installing **bfabric_web_apps**, a Python-based framework for integrating satellite applications with B-Fabric LIMS.
+This guide walks you through installing **bfabric_web_apps**, a Python-based library for integrating satellite applications with B-Fabric LIMS.
 
 ---
 

@@ -2,15 +2,11 @@
 
 B-Fabric Web Apps provide a set of **global variables** that can be customized by users to adapt the application's behavior to specific needs. These variables control aspects such as configuration file paths, email addresses for support, server settings, and the development environment state.
 
----
-
-## Global Variables Configuration
-
 This chapter explains how to modify these variables and where they are stored.
 
 ---
 
-### List of Global Variables
+## List of Global Variables
 
 The following global variables can be modified in B-Fabric Web Apps:
 
@@ -30,12 +26,12 @@ The following global variables can be modified in B-Fabric Web Apps:
 | TRX\_LOGIN                  | "[trxcopy@fgcz-server.uzh.ch](mailto:trxcopy@fgcz-server.uzh.ch)" | SSH login used for transferring files (FGCZ-specific).             |
 | TRX\_SSH\_KEY               | "/home/user/.ssh/your\_ssh\_key"                                  | Path to the SSH key used for secure file transfer (FGCZ-specific). |
 | URL                         | "https\:/fgcz/dummy/url"                                          | Base URL for internal services or pipelines.                       |
-| SERVICE\_ID                 | 0                                                                 | Default service ID used for billing or internal tracking purposes. |
-| DATASET\_TEMPLATE\_ID       | 0                                                                 | Default dataset template ID used for dataset creation.             |
+| SERVICE\_ID                 | 0                                                                 | Service ID used for billing or internal tracking purposes. |
+| DATASET\_TEMPLATE\_ID       | 0                                                                 | Dataset template ID used for dataset creation.             |
 
 ---
 
-### How to Modify Global Variables
+## How to Modify Global Variables
 
 You can modify these global variables within your script before initializing the application.
 
