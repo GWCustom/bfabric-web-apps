@@ -139,7 +139,7 @@ app.layout = get_static_layout(
 
 # Run the application
 if __name__ == "__main__":
-    app.run_server(debug=False, port=PORT, host=HOST)
+    app.run(debug=False, port=PORT, host=HOST)
 
 ```
 
