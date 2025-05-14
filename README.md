@@ -37,7 +37,7 @@
   <p align="center">
     A Python-based library designed for the development and integration of satellite applications with the B-Fabric Laboratory Information Management System (LIMS).
     <br />
-    <a href="https://pypi.org/project/bfabric-web-apps/"><strong>Explore the documentation »</strong></a>
+    <a href="https://bfabric-docs.gwc-solutions.ch/"><strong>Explore the documentation »</strong></a>
     <br />
     <br />
     <a href="https://template-d12.bfabric.org/">View Demo</a>
