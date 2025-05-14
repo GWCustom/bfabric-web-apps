@@ -119,8 +119,7 @@ The bfabric_web_apps library has been successfully used to build multiple proof-
 The following use case chapters are currently under construction and not yet complete. Content will be added and refined continuously to better showcase applications built with the bfabric_web_apps library.
 ```
 
-* **[RNA-seq](rna_seq_use_case.md)** – Demonstrates how to run a large-scale pipeline like RNA-seq via a fully integrated Dash interface using bfabric_web_apps.
-* **[Demultiplex](demultiplex_use_case.md)** – A web application designed to run the nf-core pipeline for BCL to FASTQ demultiplexing, providing a streamlined interface for initiating and monitoring demultiplexing jobs.
+* **[Nextflow](nextflow_use_case.md)** – Demonstrates how to run a large-scale Nextflow pipeline like RNA-seq via a fully integrated Dash interface using bfabric_web_apps.
 * **[SUSHI Apps](sushi_use_case.md)** – Showcases an application wrapper for Sushi applications via B-Fabric that enables flexible job configuration and execution through the Sushi backend.
 
 ---
