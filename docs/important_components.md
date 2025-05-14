@@ -1,12 +1,12 @@
 # Important Components
 
-This section introduces the most important components when working with the `bfabric_web_apps` library. It begins by explaining the **authentication and token handling** process, which is the foundation for securely linking users, datasets, and applications. Next, it covers the **key dictionaries** that are extracted from the token, such as `app_data`, `entity_data`, and `token_data`. Finally, it presents an important out-of-the-box UI component: the **Charge Switch**, which enables users to manage cost attribution within their B-Fabric workflows.
+This section introduces the most important components when working with the `bfabric_web_apps` library. It begins by explaining the **authentication and token handling** process. Next, it covers the information that is extracted from the token, such as `app_data`, `entity_data`, and `token_data`. Finally, it presents an important out-of-the-box UI component: the Charge Switch, which enables users to manage cost attribution within their B-Fabric workflows.
 
 ---
 
 ## Authentication & Token Handling
 
-The B-Fabric authentication system ensures secure access to web applications and links each session to a specific dataset and user identity. This process enables personalized behavior and access control for each user.
+The B-Fabric authentication system ensures secure access to web applications and links each session to specific data, users and entities. 
 
 ![Authentication Token Flow](_images/Authentication_Token_Flow.png)
 
@@ -72,7 +72,6 @@ app_data = {
 
 ---
 
-
 ### Entity Data
 
 **What is it?**
@@ -82,27 +81,13 @@ app_data = {
 
 **Structure Overview:**
 
-| Key                 | Description                                                                         |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| `name`              | Human-readable name/title of the dataset.                                           |
-| `createdby`         | Username of the user who originally uploaded or created the dataset.                |
-| `created`           | Timestamp when the dataset was first created.                                       |
-| `modified`          | Timestamp of the most recent modification.                                          |
-| `full_api_response` | Complete raw metadata response from B-Fabric, including all subfields listed below. |
-
-The actual B-Fabric metadata is located inside the `full_api_response` key, and includes the following keys:
-
-| Sub-Key in `full_api_response` | Description                                                                                        |
-| ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `modifiedby`                   | Username of the last user who modified the dataset.                                                |
-| `classname`                    | B-Fabric class of the object (typically `'dataset'`).                                              |
-| `id`                           | Unique internal dataset ID.                                                                        |
-| `container`                    | Dictionary with `classname` and `id` of the linked project or container.                           |
-| `attribute`                    | List of dictionaries describing the dataset schema: `name`, `position`, and `type`.                |
-| `item`                         | List of data rows. Each row has a `position` and a list of `field` entries (linked to attributes). |
-| `numberofattributes`           | Number of columns (attributes) in the dataset.                                                     |
-| `numberofitems`                | Number of rows (samples/items) in the dataset.                                                     |
-| `link`                         | List of links (e.g., to resources like files), each with `classname` and `id`.                     |
+| Key                 | Description                                                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `name`              | Human-readable name/title of the dataset.                                                                                          |
+| `createdby`         | Username of the user who originally uploaded or created the dataset.                                                               |
+| `created`           | Timestamp when the dataset was first created.                                                                                      |
+| `modified`          | Timestamp of the most recent modification.                                                                                         |
+| `full_api_response` | The full response returned from the B-Fabric webservice when querying the entity class with the ID obtained from token decryption. |
 
 ---
 

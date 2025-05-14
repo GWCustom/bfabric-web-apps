@@ -539,6 +539,8 @@ Initializes and returns an **authenticated wrapper** for interacting with the **
 
 This function uses the environment information provided in `token_data` to determine the appropriate configuration for initializing the `Bfabric` instance. It reads the configuration from a predefined path (`CONFIG_FILE_PATH`) and applies the environment settings.
 
+> **Note:** This requires a properly configured authentication block in your `.yml` config file, typically located at the path specified by `CONFIG_FILE_PATH`. For details on how to set this up, refer to the [bfabricPy documentation](https://fgcz.github.io/bfabricPy/).
+
 If you want to explore the implementation of the `get_power_user_wrapper()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/utils/get_power_user_wrapper.py).
 
 ```python
@@ -601,6 +603,8 @@ For further details on modifying global variables, refer to [Chapter 7: Dynamic 
 ### submit_bug_report()
 
 Submits bug reports by collecting the user-provided bug description, along with token and entity data, and then emails these details to the **bug-report email address** configured in `bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS`. By default, this address is `gwtools@fgcz.system`, but it can be customized as needed.
+
+> **Note:** This function requires a **running mail server** and the **Unix command-line utility `mail`** to be installed in the app execution environment. Without these, the bug report will not be sent.
 
 If you want to explore the implementation of the `submit_bug_report()` function in more detail, check out the [source code on GitHub](https://github.com/GWCustom/bfabric-web-apps/blob/main/bfabric_web_apps/utils/callbacks.py#L92).
 

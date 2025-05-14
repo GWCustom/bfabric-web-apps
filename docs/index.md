@@ -6,7 +6,7 @@
 
 ## Overview
 
-Built to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** simplifies the development of web applications that interact with B-Fabric. Using a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending B-Fabric with satellite applications.
+This library is written using [Python Dash](https://dash.plotly.com/) as a front-end interface for building WebApps. **bfabric_web_apps** simplifies the development of web applications that interact with B-Fabric. Using a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending B-Fabric with satellite applications.
 
 ---
 

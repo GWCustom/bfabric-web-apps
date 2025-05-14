@@ -8,21 +8,22 @@ This chapter provides a comprehensive example of how Nextflow-based workflows, s
 
 This chapter demonstrates how the `bfabric_web_apps` library can be utilized to build Dash-based applications for running Nextflow pipelines. The general structure of these applications leverages Redis queues for asynchronous job management, integrates seamlessly with the B-Fabric system, and employs a modular, user-friendly web interface for workflow management.
 
-The RNA-seq application described in detail here is a proof-of-concept showcasing how complex bioinformatics workflows can be efficiently executed through an interactive web interface integrated into the B-Fabric ecosystem. For the complete source code or a quickstart guide, visit the RNA-seq app GitHub repository at [GWCustom/rnaseq](https://github.com/GWCustom/rnaseq).
+The RNA-seq application described in detail here is a proof-of-concept showcasing how complex bioinformatics workflows can be efficiently executed through an interactive web interface integrated into the B-Fabric ecosystem. For the complete source code or a quickstart guide, visit the [RNA-seq app GitHub repository](https://github.com/GWCustom/rnaseq).
 
 Additionally, although not covered extensively in this chapter, we provide two other proof-of-concept applications:
 
-* **Demultiplex App**: Demonstrates integration between B-Fabric, the NF-Core Demultiplex pipeline, and Redis-based asynchronous job execution, validating the flexibility of the `bfabric_web_apps` library. The source code is available at [GWCustom/bfabric\_app\_demultiplex](https://github.com/GWCustom/bfabric_app_demultiplex).
+* **Demultiplex App**: Demonstrates integration between B-Fabric, the NF-Core Demultiplex pipeline, and Redis-based asynchronous job execution, validating the flexibility of the `bfabric_web_apps` library. The source code is available in the [bfabric\_app\_demultiplex GitHub repository](https://github.com/GWCustom/bfabric_app_demultiplex).
 
-* **Hello World App**: Offers a minimalistic example to quickly grasp the basic integration concepts between Nextflow, B-Fabric, and Redis job queues. The source code is available at [GWCustom/nfc-hello-world](https://github.com/GWCustom/nfc-hello-world).
+* **Hello World App**: Offers a minimalistic example to quickly grasp the basic integration concepts between Nextflow, B-Fabric, and Redis job queues. The source code is available in the [nfc-hello-world GitHub repository](https://github.com/GWCustom/nfc-hello-world).
 
 
 ---
 
 ### What is Nextflow & NF-Core?
 
-Nextflow is a powerful workflow management system designed for scalable, reproducible computational pipelines. It supports parallel and distributed computing across various environments, including local machines, HPC clusters, and cloud services. NF-Core is a community-driven project that provides standardized Nextflow pipelines adhering to best practices for bioinformatics analysis, covering diverse analyses such as RNA-seq, ATAC-seq, and genome assembly.
+[**Nextflow**](https://www.nextflow.io/docs/latest/index.html) is a powerful workflow management system designed for scalable, reproducible computational pipelines. It supports parallel and distributed computing across various environments, including local machines, HPC clusters, and cloud services.
 
+[**NF-Core**](https://nf-co.re/) is a community-driven project that provides standardized Nextflow pipelines adhering to best practices for bioinformatics analysis. It includes workflows for a wide range of use cases, such as RNA-seq, ATAC-seq, and genome assembly.
 
 ---
 
@@ -36,6 +37,8 @@ The app is built using the `bfabric_web_apps` library and follows the [`redis_in
 
 Although this chapter specifically discusses the RNA-seq use case, many elements and structures described here are common across other Nextflow-based applications. The RNA-seq app thus serves as a representative example to illustrate the general structure and implementation patterns of Nextflow applications developed using the `bfabric_web_apps` library.
 
+For the complete source code or a quickstart guide, visit the [RNA-seq app GitHub repository](https://github.com/GWCustom/rnaseq).
+
 
 ---
 
@@ -43,8 +46,7 @@ Although this chapter specifically discusses the RNA-seq use case, many elements
 
 The NF-Core RNA-seq pipeline is a widely used, community-maintained workflow for processing bulk RNA sequencing data. It includes quality control, alignment, quantification, and differential expression analysis using tools such as FastQC, STAR, and DESeq2.
 
-For more details, see the official documentation:
-[https://nf-co.re/rnaseq/3.18.0/](https://nf-co.re/rnaseq/3.18.0/)
+For more details, see the [official documentation](https://nf-co.re/rnaseq/3.18.0/).
 
 ![NF-Core RNA-seq Pipeline Overview](_static/nf-core-rnaseq_metro_map_grey.png)
 
@@ -147,6 +149,12 @@ Once the job is completed, users can expect the following:
 
 * **Workunit Creation**:
   The application logs workunits for job tracking and reproducibility within B-Fabric. This functionality is handled automatically through the `bfabric_web_apps` library configuration.
+
+* **Automatic Charging (if enabled)**:
+  If the user activates the Charge Switch, the application automatically charges the appropriate container using the configured service ID before pipeline execution.
+
+* **Integrated Metadata**:
+  All generated outputs—datasets, resources, and workunits—are fully connected within B-Fabric, ensuring traceability, reproducibility, and integration across the platform.
 
 ---
 

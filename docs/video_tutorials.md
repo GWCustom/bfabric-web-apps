@@ -39,3 +39,4 @@ Subscribe to the channel to receive updates on new tutorials, features, and inno
 ## Available Tutorials
 
 * [Deploying Tutorials](deploying_video_tutorials.md)
+* [Building WebApps](building_webapps_video_tutorials.md)

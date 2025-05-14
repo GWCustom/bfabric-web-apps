@@ -106,6 +106,9 @@ Once submitted, the following outputs are produced:
 * **Report Attachments**
   Reports such as HTML QC summaries can be linked back to the dataset entity.
 
+* **Automatic Charging (if enabled)**:
+  If the user activates the Charge Switch, the application automatically charges the appropriate container using the configured service ID before pipeline execution.
+
 ---
 
 By abstracting the complexity of TSV generation and `sushi_fabric` CLI usage, SushiRunner simplifies the execution of Sushi workflows through a user-friendly, form-based Dash interface — directly integrated with the B-Fabric system.
