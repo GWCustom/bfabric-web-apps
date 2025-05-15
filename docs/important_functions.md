@@ -374,24 +374,24 @@ If you want to explore the implementation of the `flush_logs()` function in more
 L.flush_logs()
 ```
 
-##### Args:  
+#### Args:  
 - None
 
 ---
 
-##### Returns:  
+#### Returns:  
 - None
 
 ---
 
-##### Behavior:  
+#### Behavior:  
 - If there are **pending logs** saved locally, they are flushed with a **single API call** to the backend, reducing the number of individual requests.
 - After a successful flush, the local log storage is cleared.
 - If no logs are pending, the function does nothing and exits immediately.
 
 ---
 
-##### Example
+#### Example
 
 ```python
 # Initialize the logger instance
@@ -489,7 +489,7 @@ wrapper = bfabric_interface.get_wrapper()
 ### Important Considerations
 
 * The wrapper object is **essential** for interacting with the B-Fabric API, and operations such as data queries (`read`) and submissions (`save`) rely on this wrapper.
-* Always ensure the wrapper is initialized by validating the authentication token beforehand. The token validation process happens automatically when using the provided B-Fabric workflow **[`process_url_and_token`](important_functions.md#l#process-url-and-token)**.
+* Always ensure the wrapper is initialized by validating the authentication token beforehand. The token validation process happens automatically when using the provided B-Fabric workflow **[`process_url_and_token`](important_functions.md#3-authentication--token-handling)**.
 
 ---
 
@@ -596,7 +596,7 @@ bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "my_email@my_domain.com"
 
 This change ensures that bug reports are redirected to your preferred email address instead of the default FGCZ system queue.
 
-For further details on modifying global variables, refer to [Chapter 7: Dynamic Variable Configuration](#dynamic-variable-configuration).
+For further details on modifying global variables, refer to the chapter [Global Variables](global_variables.md).
 
 ---
 
