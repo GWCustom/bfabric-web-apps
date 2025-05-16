@@ -211,6 +211,8 @@ def save_files_from_bytes(files_as_byte_strings: dict, logger):
     for destination, file_bytes in files_as_byte_strings.items():
         try:
             # Write file from byte string
+            if destination.startswith("~"): 
+                destination = os.path.expanduser(destination)
             with open(destination, "+wb") as f:
                 f.write(file_bytes)
             logger.log_operation("File saved | ORIGIN: run_main_job function", f"File {destination} saved successfully.", params=None, flush_logs=True)
