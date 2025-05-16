@@ -82,3 +82,16 @@ html[data-theme="dark"] code {
     max-height: 35px;
     width: auto;
 }
+
+.sidebar-item {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    position: relative;
+  }
+  
+  .sidebar-nav {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }

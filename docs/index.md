@@ -6,17 +6,61 @@
 
 ## Overview
 
-Built to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_apps** simplifies the development of web applications that interact with B-Fabric. Using a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending B-Fabric with satellite applications.
+This library is written using [Python Dash](https://dash.plotly.com/) as a front-end interface for building WebApps. **bfabric_web_apps** simplifies the development of web applications that interact with B-Fabric. Using a **template-based approach**, it standardizes common patterns, streamlines development, and provides a modular foundation for extending B-Fabric with satellite applications.
 
-### Key Features
+---
 
-- **Seamless B-Fabric Integration**  
-  - **Token Management** – Securely handle authentication tokens for API access.  
-  - **Entity Data Handling** – Retrieve, modify, and update B-Fabric entities dynamically.  
-  - **Integrated Logging** – Track API calls, application events, and errors for debugging and auditing.  
+## Key Features
 
-- **Prebuilt UI Components & Layouts**  
-  - Utilize **predefined Dash components, layouts, and callbacks** to accelerate development, maintain consistency, and enhance user experience.
+### Seamless B-Fabric Integration
+
+* **Token Management**
+  Securely handle authentication tokens to enable user sessions and API access.
+
+* **Entity Data Management**
+  Dynamically retrieve, update, and manage B-Fabric entities in your application.
+
+* **Application Management**
+  Register and manage applications in B-Fabric.
+
+* **Integrated Job Logging**
+  Capture job activity, command execution, and application-specific events out of the box.
+
+* **Automatic Charging**
+  Bill resource usage to the appropriate project containers through an integrated charge switch.
+
+---
+
+### Generalized Workflow Support
+
+* **Resource Creation**
+  Automatically generate and register B-Fabric resources (e.g., text files, reports, output folders).
+
+* **Workunit Creation**
+  Easily define and create workunits programmatically during job submission.
+
+* **Report and Link Creation**
+  Attach HTML reports or downloadable files directly to B-Fabric entities.
+
+---
+
+### Pipeline Execution Wrapper
+
+* **`run_main_job()` Function**
+  Generic wrapper for executing Bash-based workflows, saving files, creating resources, and logging execution steps. Includes support for Redis queue submission and remote processing.
+
+---
+
+### UI Framework & Developer Utilities
+
+* **Prebuilt Dash Components and Layouts**
+  Leverage boilerplate UIs, layout helpers, and responsive components to accelerate app development and ensure consistency across apps.
+
+* **Callback Templates**
+  Ready-to-use callbacks for modals, alerts, authentication logic, and submission actions.
+
+* **Bug Reporting Integration**
+  Automatically send bug reports to a specified email address when a submission fails or throws an exception.
 
 ---
 
@@ -30,21 +74,54 @@ Built to work seamlessly with [Dash](https://dash.plotly.com/), **bfabric_web_ap
 To see the **full source code** or to **contribute**, visit the main GitHub repository:  
 [**bfabric_web_apps**](https://github.com/GWCustom/bfabric-web-apps)
 
-
 ---
 
-## Quickstart 
+## Quickstart
 
 Developers can hit the ground running with the **[bfabric_web_app_template](https://github.com/GWCustom/bfabric-web-app-template)**, a **ready-made** project that demonstrates how to configure and deploy a `bfabric_web_apps` application end-to-end. It includes:
 
-- **Preconfigured layout** using Dash and Bootstrap.  
-- **Authentication flow** for B-Fabric.  
-- **Examples** of logging, API interaction, and entity handling.
-
-By combining the **template** with the **bfabric_web_apps** library, you’ll have a **flexible**, **scalable** starting point for **building custom web apps** that tap into B-Fabric’s powerful capabilities.
+- **Preconfigured layout** using Dash and Bootstrap  
+- **Authentication flow** for B-Fabric  
+- **Examples** of logging, API interaction, and entity handling  
 
 > Alternatively, if you want to get started quickly, you can find a simple template example here:  
 > **[Basic Usage Example](https://github.com/GWCustom/bfabric-web-apps/blob/main/README.md#Basic-Usage-Example)**
+
+---
+
+## Learn by Watching
+
+If you prefer learning by video, check out our dedicated **[Video Tutorials](video_tutorials.md)** section.
+It includes step-by-step deployment guides, use case walkthroughs, and insights into best practices using `bfabric_web_apps`.
+
+---
+
+## Templates
+
+The [bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template) repository provides a flexible foundation for building Dash applications that integrate with B-Fabric using the `bfabric_web_apps` library. It includes three preconfigured templates suited for different levels of complexity:
+
+* [Minimal Template](index_basic_py.md) – A minimal template for simple apps
+* [Full-Featured Template](index_py.md) – A full-featured template for complex applications
+* [Redis Template](index_redis.md) – A template specifically designed for using Redis queues
+
+All templates follow a shared structure built around three core components: collecting user input, retrieving metadata from B-Fabric, and triggering workflow execution. This modular design promotes consistency and reusability across applications.
+
+To get started with the templates, please refer to the **[Template Usage section](usage.md)**.
+
+---
+
+## Use Cases
+
+The bfabric_web_apps library has been successfully used to build multiple proof-of-concept applications. The following chapters provide detailed examples of how bfabric_web_apps can be used in practice:
+
+```{note}
+**Work in Progress**  
+The following use case chapters are currently under construction and not yet complete. Content will be added and refined continuously to better showcase applications built with the bfabric_web_apps library.
+```
+
+* **[Nextflow](nextflow_use_case.md)** – Demonstrates how to run a large-scale Nextflow pipeline like RNA-seq via a fully integrated Dash interface using bfabric_web_apps.
+* **[SUSHI Apps](sushi_use_case.md)** – Showcases an application wrapper for Sushi applications via B-Fabric that enables flexible job configuration and execution through the Sushi backend.
+
 ---
 
 ## What Is B-Fabric?
@@ -73,9 +150,10 @@ For more details, refer to the [Dash official documentation](https://dash.plotly
 
 ---
 
-### Useful Links:
+## Useful Links:
 - **bfabric_web_apps**: [bfabric-web-apps](https://github.com/GWCustom/bfabric-web-apps)  
 - **Template App**: [bfabric-web-app-template](https://github.com/GWCustom/bfabric-web-app-template)  
+- **Redis Docs**: [Redis Template](https://redis.io/docs/latest/)  
 - **BfabricPy**: [BfabricPy GitHub](https://github.com/fgcz/bfabricPy/tree/main)  
 - **Dash Docs**: [Dash Documentation](https://dash.plotly.com/)  
 - **Dash Bootstrap Components**: [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/)  

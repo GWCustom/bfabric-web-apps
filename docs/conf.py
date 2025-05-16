@@ -29,20 +29,16 @@ html_theme = 'pydata_sphinx_theme'
 
 # Theme options for PyData
 html_theme_options = {
-    "logo": {
-        "image_light": "_static/logo_light.png",
-        "image_dark": "_static/logo_dark.png",
-    },
     "navbar_end": ["theme-switcher"],
     "use_edit_page_button": False,
     "show_toc_level": 2,  # Reduce TOC depth to avoid long lists
     "secondary_sidebar_items": ["page-toc"],  # Custom sidebar items
     "pygments_light_style": "xcode",
     "pygments_dark_style": "github-dark",
-    "default_mode": "dark",
     "show_nav_level": 0,
 }
 
+myst_heading_anchors = 3  # erzeugt IDs für alle Überschriften bis Ebene 3
 
 # Add static path for logos and additional static files
 html_static_path = ['_static', '_images']

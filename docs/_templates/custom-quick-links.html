@@ -3,14 +3,41 @@
   <ul class="sidebar-nav" style="overflow: visible; height: auto; max-height: none;">
     <li><a href="{{ pathto('index') }}">Introduction</a></li>
     <li><a href="{{ pathto('installation') }}">Installation Guide</a></li>
-    <li><a href="{{ pathto('bfabric_web_apps_functions') }}">Library Docs</a></li>
+
     <li>
-      <a href="{{ pathto('usage') }}">Template Usage</a>
-      <ul style="overflow: visible; height: auto; max-height: none;">
-        <li><a href="{{ pathto('installation_template') }}">Template Deployment Guide</a></li>
-        <li><a href="{{ pathto('index_py') }}">Full-Featured Template</a></li>
-        <li><a href="{{ pathto('index_basic_py') }}">Minimal Template</a></li>
+      <a href="{{ pathto('bfabric_web_apps_functions') }}">Library Docs</a>
+      <ul>
+        <li><a href="{{ pathto('global_variables') }}">Global Variables</a></li>
+        <li><a href="{{ pathto('important_components') }}">Important Components</a></li>
+        <li><a href="{{ pathto('important_functions') }}">Important Functions</a></li>
       </ul>
     </li>
+
+    <li>
+      <a href="{{ pathto('usage') }}">Template Usage</a>
+      <ul>
+        <li><a href="{{ pathto('installation_template') }}">Template Deployment Guide</a></li>
+        <li><a href="{{ pathto('index_basic_py') }}">Minimal Template</a></li>
+        <li><a href="{{ pathto('index_py') }}">Full-Featured Template</a></li>
+        <li><a href="{{ pathto('index_redis') }}">Redis Template</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="{{ pathto('use_case') }}">Use Case</a>
+      <ul>
+        <li><a href="{{ pathto('nextflow_use_case') }}">Nextflow Use Case</a></li>
+        <li><a href="{{ pathto('sushi_use_case') }}">Sushi Use Case</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="{{ pathto('video_tutorials') }}">Video Tutorials</a>
+      <ul>
+        <li><a href="{{ pathto('deploying_video_tutorials') }}">Deploying Tutorials</a></li>
+        <li><a href="{{ pathto('building_webapps_video_tutorials') }}">Building WebApps</a></li>
+      </ul>
+    </li>
+
   </ul>
 </div>
