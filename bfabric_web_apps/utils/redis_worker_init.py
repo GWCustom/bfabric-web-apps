@@ -20,15 +20,25 @@ def keepalive_ping(conn, interval=60):
             print("Redis keepalive ping failed:", e)
         time.sleep(interval)
 
-def run_worker(host, port, queue_names):
+def run_worker(host, port, queue_names, username=None, password=None):
     """
     Starts an RQ worker with a background Redis keepalive thread to prevent Azure from dropping idle connections.
     """
-    conn = redis.Redis(
-        host=host,
-        port=port,
-        socket_keepalive=True
-    )
+
+    if username and password:
+        conn = redis.Redis(
+            host=host,
+            port=port,
+            username=username,
+            password=password,
+            socket_keepalive=True
+        )
+    else:
+        conn = redis.Redis(
+            host=host,
+            port=port,
+            socket_keepalive=True
+        )
 
     # Start Redis keepalive thread
     threading.Thread(target=keepalive_ping, args=(conn,), daemon=True).start()
