@@ -1,10 +1,14 @@
 from pydantic_settings import BaseSettings
 from pydantic import EmailStr
+from typing import Optional
 
 class Settings(BaseSettings):
 
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
+    
+    REDIS_USERNAME: Optional[str] = None
+    REDIS_PASSWORD: Optional[str] = None
 
     CONFIG_FILE_PATH: str = "~/.bfabricpy.yml"
 
