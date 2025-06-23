@@ -65,28 +65,6 @@ from generic.components import no_auth
 * The **`generic`** folder is a **core system component** and **must not be modified**. It contains shared files that handle authentication, layout, and integration with B-Fabric. Any changes may break app functionality or system compatibility.
 * **All customization** should be done in **`index_large.py`**, **`index_redis.py`**, or **`index_basic.py`**.
 ```
----
-
-## Setting Up Global Variables
-
-This section defines global configuration settings required by the `bfabric_web_apps` library.
-
-```python
-bfabric_web_apps.CONFIG_FILE_PATH = "~/.bfabricpy.yml"
-bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "griffin@gwcustom.com"
-bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "gwtools@fgcz.system"
-```
-
-### Explanation
-
-- **CONFIG_FILE_PATH** – Defines the location of the **B-Fabric configuration file**.  
-  - **Default:** "~/.bfabricpy.yml"
-- **DEVELOPER_EMAIL_ADDRESS** – Specifies the developer's contact email for support.  
-  - **Default:** "griffin@gwcustom.com"
-- **BUG_REPORT_EMAIL_ADDRESS** – Sets the email where bug reports are sent.  
-  - **Default:** "gwtools@fgcz.system"
-
-For more details about these global variables, please refer to the chapter **[Global Variables](global_variables.md)**.
 
 ---
 

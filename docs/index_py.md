@@ -87,28 +87,6 @@ from generic.components import no_auth
 
 ---
 
-## Setting Up Default Configuration
-
-The application uses **global variables** in bfabric_web_apps to define important **default configuration values**.  
-
-```python
-bfabric_web_apps.CONFIG_FILE_PATH = "~/.bfabricpy.yml"
-bfabric_web_apps.DEVELOPER_EMAIL_ADDRESS = "griffin@gwcustom.com"
-bfabric_web_apps.BUG_REPORT_EMAIL_ADDRESS = "gwtools@fgcz.system"
-```
-
-### Explanation
-- **CONFIG_FILE_PATH** – Defines the location of the **B-Fabric configuration file**.  
-  - **Default:** "~/.bfabricpy.yml"
-- **DEVELOPER_EMAIL_ADDRESS** – Specifies the developer's contact email for support.  
-  - **Default:** "griffin@gwcustom.com"
-- **BUG_REPORT_EMAIL_ADDRESS** – Sets the email where bug reports are sent.  
-  - **Default:** "gwtools@fgcz.system"
-
-
-For more details, refer to the **[Global Configuration Variables](bfabric_web_apps_functions.md#dynamic-variable-configuration)** chapter.
-
----
 
 ## Defining the Sidebar  
 
