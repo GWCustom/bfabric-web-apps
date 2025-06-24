@@ -144,7 +144,7 @@ Token data includes session-specific metadata like the authenticated user, app I
 
 | Key                       | Description                                     |
 | ------------------------- | ----------------------------------------------- |
-| `environment`             | Deployment environment (e.g., Test, Production) |
+| `environment`             | Deployment environment (e.g., test, production) |
 | `user_data`               | Username associated with the token              |
 | `token_expires`           | Expiry timestamp of the session token           |
 | `entity_id_data`          | ID of the selected entity (usually a dataset)   |

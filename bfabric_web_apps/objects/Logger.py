@@ -18,7 +18,7 @@ class Logger:
         Args:
             jobid (int): The ID of the current job.
             username (str): The name of the user performing the operations.
-            environment (str): The environment (e.g., Production, Test).
+            environment (str): The environment (e.g., production, test).
         """
         self.jobid = jobid
         self.username = username

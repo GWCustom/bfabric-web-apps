@@ -53,6 +53,8 @@ def process_url_and_token(url_params):
         ) if tdata else "Bfabric App Interface"
 
         environment = tdata.get("environment", "").strip().lower()  # 'test' or 'prod'
+        tdata["environment"] = environment.lower()
+
         job_id = tdata.get("jobId", None)  # Extract job ID
 
         job_link = None
@@ -113,8 +115,6 @@ def submit_bug_report(n_clicks, bug_description, token, entity_data):
         token_data = json.loads(bfabric_interface.token_to_data(token))
     else:
         token_data = {}
-
-    print(token_data)
 
     # Extract logging-related information from token_data, with defaults for missing values
     jobId = token_data.get('jobId', None)
@@ -184,8 +184,8 @@ def populate_workunit_details(token_data):
     """
 
     environment_urls = {
-        "Test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
-        "Production": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
+        "test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
+        "production": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
     }
 
     if token_data:
@@ -223,7 +223,7 @@ def populate_workunit_details(token_data):
                         html.P(f"Status: {wu.get('status', 'n/a')}")
                     ])
                 ], style={"width": "400px", "margin":"10px"}),
-                href=environment_urls[token_data.get("environment", "Test")] + str(wu["id"]),
+                href=environment_urls[token_data.get("environment", "test")] + str(wu["id"]),
                 target="_blank",
                 style={"text-decoration": "none"}
             )
