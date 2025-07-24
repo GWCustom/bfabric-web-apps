@@ -9,8 +9,10 @@ from bfabric_web_apps.utils.get_logger import get_logger
 import os
 import bfabric_web_apps
 
-VALIDATION_URL = "https://fgcz-bfabric.uzh.ch/bfabric/rest/token/validate?token="
-HOST = "fgcz-bfabric.uzh.ch"
+from bfabric_web_apps.utils.config import settings
+
+HOST = settings.PRODUCTION_BFABRIC_DOMAIN
+VALIDATION_URL = f"https://{HOST}/bfabric/rest/token/validate?token="
 
 class BfabricInterface( Bfabric ):
     _instance = None  # Singleton instance
@@ -89,7 +91,11 @@ class BfabricInterface( Bfabric ):
                 return "EXPIRED"
             
             envioronment_name = str(userinfo['environment']).strip().lower()
-            environment_dict = {"production":"https://fgcz-bfabric.uzh.ch/bfabric","prod":"https://fgcz-bfabric.uzh.ch/bfabric","test":"https://fgcz-bfabric-test.uzh.ch/bfabric"}
+            environment_dict = {
+                "production":f"https://{settings.PRODUCTION_BFABRIC_DOMAIN}/bfabric",
+                "prod":f"https://{settings.PRODUCTION_BFABRIC_DOMAIN}/bfabric",
+                "test":f"https://{settings.TEST_BFABRIC_DOMAIN}/bfabric"
+            }
             
             token_data = dict(
                 environment = userinfo['environment'],
