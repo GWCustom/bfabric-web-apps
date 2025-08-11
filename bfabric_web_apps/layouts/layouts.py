@@ -81,9 +81,25 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                         style={"font-size": "40px", "margin-left": "20px", "margin-top": "10px"}
                                     ),
 
-                                    # View Logs Button (Aligned Right)
+                                    # Buttons B-Fabric Entity + View Logs
                                     html.Div(
                                         children=[
+                                            html.A(
+                                                dbc.Button(
+                                                    "B-Fabric Entity",
+                                                    id="bfabric-entity-button",
+                                                    color="secondary",
+                                                    style={
+                                                        "font-size": "18px",
+                                                        "padding": "10px 20px",
+                                                        "border-radius": "8px",
+                                                        "margin-right": "10px"
+                                                    }
+                                                ),
+                                                id="bfabric-entity-link",
+                                                href="#",  # Will be dynamically set in the callback
+                                                target="_blank"
+                                            ),
                                             html.A(
                                                 dbc.Button(
                                                     "View Logs",
@@ -98,12 +114,14 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                                 id="dynamic-link",
                                                 href="#",  # Will be dynamically set in the callback
                                                 target="_blank"
-                                            )
+                                            ),
                                         ],
                                         style={
                                             "position": "absolute",
                                             "right": "20px",
-                                            "top": "10px",  # Aligns with title
+                                            "top": "10px",
+                                            "display": "flex",
+                                            "align-items": "center"
                                         }
                                     ),
                                 ],

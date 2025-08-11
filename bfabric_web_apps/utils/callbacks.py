@@ -25,22 +25,23 @@ def process_url_and_token(url_params):
                - page_title (str): Title for the page header.
                - session_details (list): HTML-formatted session details.
                - job_link (str): Dynamically generated link to the job page.
+               - entity_link (str): Link to the B-Fabric entity page.
     """
     base_title = " "
 
     if not url_params:
-        return None, None, None, None, base_title, None, None
+        return None, None, None, None, base_title, None, None, None
 
     token = "".join(url_params.split('token=')[1:])
     tdata_raw = bfabric_interface.token_to_data(token)
 
     if tdata_raw:
         if tdata_raw == "EXPIRED":
-            return None, None, None, None, base_title, None, None
+            return None, None, None, None, base_title, None, None, None
         else:
             tdata = json.loads(tdata_raw)
     else:
-        return None, None, None, None, base_title, None, None
+        return None, None, None, None, base_title, None, None, None
 
     if tdata:
         entity_data_json = bfabric_interface.entity_data(tdata)
@@ -55,14 +56,24 @@ def process_url_and_token(url_params):
         environment = tdata.get("environment", "").strip().lower()  # 'test' or 'prod'
         tdata["environment"] = environment.lower()
 
+
+        # Build B-Fabric entity link
+        entity_link = None
+        base_url = tdata.get("webbase_data")  # e.g. https://fgcz-bfabric-test.uzh.ch/bfabric
+        eclass = (tdata.get("entityClass_data").lower()) # Get the entity class name (e.g., "Plate")
+        eid = tdata.get("entity_id_data") # Get the entity ID (e.g., 5044)
+
+        if base_url and eclass and eid:
+            entity_link = f"{base_url}/{str(eclass)}/show.html?id={eid}&tab=details"
+
+
+        # Build job link if job ID is available
         job_id = tdata.get("jobId", None)  # Extract job ID
 
         job_link = None
-        if job_id:
-            if "test" in environment:
-                job_link = f"https://fgcz-bfabric-test.uzh.ch/bfabric/job/show.html?id={job_id}&tab=details"
-            else:
-                job_link = f"https://fgcz-bfabric.uzh.ch/bfabric/job/show.html?id={job_id}&tab=details"
+        if job_id and base_url:
+            job_link = f"{base_url}/job/show.html?id={job_id}&tab=details"
+
 
         session_details = [
             html.P([
@@ -88,9 +99,9 @@ def process_url_and_token(url_params):
             ])
         ]
 
-        return token, tdata, entity_data, app_data, page_title, session_details, job_link
+        return token, tdata, entity_data, app_data, page_title, session_details, job_link, entity_link
     else:
-        return None, None, None, None, base_title, None, None
+        return None, None, None, None, base_title, None, None, None
 
 
 def submit_bug_report(n_clicks, bug_description, token, entity_data):
