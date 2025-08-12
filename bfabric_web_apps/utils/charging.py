@@ -2,7 +2,7 @@
 from bfabric_web_apps.utils.get_logger import get_logger
 from bfabric_web_apps.utils.get_power_user_wrapper import get_power_user_wrapper
 
-def create_charge(token_data, container_id, service_id):
+def create_charge(token_data, container_id, service_id, n_charges=1):
     """
     Create a charge in B-Fabric.
     
@@ -10,6 +10,7 @@ def create_charge(token_data, container_id, service_id):
         token_data (dict): Authentication token data.
         container_id (int): Container ID (Order ID).
         service_id (int): Service ID.
+        n_charges (int): Number of total charges. Default is 1.
     
     Returns:
         list[dict]: List of charge data.
@@ -26,6 +27,7 @@ def create_charge(token_data, container_id, service_id):
         "serviceid": service_id,
         "containerid": container_id,
         "chargerid": usr_id
+        "total": str(n_charges),
     }
 
     # Create and log the charge
