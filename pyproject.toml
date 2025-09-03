@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bfabric-web-apps"
-version = "0.1.6"
+version = "0.2.3"
 description = "A package containing handy boilerplate utilities for developing bfabric web-applications"
 authors = ["Marc Zuber, Griffin White, GWC GmbH"]
 
