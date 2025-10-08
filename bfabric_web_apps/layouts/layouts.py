@@ -37,7 +37,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
             dbc.Col(
                 html.Div(
                     children=[
-                        # Page Title (left)
+                        # Page Title (Aligned Left)
                         html.P(
                             id="page-title",
                             children=[str(" ")],
@@ -143,80 +143,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                         ),
                     ),
 
-                    # Page Title Section + View Logs Button (Aligned Right)
-<<<<<<< HEAD
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                children=[
-                                    # Page Title (Aligned Left)
-                                    html.P(
-                                        id="page-title",
-                                        children=[str(" ")],
-                                        style={"font-size": "40px", "margin-left": "20px", "margin-top": "10px"}
-                                    ),
-
-                                    # Buttons B-Fabric Entity + View Logs
-                                    html.Div(
-                                        children=[
-                                            html.A(
-                                                dbc.Button(
-                                                    "B-Fabric Entity",
-                                                    id="bfabric-entity-button",
-                                                    color="secondary",
-                                                    style={
-                                                        "font-size": "18px",
-                                                        "padding": "10px 20px",
-                                                        "border-radius": "8px",
-                                                        "margin-right": "10px"
-                                                    }
-                                                ),
-                                                id="bfabric-entity-link",
-                                                href="#",  # Will be dynamically set in the callback
-                                                target="_blank"
-                                            ),
-                                            html.A(
-                                                dbc.Button(
-                                                    "View Logs",
-                                                    id="dynamic-link-button",
-                                                    color="secondary",  # Greyish color
-                                                    style={
-                                                        "font-size": "18px",
-                                                        "padding": "10px 20px",
-                                                        "border-radius": "8px"
-                                                    }
-                                                ),
-                                                id="dynamic-link",
-                                                href="#",  # Will be dynamically set in the callback
-                                                target="_blank"
-                                            ),
-                                        ],
-                                        style={
-                                            "position": "absolute",
-                                            "right": "20px",
-                                            "top": "10px",
-                                            "display": "flex",
-                                            "align-items": "center"
-                                        }
-                                    ),
-                                ],
-                                style={
-                                    "position": "relative",  # Ensures absolute positioning works
-                                    "margin-top": "0px",
-                                    "min-height": "80px",
-                                    "height": "6vh",
-                                    "border-bottom": "2px solid #d4d7d9",
-                                    "display": "flex",
-                                    "align-items": "center",
-                                    "justify-content": "space-between",  # Title left, button right
-                                    "padding-right": "20px"  # Space between button & right edge
-                                }
-                            ),
-                        ),
-                    ),
-=======
                     header_row, 
->>>>>>> fe144ce (added small parameterization of header inclusion)
 
                     # Bug Report Alerts (Restored)
                     dbc.Row(

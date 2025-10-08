@@ -30,7 +30,7 @@ from .utils.callbacks import (
 
 from .utils.config import settings as config
 
-from. utils.run_main_pipeline import run_main_job, read_file_as_bytes
+from .utils.run_main_pipeline import run_main_job, read_file_as_bytes
 
 from .utils.resource_utilities import (
     create_workunit, 

@@ -26,7 +26,7 @@ def create_charge(token_data, container_id, service_id, n_charges=1):
     charge_data = {
         "serviceid": service_id,
         "containerid": container_id,
-        "chargerid": usr_id
+        "chargerid": usr_id,
         "total": str(n_charges),
     }
 

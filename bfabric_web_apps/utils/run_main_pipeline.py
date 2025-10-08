@@ -74,7 +74,7 @@ def run_main_job(
     """
 
     # STEP 0: Parse token, logger, etc.
-    token, token_data, entity_data, app_data, page_title, session_details, job_link = process_url_and_token(token)
+    token, token_data, entity_data, app_data, page_title, session_details, job_link, bfabric_entity_link = process_url_and_token(token)
 
     if token is None:
         raise ValueError("Error: 'token' is None")
