@@ -51,7 +51,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                     dbc.Button(
                                         "B-Fabric Entity",
                                         id="bfabric-entity-button",
-                                        color="secondary",
+                                        color="secondary", # Greyish color
                                         style={
                                             "font-size": "18px",
                                             "padding": "10px 20px",
@@ -75,29 +75,29 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                         }
                                     ),
                                     id="dynamic-link",
-                                    href="#",  # will be set in the Callback
+                                    href="#",  # Will be dynamically set in the callback
                                     target="_blank"
                                 ),
                             ],
                             style={
                                 "position": "absolute",
                                 "right": "20px",
-                                "top": "10px",
+                                "top": "10px", # Aligns with title
                                 "display": "flex",
                                 "align-items": "center"
                             }
                         ),
                     ],
                     style={
-                        "position": "relative",
+                        "position": "relative", # Ensures absolute positioning works
                         "margin-top": "0px",
                         "min-height": "80px",
                         "height": "6vh",
                         "border-bottom": "2px solid #d4d7d9",
                         "display": "flex",
                         "align-items": "center",
-                        "justify-content": "space-between",
-                        "padding-right": "20px"
+                        "justify-content": "space-between", # Title left, button right
+                        "padding-right": "20px" # Space between button & right edge
                     }
                 ),
             ),
@@ -142,7 +142,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                             ),
                         ),
                     ),
-
+                    # Page Title Section + View Logs Button (Aligned Right)
                     header_row, 
 
                     # Bug Report Alerts (Restored)
