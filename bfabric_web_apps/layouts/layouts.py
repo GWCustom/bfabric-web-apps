@@ -77,7 +77,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                     id="dynamic-link",
                                     href="#",  # Will be dynamically set in the callback
                                     target="_blank"
-                                ),
+                                )
                             ],
                             style={
                                 "position": "absolute",
