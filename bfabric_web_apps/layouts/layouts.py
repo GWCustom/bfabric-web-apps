@@ -67,7 +67,7 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                     dbc.Button(
                                         "View Logs",
                                         id="dynamic-link-button",
-                                        color="secondary",
+                                        color="secondary",  # Greyish color
                                         style={
                                             "font-size": "18px",
                                             "padding": "10px 20px",
@@ -82,22 +82,22 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                             style={
                                 "position": "absolute",
                                 "right": "20px",
-                                "top": "10px", # Aligns with title
+                                "top": "10px",  # Aligns with title
                                 "display": "flex",
                                 "align-items": "center"
                             }
                         ),
                     ],
                     style={
-                        "position": "relative", # Ensures absolute positioning works
+                        "position": "relative",  # Ensures absolute positioning works
                         "margin-top": "0px",
                         "min-height": "80px",
                         "height": "6vh",
                         "border-bottom": "2px solid #d4d7d9",
                         "display": "flex",
                         "align-items": "center",
-                        "justify-content": "space-between", # Title left, button right
-                        "padding-right": "20px" # Space between button & right edge
+                        "justify-content": "space-between",  # Title left, button right
+                        "padding-right": "20px"  # Space between button & right edge
                     }
                 ),
             ),
