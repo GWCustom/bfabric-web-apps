@@ -6,6 +6,9 @@ import subprocess
 from pathlib import Path
 import time
 from collections import defaultdict
+import signal
+import sys
+import atexit
 
 from .get_logger import get_logger
 from .get_power_user_wrapper import get_power_user_wrapper
@@ -85,108 +88,158 @@ def run_main_job(
     if app_data is None:
         raise ValueError("Error: 'app_data' is None")
     
-    
     L = get_logger(token_data)
     print("Token Data:", token_data)
     print("Entity Data:", entity_data)
     print("App Data:", app_data)
-     
 
-    # Step 1: Save files to the server
+    job_id = token_data.get("jobId", None)
+    set_job_status(token_data, job_id, "running")
+    job_status = "running"
+
+    # # A small flag dictionary to remember if the job finished successfully.
+    # # We use a dict (instead of a plain variable) so it can be modified inside nested functions.
+    # finished = {"ok": False}
+
+    # # This helper function is called when the program ends or gets interrupted.
+    # # It checks if the job finished cleanly; if not, it updates the job status in B-Fabric to "failed".
+    # def mark_failed_if_needed():
+    #     # Only mark as failed if the job didn’t already complete successfully
+    #     if not finished["ok"]:
+    #         set_job_status(token_data, job_id, "failed")
+
+    # # Handle "stop" signals from the operating system
+    # # When the system or user sends a stop signal (like Ctrl+C or worker shutdown),
+    # # Python will call our "handle_stop" function before stopping the program.
+    # def handle_stop(signal_number, frame):
+    #     """
+    #     Called automatically when the process receives a stop signal.
+    #     """
+    #     mark_failed_if_needed()   # mark job as failed if not done
+    #     sys.exit(1)               # exit immediately with error code 1 ("something went wrong")
+
+
+    # # Connect our handler to two common stop signals:
+    # #   SIGTERM = normal termination request (e.g. from system or worker)
+    # #   SIGINT  = interrupt (e.g. pressing Ctrl+C)
+    # signal.signal(signal.SIGTERM, handle_stop)
+    # signal.signal(signal.SIGINT, handle_stop)
+
+
     try:
-        summary = save_files_from_bytes(files_as_byte_strings, L)
-        L.log_operation("Success | ORIGIN: run_main_job function", f"File copy summary: {summary}", params=None, flush_logs=True)
-        print("Summary:", summary)
+        # Step 1: Save files to the server
+        try:
+            summary = save_files_from_bytes(files_as_byte_strings, L)
+            L.log_operation("Success | ORIGIN: run_main_job function", f"File copy summary: {summary}", params=None, flush_logs=True)
+            print("Summary:", summary)
+            
+        except Exception as e:
+            # If something unexpected blows up the entire process
+            job_status = "failed"
+            L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to copy files: {e}", params=None, flush_logs=True)
+            print("Error copying files:", e)
+
         
-    except Exception as e:
-        # If something unexpected blows up the entire process
-        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to copy files: {e}", params=None, flush_logs=True)
-        print("Error copying files:", e)
-
-    
-    # STEP 2: Execute bash commands
-    try:
-        bash_log = execute_and_log_bash_commands(bash_commands)
-        L.log_operation("Success | ORIGIN: run_main_job function", f"Bash commands executed success | origin: run_main_job functionfully:\n{bash_log}", 
-                        params=None, flush_logs=True)
-    except Exception as e:
-        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to execute bash commands: {e}", 
-                        params=None, flush_logs=True)
-        print("Error executing bash commands:", e)
+        # STEP 2: Execute bash commands
+        try:
+            bash_log = execute_and_log_bash_commands(bash_commands)
+            L.log_operation("Success | ORIGIN: run_main_job function", f"Bash commands executed success | origin: run_main_job functionfully:\n{bash_log}", 
+                            params=None, flush_logs=True)
+        except Exception as e:
+            job_status = "failed"
+            L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to execute bash commands: {e}", 
+                            params=None, flush_logs=True)
+            print("Error executing bash commands:", e)
 
 
-    # STEP 3: Create Workunits
-    try:
-        workunit_map, workunit_container_map = create_workunits_step(token_data, app_data, resource_paths, L)
-    except Exception as e:
-        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create workunits in B-Fabric: {e}", 
-                        params=None, flush_logs=True)
-        print("Error creating workunits:", e)
-        workunit_map = []
+        # STEP 3: Create Workunits
+        try:
+            workunit_map, workunit_container_map = create_workunits_step(token_data, app_data, resource_paths, L)
+        except Exception as e:
+            job_status = "failed"
+            L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create workunits in B-Fabric: {e}", 
+                            params=None, flush_logs=True)
+            print("Error creating workunits:", e)
+            workunit_map = {}
 
 
-    # STEP 4: Create Dataset
-    if dataset_dict:
-        for container_id, dataset_data in dataset_dict.items():
+        # STEP 4: Create Dataset
+        if dataset_dict:
+            for container_id, dataset_data in dataset_dict.items():
 
-            dataset_name = f'Dataset - {str(app_data.get("name", "Unknown App"))} - Container {container_id}'
-            linked_workunit_id = workunit_container_map.get(str(container_id), None)
+                dataset_name = f'Dataset - {str(app_data.get("name", "Unknown App"))} - Container {container_id}'
+                linked_workunit_id = workunit_container_map.get(str(container_id), None)
 
-            try:
-                dataset = dictionary_to_dataset(dataset_data, dataset_name, container_id, DATASET_TEMPLATE_ID, linked_workunit_id)
-                dataset = create_dataset(token_data, dataset)
-                L.log_operation("Success | ORIGIN: run_main_job function", f'Dataset {dataset.get("id", "Null")} created successfully for container {container_id}', params=None, flush_logs=True)
-                print(f"Dataset created successfully for container {container_id}")
-            except Exception as e:
-                L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create dataset for container {container_id}: {e}", params=None, flush_logs=True)
-                print(f"Error creating dataset for container {container_id}:", e)
-    else:
-        L.log_operation("Info | ORIGIN: run_main_job function", "No dataset creation requested.", params=None, flush_logs=True)
-        print("No dataset creation requested.")
-
-
-    # STEP 5: Register Resources (Refactored)
-    try:
-        attach_resources_to_workunits(token_data, L, workunit_map)
-    except Exception as e:
-        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to register resources: {e}", params=None, flush_logs=True)
-        print("Error registering resources:", e)
-
-    # STEP 6: Attach gstore files (logs, reports, etc.) to B-Fabric entity as a Link
-    try:
-        attach_gstore_files_to_entities_as_link(token_data, L, attachment_paths)
-        print("Attachment Paths:", attachment_paths)
-    except Exception as e:
-        L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to attach extra files: {e}", params=None, flush_logs=True)
-        print("Error attaching extra files:", e)
-
-
-    # STEP 7: Charge the container for the service
-    if charge: 
-        
-        if service_id == 0:
-            print("Service ID not provided. Skipping charge creation.")
-            L.log_operation("Info | ORIGIN: run_main_job function", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
+                try:
+                    dataset = dictionary_to_dataset(dataset_data, dataset_name, container_id, DATASET_TEMPLATE_ID, linked_workunit_id)
+                    dataset = create_dataset(token_data, dataset)
+                    L.log_operation("Success | ORIGIN: run_main_job function", f'Dataset {dataset.get("id", "Null")} created successfully for container {container_id}', params=None, flush_logs=True)
+                    print(f"Dataset created successfully for container {container_id}")
+                except Exception as e:
+                    job_status = "failed"
+                    L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to create dataset for container {container_id}: {e}", params=None, flush_logs=True)
+                    print(f"Error creating dataset for container {container_id}:", e)
         else:
-            container_ids = charge
-            print("Container IDs to charge:", container_ids)
-            if not container_ids:
-                L.log_operation("Error | ORIGIN: run_main_job function", "No container IDs found for charging.", params=None, flush_logs=True)
-                print("Error: No container IDs found for charging.")
-                return
-            for container_id in container_ids:
-                charges = create_charge(token_data, container_id, service_id)
-                charge_id = charges[0].get("id")
-                L.log_operation("Success | ORIGIN: run_main_job function", f"Charge created for container {container_id} with service ID {service_id} and charge id {charge_id}", params=None, flush_logs=False)
-                print(f"Charge created with id {charge_id} for container {container_id} with service ID {service_id}")
-            L.flush_logs()
-    else:
-        L.log_operation("Info | ORIGIN: run_main_job function", "Charge creation skipped.", params=None, flush_logs=True)
-        print("Charge creation skipped.")
-    
-    # Final log message
-    L.log_operation("Success | ORIGIN: run_main_job function", "All steps completed successfully.", params=None, flush_logs=True)
-    print("All steps completed successfully.")
+            L.log_operation("Info | ORIGIN: run_main_job function", "No dataset creation requested.", params=None, flush_logs=True)
+            print("No dataset creation requested.")
+
+
+        # STEP 5: Register Resources (Refactored)
+        try:
+            attach_resources_to_workunits(token_data, L, workunit_map)
+        except Exception as e:
+            job_status = "failed"
+            L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to register resources: {e}", params=None, flush_logs=True)
+            print("Error registering resources:", e)
+
+        # STEP 6: Attach gstore files (logs, reports, etc.) to B-Fabric entity as a Link
+        try:
+            attach_gstore_files_to_entities_as_link(token_data, L, attachment_paths)
+            print("Attachment Paths:", attachment_paths)
+        except Exception as e:
+            job_status = "failed"
+            L.log_operation("Error | ORIGIN: run_main_job function", f"Failed to attach extra files: {e}", params=None, flush_logs=True)
+            print("Error attaching extra files:", e)
+
+
+        # STEP 7: Charge the container for the service
+        if charge: 
+            
+            if service_id == 0:
+                print("Service ID not provided. Skipping charge creation.")
+                L.log_operation("Info | ORIGIN: run_main_job function", "Service ID not provided. Skipping charge creation.", params=None, flush_logs=True)
+            else:
+                container_ids = charge
+                print("Container IDs to charge:", container_ids)
+                if not container_ids:
+                    L.log_operation("Error | ORIGIN: run_main_job function", "No container IDs found for charging.", params=None, flush_logs=True)
+                    print("Error: No container IDs found for charging.")
+                    set_job_status(token_data, job_id, "failed")
+                    return
+                for container_id in container_ids:
+                    charges = create_charge(token_data, container_id, service_id)
+                    charge_id = charges[0].get("id")
+                    L.log_operation("Success | ORIGIN: run_main_job function", f"Charge created for container {container_id} with service ID {service_id} and charge id {charge_id}", params=None, flush_logs=False)
+                    print(f"Charge created with id {charge_id} for container {container_id} with service ID {service_id}")
+                L.flush_logs()
+        else:
+            L.log_operation("Info | ORIGIN: run_main_job function", "Charge creation skipped.", params=None, flush_logs=True)
+            print("Charge creation skipped.")
+        
+        # Final log message
+        if job_status == "running":
+            set_job_status(token_data, job_id, "done")
+            # finished["ok"] = True
+            L.log_operation("Success | ORIGIN: run_main_job function", "All steps completed successfully.", params=None, flush_logs=True)
+            print("All steps completed successfully.")
+        else:
+            set_job_status(token_data, job_id, "failed")
+            L.log_operation("Failed | ORIGIN: run_main_job function", "The Pipline did not run successfully", params=None, flush_logs=True)
+   
+    # It’s the “catch absolutely everything” version of except Exception
+    except BaseException as e:
+        set_job_status(token_data, job_id, "failed")
+        L.log_operation("Error | ORIGIN: run_main_job function", f"Unhandled termination: {e}", params=None, flush_logs=True)
 
 #---------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------
@@ -547,3 +600,14 @@ def read_file_as_bytes(file_path, max_size_mb=400):
         file_as_bytes = f.read()
 
     return file_as_bytes
+
+def set_job_status(token_data, job_id, set_status_to):
+    """
+    Updates the job status in B-Fabric.
+
+    :param token_data: Authentication token data
+    :param job_id: ID of the job to update
+    :param set_status_to: String, e.g. "running", "done", or "failed"
+    """
+    wrapper = get_power_user_wrapper(token_data)
+    wrapper.save("job", {"id": job_id, "status": set_status_to})
