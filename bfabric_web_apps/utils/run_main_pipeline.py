@@ -97,35 +97,6 @@ def run_main_job(
     set_job_status(token_data, job_id, "running")
     job_status = "running"
 
-    # # A small flag dictionary to remember if the job finished successfully.
-    # # We use a dict (instead of a plain variable) so it can be modified inside nested functions.
-    # finished = {"ok": False}
-
-    # # This helper function is called when the program ends or gets interrupted.
-    # # It checks if the job finished cleanly; if not, it updates the job status in B-Fabric to "failed".
-    # def mark_failed_if_needed():
-    #     # Only mark as failed if the job didn’t already complete successfully
-    #     if not finished["ok"]:
-    #         set_job_status(token_data, job_id, "failed")
-
-    # # Handle "stop" signals from the operating system
-    # # When the system or user sends a stop signal (like Ctrl+C or worker shutdown),
-    # # Python will call our "handle_stop" function before stopping the program.
-    # def handle_stop(signal_number, frame):
-    #     """
-    #     Called automatically when the process receives a stop signal.
-    #     """
-    #     mark_failed_if_needed()   # mark job as failed if not done
-    #     sys.exit(1)               # exit immediately with error code 1 ("something went wrong")
-
-
-    # # Connect our handler to two common stop signals:
-    # #   SIGTERM = normal termination request (e.g. from system or worker)
-    # #   SIGINT  = interrupt (e.g. pressing Ctrl+C)
-    # signal.signal(signal.SIGTERM, handle_stop)
-    # signal.signal(signal.SIGINT, handle_stop)
-
-
     try:
         # Step 1: Save files to the server
         try:
@@ -229,7 +200,6 @@ def run_main_job(
         # Final log message
         if job_status == "running":
             set_job_status(token_data, job_id, "done")
-            # finished["ok"] = True
             L.log_operation("Success | ORIGIN: run_main_job function", "All steps completed successfully.", params=None, flush_logs=True)
             print("All steps completed successfully.")
         else:
@@ -241,7 +211,6 @@ def run_main_job(
         set_job_status(token_data, job_id, "failed")
         L.log_operation("Error | ORIGIN: run_main_job function", f"Unhandled termination: {e}", params=None, flush_logs=True)
 
-#---------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------
 
 
