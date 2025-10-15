@@ -132,6 +132,9 @@ This architecture allows for **asynchronous**, **scalable**, and **user-friendly
 7. **Charge Project (Optional)**
    If the Charge Switch is enabled, the selected container is charged using the `create_charge()` function before pipeline execution.
 
+8. **Dataset Creation (Optional)**
+   If a `dataset_dict` is provided, the function creates one dataset in B-Fabric for each container ID.
+   Each dataset is automatically linked to its corresponding workunit.
 ---
 
 ### Expected Output
