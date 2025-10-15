@@ -7,7 +7,7 @@ from bfabric_web_apps.utils.get_logger import get_logger
 from rq import Queue
 from .redis_connection import redis_conn
 from rq.registry import StartedJobRegistry, FailedJobRegistry, FinishedJobRegistry
-
+from bfabric_web_apps.utils.config import settings
 
 def process_url_and_token(url_params):
     """
@@ -32,6 +32,10 @@ def process_url_and_token(url_params):
         return None, None, None, None, base_title, None, None
 
     token = "".join(url_params.split('token=')[1:])
+
+    # TODO: Implement environment spec once implemented in bfabric production
+    # environment = url_params.split('environment=')[1].split('&')[0].strip().lower()
+
     tdata_raw = bfabric_interface.token_to_data(token)
 
     if tdata_raw:
@@ -60,9 +64,9 @@ def process_url_and_token(url_params):
         job_link = None
         if job_id:
             if "test" in environment:
-                job_link = f"https://fgcz-bfabric-test.uzh.ch/bfabric/job/show.html?id={job_id}&tab=details"
+                job_link = f"https://{settings.TEST_BFABRIC_DOMAIN}/bfabric/job/show.html?id={job_id}&tab=details"
             else:
-                job_link = f"https://fgcz-bfabric.uzh.ch/bfabric/job/show.html?id={job_id}&tab=details"
+                job_link = f"https://{settings.PRODUCTION_BFABRIC_DOMAIN}/bfabric/job/show.html?id={job_id}&tab=details"
 
         session_details = [
             html.P([
@@ -184,8 +188,8 @@ def populate_workunit_details(token_data):
     """
 
     environment_urls = {
-        "test": "https://fgcz-bfabric-test.uzh.ch/bfabric/workunit/show.html?id=",
-        "production": "https://fgcz-bfabric.uzh.ch/bfabric/workunit/show.html?id="
+        "test": f"https://{settings.TEST_BFABRIC_DOMAIN}/bfabric/workunit/show.html?id=",
+        "production": f"https://{settings.PRODUCTION_BFABRIC_DOMAIN}/bfabric/workunit/show.html?id="
     }
 
     if token_data:
