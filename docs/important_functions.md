@@ -735,6 +735,7 @@ The `run_main_job` function is a general-purpose wrapper for executing arbitrary
 * Resource registration in B-Fabric
 * Attaching result files as links in B-Fabric
 * Automatic service charging in B-Fabric
+* Dataset creation in B-Fabric
 
 This function also includes comprehensive logging to facilitate debugging, transparency, and traceability throughout the workflow.
 
@@ -751,6 +752,7 @@ run_main_job(
     token: str,
     service_id: int = 0,
     charge: list[int] = [],
+    dataset_dict: dict = {}
 )
 ```
 
@@ -886,6 +888,33 @@ If no charging is required, this can be an empty list (`[]`).
 
 ---
 
+### dataset_dict (dict, optional)
+
+A dictionary to create datasets in B-Fabric.
+Keys are **container IDs**, and values are dictionaries whose keys are **field names** and values are **lists of values**.
+Each container key results in one dataset linked to its corresponding workunit.
+If not provided or `{}`, no dataset is created.
+
+See **[Change the Dataset Template ID](global_variables.md#change-the-dataset-template-id)** to learn how to change the dataset template.
+
+**Example:**
+
+```python
+dataset_dict = {
+    "37767": {
+        "Sample": ["Run_1913_11", "Run_1913_10", "Run_1913_4", "Run_1913_1"],
+        "FASTQ Read 1": ["/STORAGE/.../Run_1913_11_S1_L002_R1_001.fastq.gz", ...],
+        "FASTQ Read 2": ["/STORAGE/.../Run_1913_11_S1_L002_R2_001.fastq.gz", ...],
+        "Strandedness": ["auto", "auto", "auto", "auto"]
+    }
+}
+```
+For a practical example of how this is implemented, see the
+**[bfabric_app_demultiplex](https://github.com/GWCustom/bfabric_app_demultiplex)** repository.
+
+---
+
+
 ## Function Steps & Behavior
 
 ### Step 1: Saving Files
@@ -923,6 +952,12 @@ If no charging is required, this can be an empty list (`[]`).
 * If no `service_id` is provided, this step is skipped.
 * Charging operations are logged.
 
+### Step 7: Dataset Creation
+
+* If a `dataset_dict` is provided, a dataset is created in B-Fabric for each container ID.
+* Each created dataset is automatically linked to the corresponding workunit.
+* All creation steps and errors are logged.
+* See **[Change the Dataset Template ID](global_variables.md#change-the-dataset-template-id)** to learn how to change the dataset template.
 ---
 
 ### Return Value
@@ -946,7 +981,8 @@ run_main_job(
     attachment_paths={},
     token=url,
     service_id=bfabric_web_apps.SERVICE_ID,
-    charge=charge_run
+    charge=charge_run,
+    dataset_dict=dataset_dict
 )
 ```
 
@@ -969,7 +1005,8 @@ q(queue).enqueue(run_main_job, kwargs={
     "attachment_paths": attachment_paths,
     "token": url_params,
     "service_id": bfabric_web_apps.SERVICE_ID,
-    "charge": charge_run
+    "charge": charge_run,
+    "dataset_dict": dataset_dict
 })
 ```
 

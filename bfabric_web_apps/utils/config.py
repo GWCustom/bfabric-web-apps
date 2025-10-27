@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     # Which dataset template id to use for dataset creation
     DATASET_TEMPLATE_ID: int = 0
 
+    # B-Fabric url paths
+    PRODUCTION_BFABRIC_DOMAIN: str = "fgcz-bfabric.uzh.ch"
+    TEST_BFABRIC_DOMAIN: str = "fgcz-bfabric-test.uzh.ch"
+
     class Config:
 
         env_file = ".env"  

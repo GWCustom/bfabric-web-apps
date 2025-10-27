@@ -43,8 +43,6 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                             children=[str(" ")],
                             style={"font-size": "40px", "margin-left": "20px", "margin-top": "10px"}
                         ),
-
-                        # Buttons (right): B-Fabric Entity + View Logs
                         html.Div(
                             children=[
                                 html.A(
