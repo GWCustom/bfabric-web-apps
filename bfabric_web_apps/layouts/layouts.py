@@ -43,10 +43,24 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                             children=[str(" ")],
                             style={"font-size": "40px", "margin-left": "20px", "margin-top": "10px"}
                         ),
-
-                        # View Logs Button (Aligned Right)
                         html.Div(
                             children=[
+                                html.A(
+                                    dbc.Button(
+                                        "B-Fabric Entity",
+                                        id="bfabric-entity-button",
+                                        color="secondary", # Greyish color
+                                        style={
+                                            "font-size": "18px",
+                                            "padding": "10px 20px",
+                                            "border-radius": "8px",
+                                            "margin-right": "10px"
+                                        }
+                                    ),
+                                    id="bfabric-entity-link",
+                                    href="#",  # will be set in the Callback
+                                    target="_blank"
+                                ),
                                 html.A(
                                     dbc.Button(
                                         "View Logs",
@@ -67,6 +81,8 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                                 "position": "absolute",
                                 "right": "20px",
                                 "top": "10px",  # Aligns with title
+                                "display": "flex",
+                                "align-items": "center"
                             }
                         ),
                     ],
@@ -124,7 +140,6 @@ def get_static_layout(base_title=None, main_content=None, documentation_content=
                             ),
                         ),
                     ),
-
                     # Page Title Section + View Logs Button (Aligned Right)
                     header_row, 
 
